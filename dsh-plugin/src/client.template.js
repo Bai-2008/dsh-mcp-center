@@ -360,6 +360,180 @@ window.__ModuleLoader__.load({
       .mc-empty p { margin: 4px 0 0; font-size: 11.5px; }
       .mc-foot { margin-top: 12px; color: var(--dsw-alias-label-tertiary); font-size: 9.5px; }
       .mc-foot code { font-family: ui-monospace, monospace; }
+      .mc-view-tabs {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        margin: 0 0 14px;
+        padding-bottom: 7px;
+        border-bottom: 1px solid var(--dsw-alias-border-l1);
+      }
+      .mc-view-tab {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        min-height: 30px;
+        padding: 0 9px;
+        border: 1px solid transparent;
+        border-radius: 6px;
+        background: transparent;
+        color: var(--dsw-alias-label-secondary);
+        font-size: 11.5px;
+        cursor: pointer;
+      }
+      .mc-view-tab:hover { color: var(--dsw-alias-label-primary); background: var(--dsw-alias-interactive-bg-hover); }
+      .mc-view-tab.active {
+        border-color: color-mix(in srgb, var(--dsw-alias-brand-primary) 28%, transparent);
+        background: color-mix(in srgb, var(--dsw-alias-brand-primary) 9%, transparent);
+        color: var(--dsw-alias-brand-primary);
+      }
+      .mc-view-count {
+        display: inline-grid;
+        place-items: center;
+        min-width: 17px;
+        height: 16px;
+        padding: 0 4px;
+        border-radius: 4px;
+        background: color-mix(in srgb, var(--dsw-alias-label-tertiary) 14%, transparent);
+        color: var(--dsw-alias-label-tertiary);
+        font-family: ui-monospace, monospace;
+        font-size: 8.5px;
+      }
+      .mc-toolbar-actions { display: flex; align-items: center; gap: 5px; margin-left: auto; }
+      .mc-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        min-height: 30px;
+        padding: 0 10px;
+        border: 1px solid var(--dsw-alias-brand-primary);
+        border-radius: 7px;
+        background: var(--dsw-alias-brand-primary);
+        color: var(--dsw-alias-label-primary-foreground);
+        font-size: 11px;
+        font-weight: 650;
+        cursor: pointer;
+      }
+      .mc-primary:hover { filter: brightness(1.06); }
+      .mc-primary:disabled { opacity: .55; cursor: wait; }
+      .mc-secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        min-height: 27px;
+        padding: 0 8px;
+        border: 1px solid var(--dsw-alias-border-l1);
+        border-radius: 6px;
+        background: transparent;
+        color: var(--dsw-alias-label-secondary);
+        font-size: 10px;
+        cursor: pointer;
+      }
+      .mc-secondary:hover { border-color: var(--dsw-alias-border-l2); color: var(--dsw-alias-label-primary); }
+      .mc-secondary:disabled { opacity: .45; cursor: default; }
+      .mc-secondary.danger { color: var(--dsw-alias-state-error-primary); }
+      .mc-secondary.danger:hover { border-color: color-mix(in srgb, var(--dsw-alias-state-error-primary) 40%, transparent); }
+      .mc-installed-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+      .mc-installed-title { margin: 0; font-size: 15px; letter-spacing: -.01em; }
+      .mc-installed-sub { margin: 2px 0 0; color: var(--dsw-alias-label-tertiary); font-size: 10.5px; }
+      .mc-installed-list { display: grid; gap: 7px; }
+      .mc-installed-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 10px 12px;
+        border: 1px solid var(--dsw-alias-border-l1);
+        border-radius: 8px;
+        background: var(--dsw-alias-bg-layer-1);
+      }
+      .mc-installed-copy { min-width: 170px; flex: 1; }
+      .mc-installed-name { display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 650; }
+      .mc-installed-key {
+        overflow: hidden;
+        margin-top: 1px;
+        color: var(--dsw-alias-label-tertiary);
+        font-family: ui-monospace, monospace;
+        font-size: 9px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .mc-installed-badges { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+      .mc-row-actions { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; }
+      .mc-loading { padding: 28px 16px; color: var(--dsw-alias-label-tertiary); font-size: 11.5px; text-align: center; }
+      .mc-toast {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 120;
+        max-width: min(420px, calc(100vw - 40px));
+        padding: 9px 12px;
+        border: 1px solid var(--dsw-alias-border-l2);
+        border-radius: 8px;
+        background: var(--dsw-alias-bg-overlay);
+        box-shadow: 0 10px 32px color-mix(in srgb, #000 25%, transparent);
+        color: var(--dsw-alias-label-primary);
+        font-size: 11px;
+      }
+      .mc-toast.bad { border-color: color-mix(in srgb, var(--dsw-alias-state-error-primary) 45%, transparent); color: var(--dsw-alias-state-error-primary); }
+      .mc-modal-mask {
+        position: fixed;
+        inset: 0;
+        z-index: 110;
+        display: grid;
+        place-items: center;
+        padding: 20px;
+        background: color-mix(in srgb, var(--dsw-alias-bg-mask-2) 75%, transparent);
+      }
+      .mc-modal {
+        width: min(640px, 100%);
+        max-height: min(720px, 86vh);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid var(--dsw-alias-border-l2);
+        border-radius: 10px;
+        background: var(--dsw-alias-bg-overlay);
+        box-shadow: 0 24px 64px color-mix(in srgb, #000 30%, transparent);
+      }
+      .mc-modal-head { padding: 14px 16px 8px; }
+      .mc-modal-title { margin: 0; font-size: 16px; letter-spacing: -.01em; }
+      .mc-modal-note { margin: 4px 0 0; color: var(--dsw-alias-label-secondary); font-size: 11px; line-height: 1.55; }
+      .mc-modal-body { padding: 4px 16px 10px; overflow: auto; }
+      .mc-textarea {
+        width: 100%;
+        min-height: 260px;
+        padding: 10px;
+        border: 1px solid var(--dsw-alias-border-l1);
+        border-radius: 7px;
+        outline: 0;
+        background: var(--dsw-alias-bg-base);
+        color: var(--dsw-alias-label-primary);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 10.5px;
+        line-height: 1.65;
+        resize: vertical;
+      }
+      .mc-textarea:focus { border-color: var(--dsw-alias-brand-primary); }
+      .mc-modal-required { margin: 8px 0 0; padding: 0; list-style: none; display: grid; gap: 3px; }
+      .mc-modal-required li { color: var(--dsw-alias-label-secondary); font-size: 10px; }
+      .mc-modal-required code { color: var(--dsw-alias-label-primary); }
+      .mc-modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 6px;
+        padding: 10px 16px 14px;
+        border-top: 1px solid var(--dsw-alias-border-l1);
+      }
       @media (max-width: 820px) {
         .mc-root { padding: 16px 14px 36px; }
         .mc-head { flex-direction: column; gap: 8px; }
@@ -368,10 +542,18 @@ window.__ModuleLoader__.load({
         .mc-list { max-height: none; grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .mc-info { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       }
+      @media (max-width: 700px) {
+        .mc-installed-row { align-items: flex-start; }
+        .mc-row-actions { width: 100%; padding-top: 2px; }
+        .mc-modal { max-height: 92vh; }
+        .mc-textarea { min-height: 220px; }
+      }
       @media (max-width: 560px) {
         .mc-list { grid-template-columns: 1fr; }
         .mc-info { grid-template-columns: 1fr 1fr; }
         .mc-detail { padding: 14px; }
+        .mc-view-tabs { overflow-x: auto; }
+        .mc-view-tab { flex: none; }
       }
     `;
 
@@ -379,6 +561,16 @@ window.__ModuleLoader__.load({
       if (type === "sse") return t("transportSse");
       if (type === "streamable_http") return t("transportRemote");
       return t("transportStdio");
+    }
+
+    function connectionStateLabel(t, item) {
+      if (item.enabled === false) return t("disabled");
+      const state = item.connectionState;
+      if (state === "connected" || state === "ready") return t("connected");
+      if (state === "recovering") return t("recovering");
+      if (state === "needs-auth" || state === "reauthorize") return t("reauthorize");
+      if (state === "error" || state === "connection-error") return t("connectionError");
+      return t("notConnected");
     }
 
     function initials(name) {
@@ -475,12 +667,64 @@ window.__ModuleLoader__.load({
       return [copied, copy];
     }
 
-    function MarketView({ t }) {
+    const CONNECTOR_API = "/mcp-connector/api";
+
+    async function callConnector(method, params = {}, timeoutMs = 30_000) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const response = await fetch(CONNECTOR_API, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ method, params }),
+          signal: controller.signal,
+        });
+        const data = await response.json();
+        if (!response.ok && data?.ok !== false) {
+          return { ok: false, message: `HTTP ${response.status}` };
+        }
+        return data;
+      } catch (error) {
+        return {
+          ok: false,
+          message: controller.signal.aborted
+            ? "请求超时"
+            : `MCP 连接器不可用：${error?.message || error}`,
+        };
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    function useToast() {
+      const [toast, setToast] = useState(null);
+      const timer = useRef(null);
+      useEffect(() => () => clearTimeout(timer.current), []);
+      const notify = (message, bad = false) => {
+        setToast({ message, bad });
+        clearTimeout(timer.current);
+        timer.current = setTimeout(() => setToast(null), 4200);
+      };
+      return [toast, notify];
+    }
+
+    function MarketView({ t, openConnector }) {
+      const [view, setView] = useState("catalog");
       const [query, setQuery] = useState("");
       const [category, setCategory] = useState(ALL);
       const [selectedName, setSelectedName] = useState(DATA.entries[0]?.name ?? "");
       const [installId, setInstallId] = useState("");
       const [copied, copy] = useCopyState();
+      const [toast, notify] = useToast();
+      const [connector, setConnector] = useState({
+        available: null,
+        loading: true,
+        items: [],
+        message: "",
+      });
+      const [modal, setModal] = useState(null);
+      const [modalBusy, setModalBusy] = useState(false);
+      const [updating, setUpdating] = useState(false);
 
       const categories = useMemo(
         () => [
@@ -533,6 +777,164 @@ window.__ModuleLoader__.load({
       const required =
         selected?.credentials.filter((credential) => credential.required) ?? [];
       const siteUrl = `${DATA.site.origin}${DATA.site.base}`;
+
+      async function refreshConnections() {
+        setConnector((current) => ({ ...current, loading: true }));
+        const result = await callConnector("status", {}, 20_000);
+        if (result.ok) {
+          setConnector({
+            available: true,
+            loading: false,
+            items: Array.isArray(result.detail?.items) ? result.detail.items : [],
+            message: "",
+          });
+        } else {
+          setConnector({
+            available: false,
+            loading: false,
+            items: [],
+            message: result.message || t("connectorUnavailable"),
+          });
+        }
+      }
+
+      useEffect(() => {
+        void refreshConnections();
+      }, []);
+
+      useEffect(() => {
+        if (!modal) return undefined;
+        const onKeyDown = (event) => {
+          if (event.key === "Escape" && !modalBusy) setModal(null);
+        };
+        window.addEventListener("keydown", onKeyDown);
+        return () => window.removeEventListener("keydown", onKeyDown);
+      }, [modal, modalBusy]);
+
+      function requireConnector() {
+        if (connector.available === true) return true;
+        notify(t("backendMissing"), true);
+        return false;
+      }
+
+      function openInstall(entry) {
+        if (connector.available === null) {
+          notify(t("loading"), true);
+          return;
+        }
+        if (!requireConnector()) return;
+        const config = entry.install.find((item) => item.id === "dsh") ?? entry.install[0];
+        if (!config) {
+          notify(t("noInstall"), true);
+          return;
+        }
+        setModal({
+          kind: "install",
+          title: `${t("installToConnector")} · ${entry.display_name}`,
+          json: config.code,
+          entry,
+        });
+      }
+
+      async function openEdit(item) {
+        if (!requireConnector()) return;
+        const result = await callConnector("editableConnectionConfig", { key: item.key }, 20_000);
+        if (!result.ok) {
+          notify(result.message || t("editLoadFailed"), true);
+          return;
+        }
+        setModal({
+          kind: "edit",
+          title: `${t("editTitle")} · ${item.name || item.key}`,
+          json: result.detail?.json || "",
+          key: item.key,
+        });
+      }
+
+      async function submitModal() {
+        if (!modal) return;
+        if (modal.kind === "install" && /<YOUR_[A-Z0-9_]+>/.test(modal.json)) {
+          notify(t("placeholderRemaining"), true);
+          return;
+        }
+        let parsed;
+        try {
+          parsed = JSON.parse(modal.json);
+        } catch {
+          notify(`${t("installJsonInvalid")}`, true);
+          return;
+        }
+        setModalBusy(true);
+        try {
+          const result =
+            modal.kind === "install"
+              ? await callConnector("importJson", { json: JSON.stringify(parsed, null, 2) }, 145_000)
+              : await callConnector(
+                  "reconfigureConnection",
+                  { key: modal.key, json: JSON.stringify(parsed, null, 2) },
+                  145_000,
+                );
+          if (!result.ok) {
+            notify(result.message || t("actionFailed"), true);
+            return;
+          }
+          setModal(null);
+          setView("installed");
+          notify(modal.kind === "install" ? t("installSuccess") : t("editSuccess"));
+          await refreshConnections();
+        } finally {
+          setModalBusy(false);
+        }
+      }
+
+      async function action(method, params, timeout, successText) {
+        if (!requireConnector()) return;
+        const result = await callConnector(method, params, timeout);
+        notify(result.ok ? successText : result.message || t("actionFailed"), !result.ok);
+        await refreshConnections();
+      }
+
+      async function toggleConnection(item) {
+        await action(
+          "setEnabled",
+          { key: item.key, enabled: item.enabled === false },
+          130_000,
+          t("enableSuccess"),
+        );
+      }
+
+      async function checkConnection(item) {
+        await action(
+          "healthCheck",
+          item.connectorId ? { connectorId: item.connectorId } : {},
+          20_000,
+          t("checkSuccess"),
+        );
+      }
+
+      async function reconnectConnection(item) {
+        await action("reconnect", { key: item.key }, 30_000, t("reconnectSuccess"));
+      }
+
+      async function uninstallConnection(item) {
+        if (!window.confirm(t("confirmUninstall"))) return;
+        await action("disconnect", { key: item.key }, 30_000, t("uninstallSuccess"));
+      }
+
+      async function updateAll() {
+        if (!requireConnector()) return;
+        setUpdating(true);
+        const catalog = await callConnector("refreshCatalog", {}, 60_000);
+        if (!catalog.ok) {
+          setUpdating(false);
+          notify(catalog.message || t("actionFailed"), true);
+          return;
+        }
+        const health = await callConnector("healthCheck", {}, 20_000);
+        setUpdating(false);
+        notify(health.ok ? t("refreshSuccess") : health.message || t("actionFailed"), !health.ok);
+        await refreshConnections();
+      }
 
       const renderDetail = () => {
         if (!selected) {
@@ -599,6 +1001,16 @@ window.__ModuleLoader__.load({
                   { href: detailUrl, target: "_blank", rel: "noreferrer" },
                   t("online"),
                 ),
+              ),
+              h(
+                "button",
+                {
+                  type: "button",
+                  className: "mc-primary",
+                  style: { marginTop: 10 },
+                  onClick: () => openInstall(selected),
+                },
+                t("installToConnector"),
               ),
             ),
           ),
@@ -737,6 +1149,276 @@ window.__ModuleLoader__.load({
         );
       };
 
+      const renderInstalled = () => {
+        const items = connector.items;
+        const available = connector.available === true;
+        return h(
+          "div",
+          null,
+          h(
+            "div",
+            { className: "mc-installed-head" },
+            h(
+              "div",
+              null,
+              h(
+                "h3",
+                { className: "mc-installed-title" },
+                `${t("installedTab")} (${items.length})`,
+              ),
+              h("p", { className: "mc-installed-sub" }, t("connectorHint")),
+            ),
+            h(
+              "div",
+              { className: "mc-toolbar-actions" },
+              h(
+                "button",
+                {
+                  type: "button",
+                  className: "mc-secondary",
+                  onClick: () => refreshConnections(),
+                  disabled: connector.loading,
+                },
+                connector.loading ? t("loading") : t("refresh"),
+              ),
+              h(
+                "button",
+                {
+                  type: "button",
+                  className: "mc-secondary",
+                  onClick: updateAll,
+                  disabled: updating || !available,
+                },
+                updating ? t("updating") : t("updateAll"),
+              ),
+              h(
+                "button",
+                {
+                  type: "button",
+                  className: "mc-secondary",
+                  onClick: () =>
+                    action("healthCheck", {}, 20_000, t("checkSuccess")),
+                  disabled: !available,
+                },
+                t("checkAll"),
+              ),
+            ),
+          ),
+          connector.available === false
+            ? h(
+                "div",
+                { className: "mc-callout" },
+                h("div", { className: "mc-callout-title" }, t("connectorUnavailable")),
+                h("p", { className: "mc-required-empty" }, connector.message || t("connectorHint")),
+                typeof openConnector === "function" &&
+                  h(
+                    "button",
+                    {
+                      type: "button",
+                      className: "mc-secondary",
+                      style: { marginTop: 7 },
+                      onClick: () => {
+                        if (!openConnector()) notify(t("connectorUnavailable"), true);
+                      },
+                    },
+                    t("openConnector"),
+                  ),
+              )
+            : connector.loading && items.length === 0
+              ? h("div", { className: "mc-loading" }, t("loading"))
+              : items.length === 0
+                ? h(
+                    "div",
+                    { className: "mc-empty" },
+                    h("strong", null, t("installedEmpty")),
+                    h("p", null, t("connectorHint")),
+                  )
+                : h(
+                    "div",
+                    { className: "mc-installed-list" },
+                    items.map((item, index) => {
+                      const enabled = item.enabled !== false;
+                      const displayName = item.name || item.key || `#${index + 1}`;
+                      return h(
+                        "article",
+                        { className: "mc-installed-row", key: item.key || `${displayName}:${index}` },
+                        h(
+                          "div",
+                          { className: "mc-installed-copy" },
+                          h(
+                            "div",
+                            { className: "mc-installed-name" },
+                            h(EntryIcon, { entry: { name: displayName, display_name: displayName } }),
+                            h("span", null, displayName),
+                          ),
+                          h("div", { className: "mc-installed-key" }, item.key || ""),
+                        ),
+                        h(
+                          "div",
+                          { className: "mc-installed-badges" },
+                          h(
+                            "span",
+                            { className: `mc-badge ${enabled ? "mc-badge-verified" : "mc-badge-transport"}` },
+                            enabled ? t("enabled") : t("disabled"),
+                          ),
+                          h(
+                            "span",
+                            { className: "mc-badge mc-badge-transport" },
+                            connectionStateLabel(t, item),
+                          ),
+                        ),
+                        h(
+                          "div",
+                          { className: "mc-row-actions" },
+                          h(
+                            "button",
+                            {
+                              type: "button",
+                              className: "mc-secondary",
+                              onClick: () => toggleConnection(item),
+                            },
+                            enabled ? t("disable") : t("enable"),
+                          ),
+                          h(
+                            "button",
+                            {
+                              type: "button",
+                              className: "mc-secondary",
+                              onClick: () => checkConnection(item),
+                            },
+                            t("check"),
+                          ),
+                          h(
+                            "button",
+                            {
+                              type: "button",
+                              className: "mc-secondary",
+                              onClick: () => reconnectConnection(item),
+                            },
+                            t("reconnect"),
+                          ),
+                          h(
+                            "button",
+                            {
+                              type: "button",
+                              className: "mc-secondary",
+                              disabled: item.canEditConfiguration === false,
+                              title:
+                                item.canEditConfiguration === false
+                                  ? t("editLoadFailed")
+                                  : undefined,
+                              onClick: () => openEdit(item),
+                            },
+                            t("edit"),
+                          ),
+                          h(
+                            "button",
+                            {
+                              type: "button",
+                              className: "mc-secondary danger",
+                              onClick: () => uninstallConnection(item),
+                            },
+                            t("uninstall"),
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
+        );
+      };
+
+      const renderModal = () => {
+        if (!modal) return null;
+        const modalRequired =
+          modal.kind === "install"
+            ? modal.entry?.credentials.filter((credential) => credential.required) ?? []
+            : [];
+        return h(
+          "div",
+          {
+            className: "mc-modal-mask",
+            onMouseDown: (event) => {
+              if (event.target === event.currentTarget && !modalBusy) setModal(null);
+            },
+          },
+          h(
+            "div",
+            {
+              className: "mc-modal",
+              role: "dialog",
+              "aria-modal": "true",
+              "aria-label": modal.title,
+            },
+            h(
+              "div",
+              { className: "mc-modal-head" },
+              h("h3", { className: "mc-modal-title" }, modal.title),
+              h(
+                "p",
+                { className: "mc-modal-note" },
+                modal.kind === "install" ? t("installHint") : t("editHint"),
+              ),
+              modalRequired.length > 0 &&
+                h(
+                  "ul",
+                  { className: "mc-modal-required" },
+                  modalRequired.map((credential) =>
+                    h(
+                      "li",
+                      { key: `${credential.kind}:${credential.name}` },
+                      h("code", null, credential.name),
+                      ` — ${credential.description || ""}`,
+                    ),
+                  ),
+                ),
+            ),
+            h(
+              "div",
+              { className: "mc-modal-body" },
+              h("textarea", {
+                className: "mc-textarea",
+                value: modal.json,
+                spellCheck: false,
+                onChange: (event) =>
+                  setModal((current) =>
+                    current ? { ...current, json: event.target.value } : current,
+                  ),
+              }),
+            ),
+            h(
+              "div",
+              { className: "mc-modal-actions" },
+              h(
+                "button",
+                {
+                  type: "button",
+                  className: "mc-secondary",
+                  disabled: modalBusy,
+                  onClick: () => setModal(null),
+                },
+                t("cancel"),
+              ),
+              h(
+                "button",
+                {
+                  type: "button",
+                  className: "mc-primary",
+                  disabled: modalBusy,
+                  onClick: submitModal,
+                },
+                modalBusy
+                  ? modal.kind === "install"
+                    ? t("importing")
+                    : t("saving")
+                  : modal.kind === "install"
+                    ? t("import")
+                    : t("save"),
+              ),
+            ),
+          ),
+        );
+      };
+
       return h(
         "div",
         { className: "mc-root" },
@@ -765,10 +1447,41 @@ window.__ModuleLoader__.load({
         ),
         h(
           "div",
-          { className: "mc-toolbar" },
+          { className: "mc-view-tabs", role: "tablist" },
           h(
-            "label",
-            { className: "mc-search" },
+            "button",
+            {
+              type: "button",
+              role: "tab",
+              className: `mc-view-tab ${view === "catalog" ? "active" : ""}`,
+              "aria-selected": view === "catalog" ? "true" : "false",
+              onClick: () => setView("catalog"),
+            },
+            t("marketTab"),
+          ),
+          h(
+            "button",
+            {
+              type: "button",
+              role: "tab",
+              className: `mc-view-tab ${view === "installed" ? "active" : ""}`,
+              "aria-selected": view === "installed" ? "true" : "false",
+              onClick: () => setView("installed"),
+            },
+            t("installedTab"),
+            h("span", { className: "mc-view-count" }, connector.items.length),
+          ),
+        ),
+        view === "catalog" &&
+          h(
+            React.Fragment,
+            null,
+            h(
+              "div",
+              { className: "mc-toolbar" },
+              h(
+                "label",
+                { className: "mc-search" },
             h(
               "svg",
               { viewBox: "0 0 20 20", "aria-hidden": true },
@@ -859,8 +1572,17 @@ window.__ModuleLoader__.load({
                   ),
                 ),
           ),
-          renderDetail(),
-        ),
+              renderDetail(),
+            ),
+          ),
+        view === "installed" && renderInstalled(),
+        renderModal(),
+        toast &&
+          h(
+            "div",
+            { className: `mc-toast ${toast.bad ? "bad" : ""}` },
+            toast.message,
+          ),
       );
     }
 
@@ -872,6 +1594,21 @@ window.__ModuleLoader__.load({
           "dsh-mcp-center: dictionaries",
         );
         const t = ctx.locale.bind(NS);
+        let layout;
+        ctx.inject(["layout"], (scoped) => {
+          layout = scoped.layout;
+        });
+        const openConnector = () => {
+          try {
+            if (layout?.selectPanel) {
+              layout.selectPanel("mcp-connector");
+              return true;
+            }
+          } catch {
+            // The connector plugin may not be installed.
+          }
+          return false;
+        };
         ctx.slots.inject("plugins.tab", () =>
           ctx.slots.register(
             {
@@ -881,7 +1618,7 @@ window.__ModuleLoader__.load({
               label: () => t("nav"),
               locale: NS,
             },
-            (ownerProps) => h(MarketView, { ...ownerProps, t }),
+            (ownerProps) => h(MarketView, { ...ownerProps, t, openConnector }),
           ),
         );
       },

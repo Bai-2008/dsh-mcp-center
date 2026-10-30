@@ -269,7 +269,8 @@ Claude Desktop 的远程配置会标注为桥接方案；如果客户端版本�
 - React 原生渲染，复用宿主主题 token 和 locale
 - 搜索、分类、详情、四客户端安装 Tab、复制、必填变量、工具副作用
 - 数据来自同一份 registry，构建时生成内联快照，离线可用
-- 只复制配置，不自动创建 MCP 连接、不执行第三方工具
+- 对接 `dsh-mcp-connector`：安装、卸载、检查、启用/停用、重连、更新、编辑连接
+- 插件本身不执行 MCP 工具；连接操作走连接器的同源 HTTP API
 
 ```bash
 npm run build:web
