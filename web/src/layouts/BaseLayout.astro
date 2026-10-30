@@ -1,0 +1,72 @@
+---
+import "../styles/global.css";
+
+import SiteFooter from "../components/SiteFooter.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SearchModal from "../components/SearchModal.astro";
+import type { SiteInfo } from "../lib/types";
+
+interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  root: string;
+  site: SiteInfo;
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description, canonical, root, site, jsonLd } = Astro.props;
+const jsonLdText = jsonLd
+  ? JSON.stringify(jsonLd).replaceAll("<", "\\u003c")
+  : null;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <script is:inline>
+      (() => {
+        const key = "dsh-mcp-theme";
+        let theme = null;
+        try {
+          theme = localStorage.getItem(key);
+        } catch {}
+        if (theme !== "light" && theme !== "dark") {
+          theme = window.matchMedia("(prefers-color-scheme: light)").matches
+            ? "light"
+            : "dark";
+        }
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme;
+        document.documentElement.style.backgroundColor =
+          theme === "dark" ? "#0a0a0b" : "#fafafa";
+      })();
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href={`${root}favicon.svg`} />
+    <meta name="theme-color" content="#0a0a0b" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    {
+      jsonLdText ? (
+        <script type="application/ld+json" set:html={jsonLdText} />
+      ) : null
+    }
+  </head>
+  <body data-root={root}>
+    <SiteHeader root={root} site={site} />
+    <slot />
+    <SiteFooter root={root} site={site} />
+    <SearchModal root={root} />
+    <script>
+      import "../scripts/global";
+    </script>
+  </body>
+</html>

@@ -1,0 +1,248 @@
+name: On issue submission
+
+on:
+  issues:
+    types:
+      - opened
+      - edited
+      - labeled
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: submit-issue-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  submit:
+    if: |
+      github.event.issue.state == 'open' &&
+      !github.event.issue.pull_request &&
+      contains(github.event.issue.labels.*.name, 'submit') &&
+      (github.event.action != 'labeled' || github.event.label.name == 'submit')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Parse issue form
+        id: prepare
+        continue-on-error: true
+        run: node scripts/issue-form-to-registry.mjs
+
+      - name: Validate registry
+        id: validate
+        if: steps.prepare.outcome == 'success'
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          npm run validate 2>&1 | tee submission-error.txt
+
+      - name: Create or update pull request
+        id: open_pr
+        if: steps.prepare.outcome == 'success' && steps.validate.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          AUTOMATION_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+          FILE: ${{ steps.prepare.outputs.file }}
+          NAME: ${{ steps.prepare.outputs.name }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${AUTOMATION_TOKEN:-}" ]; then
+            cat > submission-error.txt <<'EOF'
+          缺少仓库 Secret：AUTOMATION_TOKEN。
+
+          用 GITHUB_TOKEN 创建的 PR 不会触发新的 workflow，CI 将无法运行。
+          请配置一个具有 Contents / Pull requests 写权限的细粒度 PAT 或 GitHub App token，
+          并保存为仓库 Secret：AUTOMATION_TOKEN。
+          EOF
+            echo "::error::缺少 AUTOMATION_TOKEN，无法创建可触发 CI 的 PR。"
+            exit 1
+          fi
+
+          git remote set-url origin "https://x-access-token:${AUTOMATION_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          branch="submit/issue-${ISSUE_NUMBER}"
+          title="feat(registry): add ${NAME} (#${ISSUE_NUMBER})"
+          body=$(cat <<EOF
+          ## 自动投稿
+
+          Closes #${ISSUE_NUMBER}
+
+          - 条目：\`${NAME}\`
+          - 文件：\`${FILE}\`
+          - 投稿人：@${ISSUE_AUTHOR}
+          - Issue 表单解析与本地 Schema 校验已通过
+          - repository 404 / npm / PyPI 检查由 PR CI 继续执行
+
+          > 本 PR 由 GitHub Actions 生成，必须由维护者手动 approve 后合并。
+          EOF
+          )
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$branch"
+          git add "$FILE"
+
+          if git diff --cached --quiet; then
+            echo "生成内容与分支现有内容一致，不创建新 commit。"
+          else
+            git commit -m "$title"
+            git push --force origin "HEAD:refs/heads/$branch"
+          fi
+
+          pr_number=$(gh pr list \
+            --head "$branch" \
+            --state open \
+            --json number \
+            --jq '.[0].number // empty')
+
+          if [ -n "$pr_number" ]; then
+            gh pr edit "$pr_number" --title "$title" --body "$body"
+            pr_url=$(gh pr view "$pr_number" --json url --jq '.url')
+          else
+            pr_url=$(gh pr create \
+              --base main \
+              --head "$branch" \
+              --title "$title" \
+              --body "$body")
+            pr_number=$(gh pr view "$branch" --json number --jq '.number')
+          fi
+
+          echo "pr_url=$pr_url" >> "$GITHUB_OUTPUT"
+          echo "pr_number=$pr_number" >> "$GITHUB_OUTPUT"
+          echo "已创建/更新 PR：$pr_url"
+
+      - name: Close stale PR when submission is invalid
+        if: steps.prepare.outcome != 'success' || steps.validate.outcome != 'success'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          branch="submit/issue-${ISSUE_NUMBER}"
+          stale_pr=$(gh pr list \
+            --head "$branch" \
+            --state open \
+            --json number \
+            --jq '.[0].number // empty')
+          if [ -n "$stale_pr" ]; then
+            gh pr close "$stale_pr" \
+              --comment "Issue 表单更新后校验失败，已关闭旧 PR；修复表单后机器人会重新创建。"
+            echo "已关闭过期 PR #$stale_pr。"
+          fi
+
+      - name: Report result on issue
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          PREPARE_OUTCOME: ${{ steps.prepare.outcome }}
+          VALIDATE_OUTCOME: ${{ steps.validate.outcome }}
+          OPEN_PR_OUTCOME: ${{ steps.open_pr.outcome }}
+          PR_URL: ${{ steps.open_pr.outputs.pr_url }}
+          SUBMISSION_NAME: ${{ steps.prepare.outputs.name }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require("node:fs");
+            const marker = "<!-- dsh-mcp-center:submission-status -->";
+            const failed =
+              process.env.PREPARE_OUTCOME !== "success" ||
+              process.env.VALIDATE_OUTCOME !== "success" ||
+              process.env.OPEN_PR_OUTCOME !== "success";
+
+            const issueNumber = context.issue.number;
+            const serverUrl = process.env.GITHUB_SERVER_URL || "https://github.com";
+            const runUrl = `${serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            let body;
+
+            if (failed) {
+              let detail = "未生成错误详情，请查看 Actions 运行日志。";
+              if (fs.existsSync("submission-error.txt")) {
+                detail = fs.readFileSync("submission-error.txt", "utf8");
+              }
+              const escaped = detail
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .slice(0, 50000);
+
+              body = `${marker}
+            ## ❌ 自动审核未通过
+
+            修正 Issue 表单后，机器人会自动重跑并更新这条评论。
+
+            <details>
+            <summary>失败原因</summary>
+
+            <pre>${escaped}</pre>
+
+            </details>
+
+            [查看 Actions 日志](${runUrl})`;
+            } else {
+              body = `${marker}
+            ## ✅ 自动审核通过
+
+            已创建/更新 Pull Request：${process.env.PR_URL}
+
+            ${process.env.SUBMISSION_NAME ? `条目：\`${process.env.SUBMISSION_NAME}\`\n\n` : ""}PR 还需要通过 CI 上游检查，并由维护者手动 approve 后才能合并。
+
+            [查看 Actions 日志](${runUrl})`;
+            }
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              per_page: 100,
+            });
+            const existing = comments.find(
+              (comment) =>
+                comment.user?.type === "Bot" &&
+                comment.body?.includes(marker),
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body,
+              });
+            }
+
+      - name: Fail workflow when submission is invalid
+        if: |
+          steps.prepare.outcome != 'success' ||
+          steps.validate.outcome != 'success' ||
+          steps.open_pr.outcome != 'success'
+        run: exit 1

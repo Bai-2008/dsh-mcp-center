@@ -1,0 +1,79 @@
+---
+import { relativeTime, transportLabel } from "../lib/format";
+import type { ServerEntry } from "../lib/types";
+
+interface Props {
+  entry: ServerEntry;
+}
+
+const { entry } = Astro.props;
+const visibleCategories = entry.categories.slice(0, 2);
+const extraCategories = entry.categories.length - visibleCategories.length;
+const href = `servers/${entry.slug}/`;
+---
+
+<a
+  class="server-card"
+  href={href}
+  data-card
+  data-slug={entry.slug}
+  data-official={String(entry.official)}
+  data-verified={String(entry.verified)}
+  data-transport={entry.transport.type}
+  data-categories={entry.categories.join("|")}
+>
+  <div class="card-head">
+    <img
+      class="card-icon"
+      src={entry.icon}
+      alt=""
+      width="40"
+      height="40"
+      loading="eager"
+      decoding="async"
+    />
+    <div class="card-badges">
+      {
+        entry.official && (
+          <span class="badge badge-official">官方</span>
+        )
+      }
+      {
+        entry.verified && (
+          <span class="badge badge-verified">已验证</span>
+        )
+      }
+      <span class="badge badge-transport">
+        {transportLabel(entry.transport.type)}
+      </span>
+    </div>
+  </div>
+
+  <div class="card-title-row">
+    <h3 data-search-title>{entry.display_name}</h3>
+    <span class="card-arrow" aria-hidden="true">↗</span>
+  </div>
+  <p class="card-description" data-search-description>{entry.description}</p>
+
+  <div class="card-foot">
+    <span class="card-categories">
+      {visibleCategories.map((category) => (
+        <span class="mini-category">{category}</span>
+      ))}
+      {extraCategories > 0 && (
+        <span class="mini-category">+{extraCategories}</span>
+      )}
+    </span>
+    <span class="card-meta">
+      {entry.tools.length} 工具
+      <span aria-hidden="true">·</span>
+      <time
+        datetime={entry.last_checked}
+        data-relative-time
+        data-date={entry.last_checked}
+      >
+        {relativeTime(entry.last_checked)}
+      </time>
+    </span>
+  </div>
+</a>

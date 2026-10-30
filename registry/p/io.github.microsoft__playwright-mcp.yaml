@@ -1,0 +1,32 @@
+"$schema": "../../schema/registry.schema.json"
+name: io.github.microsoft/playwright-mcp
+display_name: Playwright MCP
+description: 基于 Playwright 的浏览器自动化 MCP，支持页面操作、表单填写、截图与测试。
+description_en: Browser automation and testing with Playwright for AI agents.
+version: 0.0.83
+homepage: https://github.com/microsoft/playwright-mcp
+repository: https://github.com/microsoft/playwright-mcp
+vendor: Microsoft
+transport:
+  type: stdio
+  command: npx
+  args:
+    - "-y"
+    - "@playwright/mcp@0.0.83"
+  env: []
+tools: []
+categories:
+  - 开发工具
+tags:
+  - 浏览器
+  - 自动化
+  - 测试
+official: true
+verified: false
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+license: Apache-2.0
+last_checked: 2026-10-30

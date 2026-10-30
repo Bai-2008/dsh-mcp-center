@@ -1,0 +1,38 @@
+{
+  "name": "dsh-mcp-center",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "以 Git 仓库为数据库、GitHub Actions 为校验器、GitHub Pages 为前端的 MCP Server 市场。",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "validate": "node scripts/validate.mjs",
+    "build": "node scripts/build-index.mjs",
+    "convert:official": "node scripts/convert-to-official.mjs",
+    "check": "npm run validate && npm run build && npm run convert:official",
+    "check:upstream": "node scripts/check-upstream.mjs",
+    "icons": "node scripts/fetch-icons.mjs",
+    "build:web": "node scripts/fetch-icons.mjs && node scripts/build-web.mjs",
+    "dev": "npm run build:web && astro dev",
+    "build:site": "npm run build:web && astro build && node scripts/relativize-assets.mjs",
+    "preview": "astro preview",
+    "check:web": "npm run build:web && astro check",
+    "sync:tools": "node scripts/sync-tools.mjs",
+    "sync:health": "node scripts/sync-health.mjs"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "astro": "^6.4.8",
+    "typescript": "^6.0.3",
+    "yaml": "^2.8.1"
+  },
+  "dependencies": {
+    "fuse.js": "^7.5.0"
+  }
+}

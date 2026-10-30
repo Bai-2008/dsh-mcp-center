@@ -1,0 +1,30 @@
+"$schema": "../../schema/registry.schema.json"
+name: com.notion/mcp
+display_name: Notion
+description: Notion 官方托管 MCP，支持工作区搜索、页面读取与编辑、数据库查询。
+description_en: Official hosted Notion MCP for workspace search, pages and databases.
+version: 1.0.0
+homepage: https://developers.notion.com/guides/mcp/get-started-with-mcp
+repository: https://github.com/makenotion/notion-next
+repository_subfolder: src/cloudflare-mcp
+vendor: Notion
+transport:
+  type: streamable_http
+  url: https://mcp.notion.com/mcp
+  headers: []
+tools: []
+categories:
+  - 办公
+tags:
+  - 笔记
+  - 知识库
+  - 文档
+official: true
+verified: false
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+license: Proprietary
+last_checked: 2026-10-30

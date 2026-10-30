@@ -1,0 +1,49 @@
+name: Build registry
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate YAML entries
+        run: npm run validate
+
+      - name: Build verified registry index
+        run: npm run build
+
+      - name: Convert to official server.json
+        run: npm run convert:official
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: registry-build
+          path: dist/
+          if-no-files-found: error
+          retention-days: 14

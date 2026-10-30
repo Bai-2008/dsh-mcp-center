@@ -1,0 +1,34 @@
+"$schema": "../../schema/registry.schema.json"
+name: io.github.modelcontextprotocol/filesystem
+display_name: Filesystem
+description: 为模型提供受控的本地文件读写、目录遍历与搜索能力。
+description_en: Secure local filesystem access for reading, writing and searching files.
+version: 2.1.0
+homepage: https://modelcontextprotocol.io
+repository: https://github.com/modelcontextprotocol/servers
+repository_subfolder: src/filesystem
+vendor: Model Context Protocol
+transport:
+  type: stdio
+  command: npx
+  args:
+    - "-y"
+    - "@modelcontextprotocol/server-filesystem@2.1.0"
+    - "/path/to/allowed/directory"
+  env: []
+tools: []
+categories:
+  - 开发工具
+tags:
+  - 文件
+  - 本地
+  - 开发
+official: true
+verified: false
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+license: MIT
+last_checked: 2026-10-30

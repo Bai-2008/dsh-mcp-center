@@ -1,0 +1,182 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ServerCard from "../components/ServerCard.astro";
+import { canonicalUrl, formatGeneratedAt } from "../lib/format";
+import type { MarketData } from "../lib/types";
+import market from "../data/index.json";
+
+const data = market as MarketData;
+const root = "./";
+const canonical = canonicalUrl(data.site, "");
+const categories = [
+  { name: "全部", count: data.count },
+  ...data.facets.categories,
+];
+const submitUrl = data.site.submit_url ?? data.site.repo_url ?? "https://github.com";
+---
+
+<BaseLayout
+  title="MCP 市场 - 中文优先的 MCP Server 市场"
+  description="面向中文开发者的 MCP Server 市场。按分类、来源与传输方式筛选，查看安装配置、工具列表和最近校验时间。"
+  canonical={canonical}
+  root={root}
+  site={data.site}
+>
+  <main class="home-shell">
+    <section class="hero shell">
+      <p class="kicker">OPEN REGISTRY · CI VERIFIED</p>
+      <h1>找到能用的 <span>MCP Server</span></h1>
+      <p class="hero-subtitle">中文优先的 MCP Server 市场</p>
+      <p class="hero-description">
+        每个条目经过 Schema 校验与上游检查。安装配置覆盖 DSH、Claude Desktop、Cursor 与 Cline。
+      </p>
+
+      <div class="hero-search">
+        <svg aria-hidden="true" viewBox="0 0 20 20" width="18" height="18">
+          <circle cx="8.5" cy="8.5" r="5.5"></circle>
+          <path d="m13 13 4 4"></path>
+        </svg>
+        <input
+          type="search"
+          id="market-search"
+          data-home-search
+          placeholder="搜索名称、描述、分类或工具…"
+          autocomplete="off"
+          spellcheck="false"
+          aria-label="搜索 MCP Server"
+        />
+        <button
+          class="search-clear"
+          type="button"
+          data-search-clear
+          aria-label="清空搜索"
+          hidden
+        >
+          ×
+        </button>
+        <kbd class="search-shortcut">⌘K</kbd>
+      </div>
+
+      <div class="hero-meta">
+        <span><strong>{data.count}</strong> 个服务</span>
+        <span><strong>{data.stats.official}</strong> 个官方</span>
+        <span><strong>{data.stats.tools}</strong> 个已同步工具</span>
+        <span>构建于 {formatGeneratedAt(data.site.generated_at)}</span>
+      </div>
+    </section>
+
+    <div class="home-grid shell">
+      <aside class="category-panel" aria-label="分类">
+        <div class="panel-label">
+          分类
+          <span>{data.count}</span>
+        </div>
+        <nav class="category-list">
+          {
+            categories.map((category) => (
+              <a
+                class:list={[
+                  "category-link",
+                  { active: category.name === "全部" },
+                ]}
+                href={
+                  category.name === "全部"
+                    ? "?"
+                    : `?cat=${encodeURIComponent(category.name)}`
+                }
+                data-category-link
+                data-cat={category.name}
+              >
+                <span>{category.name}</span>
+                <span class="category-count">{category.count}</span>
+              </a>
+            ))
+          }
+        </nav>
+      </aside>
+
+      <section class="market-main" data-market>
+        <div class="filter-row">
+          <div class="filter-group" role="group" aria-label="来源">
+            <button
+              type="button"
+              class="filter-chip"
+              data-filter-official
+              aria-pressed="false"
+            >
+              官方
+            </button>
+            <button
+              type="button"
+              class="filter-chip"
+              data-filter-verified
+              aria-pressed="false"
+            >
+              已验证
+            </button>
+          </div>
+          <span class="filter-divider" aria-hidden="true"></span>
+          <div class="filter-group" role="group" aria-label="传输方式">
+            <button
+              type="button"
+              class="filter-chip"
+              data-transport-filter="stdio"
+              aria-pressed="false"
+            >
+              stdio
+            </button>
+            <button
+              type="button"
+              class="filter-chip"
+              data-transport-filter="streamable_http"
+              aria-pressed="false"
+            >
+              remote
+            </button>
+            <button
+              type="button"
+              class="filter-chip"
+              data-transport-filter="sse"
+              aria-pressed="false"
+            >
+              SSE
+            </button>
+          </div>
+          <p class="result-count" aria-live="polite">
+            <strong data-result-count>{data.count}</strong> 个结果
+          </p>
+          <button type="button" class="clear-link" data-clear-filters hidden>
+            清除筛选
+          </button>
+        </div>
+
+        <h2 class="sr-only">全部服务</h2>
+        <div class="server-grid" data-server-grid>
+          {
+            data.entries.map((entry) => (
+              <ServerCard entry={entry} />
+            ))
+          }
+        </div>
+
+        <div class="empty-state" data-empty-state hidden>
+          <p class="kicker">NO MATCH</p>
+          <h2>没找到合适的 MCP Server</h2>
+          <p>试试更短的关键词，或者清除筛选。也欢迎把你正在用的服务提交到市场。</p>
+          <div class="empty-actions">
+            <button type="button" class="button button-secondary" data-clear-filters>
+              清除筛选
+            </button>
+            <a class="button button-primary" href={submitUrl} target="_blank" rel="noreferrer">
+              点击投稿 <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    import "../scripts/home";
+  </script>
+</BaseLayout>

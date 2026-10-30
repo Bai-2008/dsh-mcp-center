@@ -1,0 +1,395 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:dsh-mcp-center:registry.schema.json",
+  "title": "dsh-mcp-center registry entry",
+  "description": "一个 MCP Server 的登记条目。字段语义对齐 modelcontextprotocol/registry 的 server.json，同时保留中文市场所需的展示与治理字段。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "display_name",
+    "description",
+    "version",
+    "homepage",
+    "vendor",
+    "transport",
+    "tools",
+    "categories",
+    "tags",
+    "official",
+    "verified",
+    "clients",
+    "license",
+    "last_checked"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "可选的编辑器 Schema 提示，例如 ../../schema/registry.schema.json。"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[a-z0-9][a-z0-9.-]*/[a-z0-9][a-z0-9._-]*$",
+      "description": "全局唯一名称，采用反向域名/服务名格式。GitHub 项目推荐 io.github.<owner>/<repo>；厂商托管服务可使用 com.example/service。"
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "description": {
+      "type": "string",
+      "minLength": 4,
+      "maxLength": 200,
+      "description": "简体中文简介，必须包含中文字符。"
+    },
+    "description_en": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "英文简介。转换为官方 server.json 时优先使用，官方 schema 限制为 100 字符。"
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[0-9A-Za-z][0-9A-Za-z.+_-]*$",
+      "not": {
+        "const": "latest"
+      },
+      "description": "必须是确定版本，不接受版本范围或 latest。官方 server.json 的 version 为必填。"
+    },
+    "homepage": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://",
+      "maxLength": 500
+    },
+    "repository": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://(?:www\\.)?(?:github\\.com|gitlab\\.com|bitbucket\\.org|gitee\\.com|codeberg\\.org)/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/?$",
+      "description": "源代码仓库根地址，仅接受主流代码托管平台的 owner/repo 两级路径。"
+    },
+    "repository_subfolder": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*$",
+      "description": "Monorepo 中 MCP Server 所在目录，对应官方 repository.subfolder。"
+    },
+    "vendor": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "transport": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "stdio",
+            "streamable_http",
+            "sse"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "stdio"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/stdioTransport"
+          },
+          "else": {
+            "$ref": "#/$defs/remoteTransport"
+          }
+        }
+      ]
+    },
+    "tools": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "$ref": "#/$defs/tool"
+      },
+      "description": "投稿时留空；remote 型由每日同步更新，stdio 型暂不自动抓取。"
+    },
+    "categories": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/category"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 20,
+        "pattern": "^[^\\r\\n]+$"
+      },
+      "description": "用于前端标签筛选的自由标签，建议 2–5 个短词。"
+    },
+    "official": {
+      "type": "boolean",
+      "description": "是否由厂商或项目官方维护。"
+    },
+    "verified": {
+      "type": "boolean",
+      "description": "源文件必须为 false；CI 校验通过后，在构建产物 dist/registry.json 中写为 true。"
+    },
+    "clients": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9._-]*$"
+      },
+      "description": "已知可用的 MCP 客户端，使用小写 slug，例如 dsh、claude-desktop、cursor、cline。"
+    },
+    "license": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "description": "开源项目使用 SPDX 标识（如 MIT）；闭源托管服务使用 Proprietary。"
+    },
+    "last_checked": {
+      "type": "string",
+      "format": "date",
+      "description": "最近一次核验元数据、上游版本或工具清单的日期（YYYY-MM-DD）。"
+    }
+  },
+  "$defs": {
+    "category": {
+      "type": "string",
+      "enum": [
+        "餐饮",
+        "出行",
+        "生活服务",
+        "办公",
+        "开发工具",
+        "数据库",
+        "搜索",
+        "AI",
+        "其他"
+      ]
+    },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "description"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.-]+$"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "side_effect": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否可能产生写入、删除、下单、支付等副作用；详情页会显示警告。"
+        }
+      }
+    },
+    "environmentVariable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Z_][A-Z0-9_]*$"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "obtain_at": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "maxLength": 500,
+          "description": "申请或查看该凭据的 HTTPS 地址。"
+        },
+        "required": {
+          "type": "boolean",
+          "default": false
+        },
+        "secret": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "header": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "description"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "obtain_at": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "maxLength": 500,
+          "description": "申请或查看该凭据的 HTTPS 地址。"
+        },
+        "required": {
+          "type": "boolean",
+          "default": false
+        },
+        "secret": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "urlVariable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "description"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "obtain_at": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "maxLength": 500,
+          "description": "申请或查看该凭据的 HTTPS 地址。"
+        },
+        "required": {
+          "type": "boolean",
+          "default": false
+        },
+        "secret": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "stdioTransport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "command"
+      ],
+      "properties": {
+        "type": {
+          "const": "stdio"
+        },
+        "command": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "args": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        },
+        "env": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/environmentVariable"
+          },
+          "description": "只记录变量名与说明，严禁写入变量值。"
+        }
+      }
+    },
+    "remoteTransport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "url"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "streamable_http",
+            "sse"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 1000,
+          "pattern": "^https://[^\\s]+$",
+          "description": "远程 MCP 地址，可包含 {variable} 模板。"
+        },
+        "headers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/header"
+          }
+        },
+        "variables": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/urlVariable"
+          },
+          "description": "URL 模板变量说明，只描述用途，不保存值。"
+        }
+      }
+    }
+  }
+}

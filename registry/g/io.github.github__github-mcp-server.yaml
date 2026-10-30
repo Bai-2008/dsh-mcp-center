@@ -1,0 +1,34 @@
+"$schema": "../../schema/registry.schema.json"
+name: io.github.github/github-mcp-server
+display_name: GitHub
+description: 连接 GitHub，管理仓库、Issue、Pull Request、代码搜索与 Actions 工作流。
+description_en: Connect AI assistants to GitHub repositories, issues, pull requests and Actions.
+version: 2.0.3
+homepage: https://github.com/github/github-mcp-server
+repository: https://github.com/github/github-mcp-server
+vendor: GitHub
+transport:
+  type: streamable_http
+  url: https://api.githubcopilot.com/mcp/
+  headers:
+    - name: Authorization
+      description: "Bearer <GitHub PAT 或 App Token>"
+      obtain_at: https://github.com/settings/tokens
+      required: true
+      secret: true
+tools: []
+categories:
+  - 开发工具
+tags:
+  - 代码
+  - 仓库
+  - CI
+official: true
+verified: false
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+license: MIT
+last_checked: 2026-10-30

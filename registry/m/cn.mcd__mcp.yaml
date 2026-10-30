@@ -1,0 +1,34 @@
+"$schema": "../../schema/registry.schema.json"
+name: cn.mcd/mcp
+display_name: 麦当劳中国
+description: 麦当劳中国官方 MCP，支持门店查询、餐品与优惠券查询、价格计算及外卖下单。
+description_en: Official McDonald's China MCP for stores, menus, coupons, pricing and delivery orders.
+version: 1.0.4
+homepage: https://open.mcd.cn/mcp
+repository: https://github.com/M-China/mcd-mcp-server
+vendor: 麦当劳中国
+transport:
+  type: streamable_http
+  url: https://mcp.mcd.cn/
+  headers:
+    - name: Authorization
+      description: "Bearer <麦当劳开放平台 MCP Token>"
+      obtain_at: https://open.mcd.cn/mcp
+      required: true
+      secret: true
+tools: []
+categories:
+  - 餐饮
+tags:
+  - 快餐
+  - 点餐
+  - 优惠券
+official: true
+verified: false
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+license: Proprietary
+last_checked: 2026-10-30

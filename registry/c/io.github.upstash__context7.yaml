@@ -1,0 +1,37 @@
+"$schema": "../../schema/registry.schema.json"
+name: io.github.upstash/context7
+display_name: Context7
+description: 为模型提供最新、版本感知的官方代码文档、API 参考与示例。
+description_en: Up-to-date, version-specific documentation and code examples for AI agents.
+version: 4.4.4
+homepage: https://context7.com
+repository: https://github.com/upstash/context7
+vendor: Upstash
+transport:
+  type: stdio
+  command: npx
+  args:
+    - "-y"
+    - "@upstash/context7-mcp@4.4.4"
+  env:
+    - name: CONTEXT7_API_KEY
+      description: 可选 API Key，用于提高请求配额。
+      obtain_at: https://context7.com/dashboard
+      required: false
+      secret: true
+tools: []
+categories:
+  - 开发工具
+tags:
+  - 文档
+  - 代码检索
+  - 开发
+official: true
+verified: false
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+license: MIT
+last_checked: 2026-10-30

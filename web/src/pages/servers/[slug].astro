@@ -1,0 +1,274 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import InstallCard from "../../components/InstallCard.astro";
+import {
+  canonicalUrl,
+  formatGeneratedAt,
+  transportLabel,
+} from "../../lib/format";
+import type { MarketData, ServerEntry } from "../../lib/types";
+import market from "../../data/index.json";
+
+export function getStaticPaths() {
+  return (market as MarketData).entries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const data = market as MarketData;
+
+interface Props {
+  entry: ServerEntry;
+}
+
+const { entry } = Astro.props;
+const root = "../../";
+const canonical = canonicalUrl(data.site, entry.detail_path);
+const title = `${entry.display_name} MCP Server - 安装配置与工具列表`;
+const description = `${entry.description} 支持 DSH、Claude Desktop、Cursor、Cline 安装配置。`;
+const requiredCredentials = entry.credentials.filter(
+  (credential) => credential.required,
+);
+const optionalCredentials = entry.credentials.filter(
+  (credential) => !credential.required,
+);
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: `${entry.display_name} MCP Server`,
+  description: entry.description,
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "Cross-platform",
+  softwareVersion: entry.version,
+  url: canonical,
+  sameAs: [entry.homepage, entry.repository].filter(Boolean),
+  author: {
+    "@type": "Organization",
+    name: entry.vendor,
+  },
+  dateModified: entry.last_checked,
+  ...(entry.tools.length > 0
+    ? { featureList: entry.tools.map((tool) => tool.name) }
+    : {}),
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  root={root}
+  site={data.site}
+  jsonLd={jsonLd}
+>
+  <main class="detail-shell shell">
+    {
+      entry.possibly_broken && (
+        <div class="broken-banner" role="alert">
+          <strong>同步检查连续失败。</strong>
+          该条目已连续 {entry.health?.consecutive_failures ?? 7} 天无法完成
+          remote tools 同步，安装或调用前请先确认服务可用性。
+        </div>
+      )
+    }
+
+    <nav class="breadcrumb" aria-label="面包屑">
+      <a href={root}>MCP 市场</a>
+      <span aria-hidden="true">/</span>
+      <span>{entry.display_name}</span>
+    </nav>
+
+    <header class="detail-hero">
+      <img
+        class="detail-icon"
+        src={`${root}${entry.icon}`}
+        alt=""
+        width="64"
+        height="64"
+      />
+      <div class="detail-hero-copy">
+        <div class="detail-title-row">
+          <h1>{entry.display_name}</h1>
+          {entry.official && <span class="badge badge-official">官方</span>}
+          {entry.verified && <span class="badge badge-verified">已验证</span>}
+          <span class="badge badge-transport">
+            {transportLabel(entry.transport.type)}
+          </span>
+        </div>
+        <p class="detail-lede">{entry.description}</p>
+        <p class="detail-meta">
+          {entry.vendor}
+          <span aria-hidden="true">·</span>
+          v{entry.version}
+          <span aria-hidden="true">·</span>
+          <time datetime={entry.last_checked}>{entry.last_checked}</time>
+          校验
+        </p>
+      </div>
+    </header>
+
+    <div class="detail-layout">
+      <div class="detail-main">
+        <InstallCard entry={entry} />
+
+        <section class="panel tools-panel" aria-labelledby="tools-title">
+          <details>
+            <summary>
+              <div>
+                <p class="kicker">TOOLS</p>
+                <h2 id="tools-title">工具列表</h2>
+              </div>
+              <span class="tool-count">{entry.tools.length}</span>
+            </summary>
+
+            {
+              entry.tools.length > 0 ? (
+                <ul class="tool-list">
+                  {entry.tools.map((tool) => (
+                    <li>
+                      <div class="tool-name">
+                        <code>{tool.name}</code>
+                        {tool.side_effect && (
+                          <span
+                            class="tool-warning"
+                            title="可能产生写入、删除、下单、支付等副作用"
+                          >
+                            ⚠
+                          </span>
+                        )}
+                      </div>
+                      <p>{tool.description}</p>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div class="tools-empty">
+                  <p>工具清单尚未同步。</p>
+                  <p>
+                    {entry.transport.type === "stdio"
+                      ? "stdio 型涉及执行第三方代码，当前版本不会在 CI 中自动抓取。"
+                      : "remote 型会在每日同步任务成功后自动更新。"}
+                  </p>
+                </div>
+              )
+            }
+          </details>
+        </section>
+
+        <section class="panel about-panel" aria-labelledby="about-title">
+          <div class="panel-heading">
+            <div>
+              <p class="kicker">ABOUT</p>
+              <h2 id="about-title">关于</h2>
+            </div>
+          </div>
+          <dl class="info-grid">
+            <div>
+              <dt>名称</dt>
+              <dd><code>{entry.name}</code></dd>
+            </div>
+            <div>
+              <dt>版本</dt>
+              <dd>{entry.version}</dd>
+            </div>
+            <div>
+              <dt>厂商</dt>
+              <dd>{entry.vendor}</dd>
+            </div>
+            <div>
+              <dt>许可证</dt>
+              <dd>{entry.license}</dd>
+            </div>
+            <div>
+              <dt>传输</dt>
+              <dd>{transportLabel(entry.transport.type)}</dd>
+            </div>
+            <div>
+              <dt>最近校验</dt>
+              <dd>{entry.last_checked}</dd>
+            </div>
+            <div>
+              <dt>来源</dt>
+              <dd>{entry.official ? "官方出品" : "社区项目"}</dd>
+            </div>
+            <div>
+              <dt>构建时间</dt>
+              <dd>{formatGeneratedAt(data.site.generated_at)}</dd>
+            </div>
+          </dl>
+        </section>
+      </div>
+
+      <aside class="detail-side">
+        <section class="side-card">
+          <h2>链接</h2>
+          <a class="side-link" href={entry.homepage} target="_blank" rel="noreferrer">
+            <span>主页</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+          {
+            entry.repository && (
+              <a class="side-link" href={entry.repository} target="_blank" rel="noreferrer">
+                <span>源码仓库</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+            )
+          }
+          <a class="side-link" href={`${root}index.json`}>
+            <span>index.json</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+        </section>
+
+        <section class="side-card">
+          <h2>安装</h2>
+          <p class="side-copy">
+            覆盖 DSH、Claude Desktop、Cursor、Cline。凭据占位符需要替换后再使用。
+          </p>
+          <div class="side-tags">
+            {
+              entry.categories.map((category) => (
+                <span class="mini-category">{category}</span>
+              ))
+            }
+          </div>
+        </section>
+
+        <section class="side-card">
+          <h2>必需凭据</h2>
+          {
+            requiredCredentials.length > 0 ? (
+              <ul class="side-credentials">
+                {requiredCredentials.map((credential) => (
+                  <li>
+                    <code>{credential.name}</code>
+                    {credential.obtain_at && (
+                      <a href={credential.obtain_at} target="_blank" rel="noreferrer">
+                        申请 ↗
+                      </a>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p class="side-copy">无需必填凭据。{entry.auth_note}</p>
+            )
+          }
+          {
+            optionalCredentials.length > 0 && (
+              <p class="side-copy side-optional">
+                另有 {optionalCredentials.length} 个可选变量，见安装卡片。
+              </p>
+            )
+          }
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    import "../../scripts/detail";
+  </script>
+</BaseLayout>

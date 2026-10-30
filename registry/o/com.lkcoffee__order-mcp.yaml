@@ -1,0 +1,33 @@
+"$schema": "../../schema/registry.schema.json"
+name: com.lkcoffee/order-mcp
+display_name: 瑞幸咖啡
+description: 瑞幸咖啡官方点单 MCP，支持门店查询、菜单浏览、下单、取餐码与订单管理。
+description_en: Official Luckin Coffee ordering MCP for stores, menus, ordering and order management.
+version: 1.0.0
+homepage: https://open.lkcoffee.com/mcp
+vendor: 瑞幸咖啡
+transport:
+  type: streamable_http
+  url: https://gwmcp.lkcoffee.com/order/user/mcp
+  headers:
+    - name: Authorization
+      description: "Bearer <瑞幸开放平台 MCP Token>"
+      obtain_at: https://open.lkcoffee.com/mcp
+      required: true
+      secret: true
+tools: []
+categories:
+  - 餐饮
+tags:
+  - 咖啡
+  - 点餐
+  - 外卖
+official: true
+verified: false
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+license: Proprietary
+last_checked: 2026-10-30

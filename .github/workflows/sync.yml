@@ -1,0 +1,145 @@
+name: Sync remote tools
+
+on:
+  schedule:
+    # 02:17 UTC = 10:17 Asia/Shanghai
+    - cron: "17 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: sync-remote-tools
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      MCP_SYNC_SECRETS: ${{ secrets.MCP_SYNC_SECRETS }}
+      GH_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      AUTOMATION_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sync remote tools
+        run: node scripts/sync-tools.mjs
+
+      - name: Commit sync state
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sync/state.json
+
+          if git diff --cached --quiet; then
+            echo "sync/state.json 无变化。"
+            exit 0
+          fi
+
+          git commit -m "chore(sync): update MCP fetch state [skip ci]"
+          git push origin HEAD:main
+
+      - name: Reconcile possibly-broken issues
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/sync-health.mjs
+
+      - name: Open tools sync pull request
+        id: tools_pr
+        env:
+          AUTOMATION_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          if [ -n "$(git status --porcelain registry)" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "没有工具清单变化。"
+
+            stale_pr=$(GH_TOKEN="$GITHUB_TOKEN" gh pr list \
+              --head chore/sync-tools \
+              --state open \
+              --json number \
+              --jq '.[0].number // empty')
+            if [ -n "$stale_pr" ]; then
+              GH_TOKEN="$GITHUB_TOKEN" gh pr close "$stale_pr" \
+                --comment "本次同步未检测到工具清单差异，关闭过期 PR。"
+              echo "已关闭过期 PR #$stale_pr。"
+            fi
+            exit 0
+          fi
+
+          if [ -z "${AUTOMATION_TOKEN:-}" ]; then
+            echo "::error::检测到工具变化，但缺少 AUTOMATION_TOKEN；GITHUB_TOKEN 创建的 PR 不会触发 CI。"
+            exit 1
+          fi
+
+          git remote set-url origin "https://x-access-token:${AUTOMATION_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git switch -c chore/sync-tools
+          git add registry
+          git commit -m "chore: sync MCP tools"
+          git push --force origin HEAD:refs/heads/chore/sync-tools
+
+          changed_files=$(git diff --name-only main...HEAD)
+          body=$(cat <<EOF
+          ## 自动工具同步
+
+          以下条目的 remote tools 清单发生变化：
+
+          $(printf '%s\n' "$changed_files" | sed 's/^/- `/' | sed 's/$/`/')
+
+          同步任务只处理 remote 型；stdio 型因涉及执行第三方代码，第一版跳过，后续放沙箱。
+          EOF
+          )
+
+          pr_number=$(gh pr list \
+            --head chore/sync-tools \
+            --state open \
+            --json number \
+            --jq '.[0].number // empty')
+
+          if [ -n "$pr_number" ]; then
+            gh pr edit "$pr_number" --title "chore: sync tools" --body "$body"
+            pr_url=$(gh pr view "$pr_number" --json url --jq '.url')
+          else
+            pr_url=$(gh pr create \
+              --base main \
+              --head chore/sync-tools \
+              --title "chore: sync tools" \
+              --body "$body")
+          fi
+
+          echo "pr_url=$pr_url" >> "$GITHUB_OUTPUT"
+          echo "已创建/更新 PR：$pr_url"
+
+      - name: Write job summary
+        if: always()
+        run: |
+          {
+            echo "## Remote tools sync"
+            echo ""
+            echo '```json'
+            cat dist/sync-summary.json 2>/dev/null || echo '{"error":"no summary"}'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

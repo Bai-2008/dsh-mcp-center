@@ -1,0 +1,237 @@
+name: 提交 MCP Server
+description: 向 dsh-mcp-center 提交一个新的 MCP Server
+title: "[Submit] "
+labels:
+  - submit
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢投稿。请先搜索 registry 中是否已有同名条目。
+
+        **安全要求：** 不要在表单中填写任何 Token、API Key、环境变量值或 Header 值。
+        本表单只登记变量名和用途，真实凭据由客户端自行配置。
+
+        提交后 GitHub Actions 会生成 YAML、执行校验并自动创建 PR。
+        PR 必须通过 CI 且由维护者手动 approve 后才能合并。
+
+  - type: input
+    id: name
+    attributes:
+      label: 名称 name
+      description: 全局唯一，反向域名格式。GitHub 项目推荐 io.github.<owner>/<repo>；厂商服务可用 com.example/service。
+      placeholder: io.github.owner/repo
+    validations:
+      required: true
+
+  - type: input
+    id: display_name
+    attributes:
+      label: 展示名称 display_name
+      placeholder: 示例 MCP
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 中文简介 description
+      description: 必填，必须包含中文，最多 200 字符。
+      placeholder: 用一两句话说明这个 MCP Server 能做什么。
+      render: text
+    validations:
+      required: true
+
+  - type: input
+    id: description_en
+    attributes:
+      label: 英文简介 description_en
+      description: 可选。转换为官方 server.json 时优先使用，最多 100 字符。
+      placeholder: An MCP server for ...
+
+  - type: input
+    id: version
+    attributes:
+      label: 版本 version
+      description: 必须填写确定版本，不能写 latest 或版本范围。
+      placeholder: 1.0.0
+    validations:
+      required: true
+
+  - type: input
+    id: homepage
+    attributes:
+      label: 主页 homepage
+      description: 必须是以 https:// 开头的主页或文档地址。
+      placeholder: https://example.com
+    validations:
+      required: true
+
+  - type: input
+    id: repository
+    attributes:
+      label: 源码仓库 repository
+      description: 可选。仓库根地址，例如 https://github.com/owner/repo，不要带 tree/main 子路径。
+      placeholder: https://github.com/owner/repo
+
+  - type: input
+    id: repository_subfolder
+    attributes:
+      label: 仓库子目录 repository_subfolder
+      description: 可选。Monorepo 中 MCP Server 所在目录，例如 src/my-server。
+      placeholder: src/my-server
+
+  - type: input
+    id: vendor
+    attributes:
+      label: 厂商 / 维护方 vendor
+      placeholder: Example Inc.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: transport_type
+    attributes:
+      label: 传输类型 transport.type
+      description: stdio 表示本地进程；streamable_http 和 sse 表示远程服务。
+      options:
+        - stdio
+        - streamable_http
+        - sse
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ### 以下字段仅在传输类型为 stdio 时填写
+
+  - type: input
+    id: stdio_command
+    attributes:
+      label: stdio 启动命令 command
+      description: 例如 npx、uvx。当前 CI 只支持检查 npx / pnpx / uvx 包。
+      placeholder: npx
+
+  - type: textarea
+    id: stdio_args
+    attributes:
+      label: stdio 启动参数 args
+      description: 每行一个参数。如果包名带版本，必须与上面的 version 一致。
+      placeholder: |-
+        -y
+        @modelcontextprotocol/server-filesystem@2.1.0
+        /path/to/allowed/directory
+      render: text
+
+  - type: textarea
+    id: stdio_env
+    attributes:
+      label: stdio 环境变量 env
+      description: 每行一个变量，格式为 NAME | 说明 | 是否必填 | 是否敏感 | 申请地址。不要填写变量值。
+      placeholder: |-
+        EXAMPLE_API_KEY | 示例 API Key | false | true | https://example.com/settings
+      render: text
+
+  - type: markdown
+    attributes:
+      value: |
+        ### 以下字段仅在传输类型为 streamable_http 或 sse 时填写
+
+  - type: input
+    id: remote_url
+    attributes:
+      label: 远程 MCP 地址 url
+      description: 必须使用 https://。可以使用 {variable} 模板，例如 https://mcp.example.com/mcp?key={key}。
+      placeholder: https://mcp.example.com/mcp
+
+  - type: textarea
+    id: remote_headers
+    attributes:
+      label: 远程 Headers
+      description: 每行一个 Header，格式为 Name | 说明 | 是否必填 | 是否敏感 | 申请地址。不要填写 Header 值。
+      placeholder: |-
+        Authorization | Bearer <token> | true | true | https://example.com/settings
+      render: text
+
+  - type: textarea
+    id: remote_variables
+    attributes:
+      label: 远程 URL 模板变量
+      description: 每行一个变量，格式为 name | 说明 | 是否必填 | 是否敏感 | 申请地址。不要填写变量值。
+      placeholder: |-
+        key | 服务 API Key | true | true | https://example.com/settings
+      render: text
+
+  - type: checkboxes
+    id: categories
+    attributes:
+      label: 分类 categories
+      description: 选择 1 到 3 个分类。
+      options:
+        - label: 餐饮
+        - label: 出行
+        - label: 生活服务
+        - label: 开发工具
+        - label: 数据库
+        - label: 办公
+        - label: 搜索
+        - label: AI
+        - label: 其他
+
+  - type: input
+    id: tags
+    attributes:
+      label: 标签 tags
+      description: 1–8 个短标签，用逗号分隔，用于市场筛选。每个标签最多 20 字符。
+      placeholder: 文件, 本地, 开发
+    validations:
+      required: true
+
+  - type: dropdown
+    id: official
+    attributes:
+      label: 官方出品 official
+      description: 只有厂商或项目官方维护的条目才选择“是”。
+      options:
+        - 是（官方出品）
+        - 否（社区项目）
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: clients
+    attributes:
+      label: 可用客户端 clients
+      description: 至少选择一个已知可用的客户端。
+      options:
+        - label: dsh
+        - label: claude-desktop
+        - label: cursor
+        - label: cline
+        - label: vscode
+        - label: other
+
+  - type: input
+    id: clients_other
+    attributes:
+      label: 其他客户端 clients_other
+      description: 可选，逗号分隔的小写 slug。
+      placeholder: windsurf, zed
+
+  - type: input
+    id: license
+    attributes:
+      label: 许可证 license
+      description: 开源项目填写 SPDX 标识；闭源托管服务填写 Proprietary。
+      placeholder: MIT
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        `tools`、`verified`、`last_checked` 由机器人自动生成：
+        - `tools` 初始为 `[]`，由同步任务抓取
+        - `verified` 保持 `false`，只有 CI 构建产物才标记 `true`
+        - `last_checked` 使用投稿当天日期

@@ -1,0 +1,106 @@
+name: CI
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+  pull_request_review:
+    types:
+      - submitted
+      - dismissed
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: validate
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout pull request
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate registry
+        run: npm run validate
+
+      - name: Build index, official server.json and static site
+        run: |
+          npm run build
+          npm run convert:official
+          npm run build:site
+          npx astro check
+
+      - name: Check repositories and packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/check-upstream.mjs
+
+      - name: Add verified label
+        if: success()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          gh label create verified \
+            --repo "$GITHUB_REPOSITORY" \
+            --color 0e8a16 \
+            --description "Registry validation and upstream checks passed" \
+            || true
+          gh pr edit "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --add-label verified
+          echo "::notice::已添加 verified 标签。"
+
+      - name: Remove verified label
+        if: failure()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          gh pr edit "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --remove-label verified || true
+          echo "::warning::CI 未通过，已尝试移除 verified 标签。"
+
+  approval-gate:
+    name: approval-gate
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require an approving review
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          decision=$(gh pr view "$PR_NUMBER" \
+            --repo "$GITHUB_REPOSITORY" \
+            --json reviewDecision \
+            --jq '.reviewDecision')
+
+          echo "reviewDecision=${decision:-<null>}"
+
+          if [ "$decision" != "APPROVED" ]; then
+            echo "::error::需要维护者手动 approve。请先在仓库分支保护中要求至少 1 个 approval，并把 approval-gate 设为必需检查。"
+            exit 1
+          fi

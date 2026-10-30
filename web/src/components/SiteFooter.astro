@@ -1,0 +1,33 @@
+---
+import { formatGeneratedAt } from "../lib/format";
+import type { SiteInfo } from "../lib/types";
+
+interface Props {
+  root: string;
+  site: SiteInfo;
+}
+
+const { root, site } = Astro.props;
+const githubUrl = site.repo_url ?? "https://github.com";
+---
+
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    <p>
+      <span class="footer-mark" aria-hidden="true"></span>
+      数据来自 Git registry，由 GitHub Actions 校验与构建。
+    </p>
+    <nav class="footer-links" aria-label="页脚链接">
+      <a href={root}>首页</a>
+      <a href={`${root}index.json`}>index.json</a>
+      <a href={`${root}registry.schema.json`}>Schema</a>
+      <a href={githubUrl} target="_blank" rel="noreferrer">GitHub ↗</a>
+      <a href="https://modelcontextprotocol.io" target="_blank" rel="noreferrer">
+        MCP 规范 ↗
+      </a>
+    </nav>
+    <p class="footer-build">
+      构建于 {formatGeneratedAt(site.generated_at)}
+    </p>
+  </div>
+</footer>

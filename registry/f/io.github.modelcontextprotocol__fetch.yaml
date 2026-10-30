@@ -1,0 +1,32 @@
+"$schema": "../../schema/registry.schema.json"
+name: io.github.modelcontextprotocol/fetch
+display_name: Fetch
+description: 抓取网页并转换为 Markdown，让模型读取和整理互联网内容。
+description_en: Fetch web pages and convert them to Markdown for language models.
+version: 2026.10.28
+homepage: https://modelcontextprotocol.io
+repository: https://github.com/modelcontextprotocol/servers
+repository_subfolder: src/fetch
+vendor: Model Context Protocol
+transport:
+  type: stdio
+  command: uvx
+  args:
+    - mcp-server-fetch@2026.10.28
+  env: []
+tools: []
+categories:
+  - 搜索
+tags:
+  - 网页
+  - 抓取
+  - Markdown
+official: true
+verified: false
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+license: MIT
+last_checked: 2026-10-30
