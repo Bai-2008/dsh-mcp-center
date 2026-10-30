@@ -1,0 +1,4 @@
+# dsh-mcp-center plugin bundle.
+- insert:
+    - id: dsh-mcp-center
+      name: 'dsh-mcp-center'

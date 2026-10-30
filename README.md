@@ -109,6 +109,7 @@ fetch-icons.mjs + build-web.mjs
 │   ├── validate.mjs              # 校验入口
 │   ├── build-index.mjs           # 生成 dist/registry.json
 │   ├── build-web.mjs             # 生成 index.json 与页面数据
+│   ├── build-dsh-plugin.mjs      # 生成原生 DSH 插件快照
 │   ├── relativize-assets.mjs      # 将 HTML 根路径改写为相对路径
 │   ├── convert-to-official.mjs   # 转换为官方 server.json
 │   ├── issue-form-to-registry.mjs# Issue Forms -> YAML
@@ -117,6 +118,11 @@ fetch-icons.mjs + build-web.mjs
 │   └── sync-health.mjs           # 7 天失败追踪 Issue
 ├── sync/
 │   └── state.json                # 同步失败计数与最近状态
+├── dsh-plugin/                   # 原生 DSH 插件包（设置 → 插件）
+│   ├── client.js                 # build:plugin 生成
+│   ├── catalog.json              # 插件数据快照
+│   ├── cordis.patch.yml
+│   └── src/client.template.js
 ├── web/
 │   ├── public/                   # favicon、生成的 icons/ 与 index.json
 │   └── src/
@@ -254,6 +260,29 @@ GITHUB_TOKEN=... npm run check:upstream
 | Cline | `type: stdio` + `disabled` / `autoApprove` | `type: streamableHttp` 或 `sse` + `url` / `headers` |
 
 Claude Desktop 的远程配置会标注为桥接方案；如果客户端版本已支持直接 URL Connectors，优先使用官方 Connectors UI。
+
+## DSH 原生插件
+
+`dsh-plugin/` 是一个不嵌入网页、不使用 iframe 的 DSH 插件：
+
+- 在 **设置 → 插件** 增加「MCP 市场」Tab
+- React 原生渲染，复用宿主主题 token 和 locale
+- 搜索、分类、详情、四客户端安装 Tab、复制、必填变量、工具副作用
+- 数据来自同一份 registry，构建时生成内联快照，离线可用
+- 只复制配置，不自动创建 MCP 连接、不执行第三方工具
+
+```bash
+npm run build:web
+npm run build:plugin
+```
+
+`build:plugin` 会把 `web/src/data/index.json` 和本地图标合并进 `dsh-plugin/client.js`。然后用 `plugin_manager` 安装：
+
+```text
+dsh-plugin/
+```
+
+插件安装后需要重新加载 Client 模块才能看到新的 Tab。
 
 ## 自动投稿
 

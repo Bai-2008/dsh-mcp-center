@@ -1,0 +1,669 @@
+{
+  "generated_at": "2026-10-30T13:02:32.645Z",
+  "site": {
+    "origin": "https://bai-2008.github.io",
+    "base": "/dsh-mcp-center/",
+    "repo_url": "https://github.com/Bai-2008/dsh-mcp-center"
+  },
+  "count": 10,
+  "categories": [
+    {
+      "name": "餐饮",
+      "count": 2
+    },
+    {
+      "name": "出行",
+      "count": 1
+    },
+    {
+      "name": "生活服务",
+      "count": 0
+    },
+    {
+      "name": "办公",
+      "count": 1
+    },
+    {
+      "name": "开发工具",
+      "count": 4
+    },
+    {
+      "name": "数据库",
+      "count": 1
+    },
+    {
+      "name": "搜索",
+      "count": 1
+    },
+    {
+      "name": "AI",
+      "count": 0
+    },
+    {
+      "name": "其他",
+      "count": 0
+    }
+  ],
+  "entries": [
+    {
+      "name": "com.amap/mcp",
+      "display_name": "高德地图",
+      "description": "高德地图官方 MCP，提供地理编码、地点搜索、路径规划、天气与出行服务。",
+      "vendor": "高德地图",
+      "categories": [
+        "出行"
+      ],
+      "official": true,
+      "verified": true,
+      "homepage": "https://lbs.amap.com/api/mcp-server/summary",
+      "repository": null,
+      "license": "Proprietary",
+      "transport": {
+        "type": "streamable_http"
+      },
+      "tools": [],
+      "last_checked": "2026-10-30",
+      "possibly_broken": false,
+      "auth_note": "将 Header 与 URL 参数的占位符替换为真实值；申请入口见下方凭据表。",
+      "detail_path": "servers/com.amap__mcp/",
+      "install": [
+        {
+          "id": "dsh",
+          "label": "DSH",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "DSH → MCP连接器 → 导入 JSON；当前传输：Streamable HTTP。",
+          "code": "{\n  \"mcpServers\": {\n    \"com-amap-mcp\": {\n      \"type\": \"streamable-http\",\n      \"url\": \"https://mcp.amap.com/mcp?key=<YOUR_KEY>\",\n      \"headers\": {}\n    }\n  }\n}\n"
+        },
+        {
+          "id": "claude",
+          "label": "Claude Desktop",
+          "subtitle": "mcp-remote 桥接",
+          "filename": "claude_desktop_config.json",
+          "hint": "Claude Desktop 的 JSON 配置只支持 stdio；这里用 mcp-remote 桥接远程 URL，也可在 Settings → Connectors 直接添加 URL。",
+          "code": "{\n  \"mcpServers\": {\n    \"com-amap-mcp\": {\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"mcp-remote\",\n        \"https://mcp.amap.com/mcp?key=<YOUR_KEY>\"\n      ]\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "写入项目 .cursor/mcp.json 或全局 ~/.cursor/mcp.json。OAuth 服务可在客户端弹窗中完成授权。",
+          "code": "{\n  \"mcpServers\": {\n    \"com-amap-mcp\": {\n      \"url\": \"https://mcp.amap.com/mcp?key=<YOUR_KEY>\",\n      \"headers\": {}\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cline",
+          "label": "Cline",
+          "subtitle": "MCP Servers",
+          "filename": "cline_mcp_settings.json",
+          "hint": "在 Cline 的 MCP Servers 配置中粘贴；type 已按 streamableHttp / sse 设置。",
+          "code": "{\n  \"mcpServers\": {\n    \"com-amap-mcp\": {\n      \"type\": \"streamableHttp\",\n      \"url\": \"https://mcp.amap.com/mcp?key=<YOUR_KEY>\",\n      \"headers\": {},\n      \"disabled\": false,\n      \"autoApprove\": []\n    }\n  }\n}\n"
+        }
+      ],
+      "credentials": [
+        {
+          "kind": "URL 参数",
+          "name": "{key}",
+          "placeholder": "<YOUR_KEY>",
+          "description": "高德开放平台 Web 服务 Key",
+          "required": true,
+          "secret": true,
+          "obtain_at": "https://lbs.amap.com/api/mcp-server/create-project-and-key"
+        }
+      ]
+    },
+    {
+      "name": "cn.mcd/mcp",
+      "display_name": "麦当劳中国",
+      "description": "麦当劳中国官方 MCP，支持门店查询、餐品与优惠券查询、价格计算及外卖下单。",
+      "vendor": "麦当劳中国",
+      "categories": [
+        "餐饮"
+      ],
+      "official": true,
+      "verified": true,
+      "homepage": "https://open.mcd.cn/mcp",
+      "repository": "https://github.com/M-China/mcd-mcp-server",
+      "license": "Proprietary",
+      "transport": {
+        "type": "streamable_http"
+      },
+      "tools": [],
+      "last_checked": "2026-10-30",
+      "possibly_broken": false,
+      "auth_note": "将 Header 与 URL 参数的占位符替换为真实值；申请入口见下方凭据表。",
+      "detail_path": "servers/cn.mcd__mcp/",
+      "install": [
+        {
+          "id": "dsh",
+          "label": "DSH",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "DSH → MCP连接器 → 导入 JSON；当前传输：Streamable HTTP。",
+          "code": "{\n  \"mcpServers\": {\n    \"cn-mcd-mcp\": {\n      \"type\": \"streamable-http\",\n      \"url\": \"https://mcp.mcd.cn/\",\n      \"headers\": {\n        \"Authorization\": \"Bearer <YOUR_AUTHORIZATION>\"\n      }\n    }\n  }\n}\n"
+        },
+        {
+          "id": "claude",
+          "label": "Claude Desktop",
+          "subtitle": "mcp-remote 桥接",
+          "filename": "claude_desktop_config.json",
+          "hint": "Claude Desktop 的 JSON 配置只支持 stdio；这里用 mcp-remote 桥接远程 URL，也可在 Settings → Connectors 直接添加 URL。",
+          "code": "{\n  \"mcpServers\": {\n    \"cn-mcd-mcp\": {\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"mcp-remote\",\n        \"https://mcp.mcd.cn/\",\n        \"--header\",\n        \"Authorization: Bearer <YOUR_AUTHORIZATION>\"\n      ]\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "写入项目 .cursor/mcp.json 或全局 ~/.cursor/mcp.json。OAuth 服务可在客户端弹窗中完成授权。",
+          "code": "{\n  \"mcpServers\": {\n    \"cn-mcd-mcp\": {\n      \"url\": \"https://mcp.mcd.cn/\",\n      \"headers\": {\n        \"Authorization\": \"Bearer <YOUR_AUTHORIZATION>\"\n      }\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cline",
+          "label": "Cline",
+          "subtitle": "MCP Servers",
+          "filename": "cline_mcp_settings.json",
+          "hint": "在 Cline 的 MCP Servers 配置中粘贴；type 已按 streamableHttp / sse 设置。",
+          "code": "{\n  \"mcpServers\": {\n    \"cn-mcd-mcp\": {\n      \"type\": \"streamableHttp\",\n      \"url\": \"https://mcp.mcd.cn/\",\n      \"headers\": {\n        \"Authorization\": \"Bearer <YOUR_AUTHORIZATION>\"\n      },\n      \"disabled\": false,\n      \"autoApprove\": []\n    }\n  }\n}\n"
+        }
+      ],
+      "credentials": [
+        {
+          "kind": "Header",
+          "name": "Authorization",
+          "placeholder": "Bearer <YOUR_AUTHORIZATION>",
+          "description": "Bearer <麦当劳开放平台 MCP Token>",
+          "required": true,
+          "secret": true,
+          "obtain_at": "https://open.mcd.cn/mcp"
+        }
+      ]
+    },
+    {
+      "name": "com.lkcoffee/order-mcp",
+      "display_name": "瑞幸咖啡",
+      "description": "瑞幸咖啡官方点单 MCP，支持门店查询、菜单浏览、下单、取餐码与订单管理。",
+      "vendor": "瑞幸咖啡",
+      "categories": [
+        "餐饮"
+      ],
+      "official": true,
+      "verified": true,
+      "homepage": "https://open.lkcoffee.com/mcp",
+      "repository": null,
+      "license": "Proprietary",
+      "transport": {
+        "type": "streamable_http"
+      },
+      "tools": [],
+      "last_checked": "2026-10-30",
+      "possibly_broken": false,
+      "auth_note": "将 Header 与 URL 参数的占位符替换为真实值；申请入口见下方凭据表。",
+      "detail_path": "servers/com.lkcoffee__order-mcp/",
+      "install": [
+        {
+          "id": "dsh",
+          "label": "DSH",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "DSH → MCP连接器 → 导入 JSON；当前传输：Streamable HTTP。",
+          "code": "{\n  \"mcpServers\": {\n    \"com-lkcoffee-order-mcp\": {\n      \"type\": \"streamable-http\",\n      \"url\": \"https://gwmcp.lkcoffee.com/order/user/mcp\",\n      \"headers\": {\n        \"Authorization\": \"Bearer <YOUR_AUTHORIZATION>\"\n      }\n    }\n  }\n}\n"
+        },
+        {
+          "id": "claude",
+          "label": "Claude Desktop",
+          "subtitle": "mcp-remote 桥接",
+          "filename": "claude_desktop_config.json",
+          "hint": "Claude Desktop 的 JSON 配置只支持 stdio；这里用 mcp-remote 桥接远程 URL，也可在 Settings → Connectors 直接添加 URL。",
+          "code": "{\n  \"mcpServers\": {\n    \"com-lkcoffee-order-mcp\": {\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"mcp-remote\",\n        \"https://gwmcp.lkcoffee.com/order/user/mcp\",\n        \"--header\",\n        \"Authorization: Bearer <YOUR_AUTHORIZATION>\"\n      ]\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "写入项目 .cursor/mcp.json 或全局 ~/.cursor/mcp.json。OAuth 服务可在客户端弹窗中完成授权。",
+          "code": "{\n  \"mcpServers\": {\n    \"com-lkcoffee-order-mcp\": {\n      \"url\": \"https://gwmcp.lkcoffee.com/order/user/mcp\",\n      \"headers\": {\n        \"Authorization\": \"Bearer <YOUR_AUTHORIZATION>\"\n      }\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cline",
+          "label": "Cline",
+          "subtitle": "MCP Servers",
+          "filename": "cline_mcp_settings.json",
+          "hint": "在 Cline 的 MCP Servers 配置中粘贴；type 已按 streamableHttp / sse 设置。",
+          "code": "{\n  \"mcpServers\": {\n    \"com-lkcoffee-order-mcp\": {\n      \"type\": \"streamableHttp\",\n      \"url\": \"https://gwmcp.lkcoffee.com/order/user/mcp\",\n      \"headers\": {\n        \"Authorization\": \"Bearer <YOUR_AUTHORIZATION>\"\n      },\n      \"disabled\": false,\n      \"autoApprove\": []\n    }\n  }\n}\n"
+        }
+      ],
+      "credentials": [
+        {
+          "kind": "Header",
+          "name": "Authorization",
+          "placeholder": "Bearer <YOUR_AUTHORIZATION>",
+          "description": "Bearer <瑞幸开放平台 MCP Token>",
+          "required": true,
+          "secret": true,
+          "obtain_at": "https://open.lkcoffee.com/mcp"
+        }
+      ]
+    },
+    {
+      "name": "io.github.upstash/context7",
+      "display_name": "Context7",
+      "description": "为模型提供最新、版本感知的官方代码文档、API 参考与示例。",
+      "vendor": "Upstash",
+      "categories": [
+        "开发工具"
+      ],
+      "official": true,
+      "verified": true,
+      "homepage": "https://context7.com",
+      "repository": "https://github.com/upstash/context7",
+      "license": "MIT",
+      "transport": {
+        "type": "stdio"
+      },
+      "tools": [],
+      "last_checked": "2026-10-30",
+      "possibly_broken": false,
+      "auth_note": "将 环境变量的占位符替换为真实值；申请入口见下方凭据表。",
+      "detail_path": "servers/io.github.upstash__context7/",
+      "install": [
+        {
+          "id": "dsh",
+          "label": "DSH",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "DSH → MCP连接器 → 导入 JSON；也可写入项目 .mcp.json。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-upstash-context7\": {\n      \"type\": \"stdio\",\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"@upstash/context7-mcp@4.4.4\"\n      ],\n      \"env\": {\n        \"CONTEXT7_API_KEY\": \"<YOUR_CONTEXT7_API_KEY>\"\n      }\n    }\n  }\n}\n"
+        },
+        {
+          "id": "claude",
+          "label": "Claude Desktop",
+          "subtitle": "claude_desktop_config.json",
+          "filename": "claude_desktop_config.json",
+          "hint": "写入 claude_desktop_config.json 后完全重启。macOS：~/Library/Application Support/Claude/；Windows：%APPDATA%\\Claude\\。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-upstash-context7\": {\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"@upstash/context7-mcp@4.4.4\"\n      ],\n      \"env\": {\n        \"CONTEXT7_API_KEY\": \"<YOUR_CONTEXT7_API_KEY>\"\n      }\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "写入项目 .cursor/mcp.json 或全局 ~/.cursor/mcp.json。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-upstash-context7\": {\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"@upstash/context7-mcp@4.4.4\"\n      ],\n      \"env\": {\n        \"CONTEXT7_API_KEY\": \"<YOUR_CONTEXT7_API_KEY>\"\n      }\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cline",
+          "label": "Cline",
+          "subtitle": "MCP Servers",
+          "filename": "cline_mcp_settings.json",
+          "hint": "在 Cline 的 MCP Servers 配置中粘贴。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-upstash-context7\": {\n      \"type\": \"stdio\",\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"@upstash/context7-mcp@4.4.4\"\n      ],\n      \"env\": {\n        \"CONTEXT7_API_KEY\": \"<YOUR_CONTEXT7_API_KEY>\"\n      },\n      \"disabled\": false,\n      \"autoApprove\": []\n    }\n  }\n}\n"
+        }
+      ],
+      "credentials": [
+        {
+          "kind": "环境变量",
+          "name": "CONTEXT7_API_KEY",
+          "placeholder": "<YOUR_CONTEXT7_API_KEY>",
+          "description": "可选 API Key，用于提高请求配额。",
+          "required": false,
+          "secret": true,
+          "obtain_at": "https://context7.com/dashboard"
+        }
+      ]
+    },
+    {
+      "name": "io.github.modelcontextprotocol/fetch",
+      "display_name": "Fetch",
+      "description": "抓取网页并转换为 Markdown，让模型读取和整理互联网内容。",
+      "vendor": "Model Context Protocol",
+      "categories": [
+        "搜索"
+      ],
+      "official": true,
+      "verified": true,
+      "homepage": "https://modelcontextprotocol.io",
+      "repository": "https://github.com/modelcontextprotocol/servers",
+      "license": "MIT",
+      "transport": {
+        "type": "stdio"
+      },
+      "tools": [],
+      "last_checked": "2026-10-30",
+      "possibly_broken": false,
+      "auth_note": "无需额外凭据。",
+      "detail_path": "servers/io.github.modelcontextprotocol__fetch/",
+      "install": [
+        {
+          "id": "dsh",
+          "label": "DSH",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "DSH → MCP连接器 → 导入 JSON；也可写入项目 .mcp.json。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-modelcontextprotocol-fetch\": {\n      \"type\": \"stdio\",\n      \"command\": \"uvx\",\n      \"args\": [\n        \"mcp-server-fetch@2026.10.28\"\n      ],\n      \"env\": {}\n    }\n  }\n}\n"
+        },
+        {
+          "id": "claude",
+          "label": "Claude Desktop",
+          "subtitle": "claude_desktop_config.json",
+          "filename": "claude_desktop_config.json",
+          "hint": "写入 claude_desktop_config.json 后完全重启。macOS：~/Library/Application Support/Claude/；Windows：%APPDATA%\\Claude\\。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-modelcontextprotocol-fetch\": {\n      \"command\": \"uvx\",\n      \"args\": [\n        \"mcp-server-fetch@2026.10.28\"\n      ],\n      \"env\": {}\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "写入项目 .cursor/mcp.json 或全局 ~/.cursor/mcp.json。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-modelcontextprotocol-fetch\": {\n      \"command\": \"uvx\",\n      \"args\": [\n        \"mcp-server-fetch@2026.10.28\"\n      ],\n      \"env\": {}\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cline",
+          "label": "Cline",
+          "subtitle": "MCP Servers",
+          "filename": "cline_mcp_settings.json",
+          "hint": "在 Cline 的 MCP Servers 配置中粘贴。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-modelcontextprotocol-fetch\": {\n      \"type\": \"stdio\",\n      \"command\": \"uvx\",\n      \"args\": [\n        \"mcp-server-fetch@2026.10.28\"\n      ],\n      \"env\": {},\n      \"disabled\": false,\n      \"autoApprove\": []\n    }\n  }\n}\n"
+        }
+      ],
+      "credentials": []
+    },
+    {
+      "name": "io.github.modelcontextprotocol/filesystem",
+      "display_name": "Filesystem",
+      "description": "为模型提供受控的本地文件读写、目录遍历与搜索能力。",
+      "vendor": "Model Context Protocol",
+      "categories": [
+        "开发工具"
+      ],
+      "official": true,
+      "verified": true,
+      "homepage": "https://modelcontextprotocol.io",
+      "repository": "https://github.com/modelcontextprotocol/servers",
+      "license": "MIT",
+      "transport": {
+        "type": "stdio"
+      },
+      "tools": [],
+      "last_checked": "2026-10-30",
+      "possibly_broken": false,
+      "auth_note": "无需额外凭据。",
+      "detail_path": "servers/io.github.modelcontextprotocol__filesystem/",
+      "install": [
+        {
+          "id": "dsh",
+          "label": "DSH",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "DSH → MCP连接器 → 导入 JSON；也可写入项目 .mcp.json。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-modelcontextprotocol-filesystem\": {\n      \"type\": \"stdio\",\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"@modelcontextprotocol/server-filesystem@2.1.0\",\n        \"/path/to/allowed/directory\"\n      ],\n      \"env\": {}\n    }\n  }\n}\n"
+        },
+        {
+          "id": "claude",
+          "label": "Claude Desktop",
+          "subtitle": "claude_desktop_config.json",
+          "filename": "claude_desktop_config.json",
+          "hint": "写入 claude_desktop_config.json 后完全重启。macOS：~/Library/Application Support/Claude/；Windows：%APPDATA%\\Claude\\。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-modelcontextprotocol-filesystem\": {\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"@modelcontextprotocol/server-filesystem@2.1.0\",\n        \"/path/to/allowed/directory\"\n      ],\n      \"env\": {}\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "写入项目 .cursor/mcp.json 或全局 ~/.cursor/mcp.json。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-modelcontextprotocol-filesystem\": {\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"@modelcontextprotocol/server-filesystem@2.1.0\",\n        \"/path/to/allowed/directory\"\n      ],\n      \"env\": {}\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cline",
+          "label": "Cline",
+          "subtitle": "MCP Servers",
+          "filename": "cline_mcp_settings.json",
+          "hint": "在 Cline 的 MCP Servers 配置中粘贴。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-modelcontextprotocol-filesystem\": {\n      \"type\": \"stdio\",\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"@modelcontextprotocol/server-filesystem@2.1.0\",\n        \"/path/to/allowed/directory\"\n      ],\n      \"env\": {},\n      \"disabled\": false,\n      \"autoApprove\": []\n    }\n  }\n}\n"
+        }
+      ],
+      "credentials": []
+    },
+    {
+      "name": "io.github.github/github-mcp-server",
+      "display_name": "GitHub",
+      "description": "连接 GitHub，管理仓库、Issue、Pull Request、代码搜索与 Actions 工作流。",
+      "vendor": "GitHub",
+      "categories": [
+        "开发工具"
+      ],
+      "official": true,
+      "verified": true,
+      "homepage": "https://github.com/github/github-mcp-server",
+      "repository": "https://github.com/github/github-mcp-server",
+      "license": "MIT",
+      "transport": {
+        "type": "streamable_http"
+      },
+      "tools": [],
+      "last_checked": "2026-10-30",
+      "possibly_broken": false,
+      "auth_note": "将 Header 与 URL 参数的占位符替换为真实值；申请入口见下方凭据表。",
+      "detail_path": "servers/io.github.github__github-mcp-server/",
+      "install": [
+        {
+          "id": "dsh",
+          "label": "DSH",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "DSH → MCP连接器 → 导入 JSON；当前传输：Streamable HTTP。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-github-github-mcp-server\": {\n      \"type\": \"streamable-http\",\n      \"url\": \"https://api.githubcopilot.com/mcp/\",\n      \"headers\": {\n        \"Authorization\": \"Bearer <YOUR_AUTHORIZATION>\"\n      }\n    }\n  }\n}\n"
+        },
+        {
+          "id": "claude",
+          "label": "Claude Desktop",
+          "subtitle": "mcp-remote 桥接",
+          "filename": "claude_desktop_config.json",
+          "hint": "Claude Desktop 的 JSON 配置只支持 stdio；这里用 mcp-remote 桥接远程 URL，也可在 Settings → Connectors 直接添加 URL。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-github-github-mcp-server\": {\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"mcp-remote\",\n        \"https://api.githubcopilot.com/mcp/\",\n        \"--header\",\n        \"Authorization: Bearer <YOUR_AUTHORIZATION>\"\n      ]\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "写入项目 .cursor/mcp.json 或全局 ~/.cursor/mcp.json。OAuth 服务可在客户端弹窗中完成授权。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-github-github-mcp-server\": {\n      \"url\": \"https://api.githubcopilot.com/mcp/\",\n      \"headers\": {\n        \"Authorization\": \"Bearer <YOUR_AUTHORIZATION>\"\n      }\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cline",
+          "label": "Cline",
+          "subtitle": "MCP Servers",
+          "filename": "cline_mcp_settings.json",
+          "hint": "在 Cline 的 MCP Servers 配置中粘贴；type 已按 streamableHttp / sse 设置。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-github-github-mcp-server\": {\n      \"type\": \"streamableHttp\",\n      \"url\": \"https://api.githubcopilot.com/mcp/\",\n      \"headers\": {\n        \"Authorization\": \"Bearer <YOUR_AUTHORIZATION>\"\n      },\n      \"disabled\": false,\n      \"autoApprove\": []\n    }\n  }\n}\n"
+        }
+      ],
+      "credentials": [
+        {
+          "kind": "Header",
+          "name": "Authorization",
+          "placeholder": "Bearer <YOUR_AUTHORIZATION>",
+          "description": "Bearer <GitHub PAT 或 App Token>",
+          "required": true,
+          "secret": true,
+          "obtain_at": "https://github.com/settings/tokens"
+        }
+      ]
+    },
+    {
+      "name": "com.notion/mcp",
+      "display_name": "Notion",
+      "description": "Notion 官方托管 MCP，支持工作区搜索、页面读取与编辑、数据库查询。",
+      "vendor": "Notion",
+      "categories": [
+        "办公"
+      ],
+      "official": true,
+      "verified": true,
+      "homepage": "https://developers.notion.com/guides/mcp/get-started-with-mcp",
+      "repository": "https://github.com/makenotion/notion-next",
+      "license": "Proprietary",
+      "transport": {
+        "type": "streamable_http"
+      },
+      "tools": [],
+      "last_checked": "2026-10-30",
+      "possibly_broken": false,
+      "auth_note": "该服务使用 OAuth 或客户端登录；首次连接会按客户端提示进入授权流程。",
+      "detail_path": "servers/com.notion__mcp/",
+      "install": [
+        {
+          "id": "dsh",
+          "label": "DSH",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "DSH → MCP连接器 → 导入 JSON；当前传输：Streamable HTTP。",
+          "code": "{\n  \"mcpServers\": {\n    \"com-notion-mcp\": {\n      \"type\": \"streamable-http\",\n      \"url\": \"https://mcp.notion.com/mcp\",\n      \"headers\": {}\n    }\n  }\n}\n"
+        },
+        {
+          "id": "claude",
+          "label": "Claude Desktop",
+          "subtitle": "mcp-remote 桥接",
+          "filename": "claude_desktop_config.json",
+          "hint": "Claude Desktop 的 JSON 配置只支持 stdio；这里用 mcp-remote 桥接远程 URL，也可在 Settings → Connectors 直接添加 URL。",
+          "code": "{\n  \"mcpServers\": {\n    \"com-notion-mcp\": {\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"mcp-remote\",\n        \"https://mcp.notion.com/mcp\"\n      ]\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "写入项目 .cursor/mcp.json 或全局 ~/.cursor/mcp.json。OAuth 服务可在客户端弹窗中完成授权。",
+          "code": "{\n  \"mcpServers\": {\n    \"com-notion-mcp\": {\n      \"url\": \"https://mcp.notion.com/mcp\",\n      \"headers\": {}\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cline",
+          "label": "Cline",
+          "subtitle": "MCP Servers",
+          "filename": "cline_mcp_settings.json",
+          "hint": "在 Cline 的 MCP Servers 配置中粘贴；type 已按 streamableHttp / sse 设置。",
+          "code": "{\n  \"mcpServers\": {\n    \"com-notion-mcp\": {\n      \"type\": \"streamableHttp\",\n      \"url\": \"https://mcp.notion.com/mcp\",\n      \"headers\": {},\n      \"disabled\": false,\n      \"autoApprove\": []\n    }\n  }\n}\n"
+        }
+      ],
+      "credentials": []
+    },
+    {
+      "name": "io.github.microsoft/playwright-mcp",
+      "display_name": "Playwright MCP",
+      "description": "基于 Playwright 的浏览器自动化 MCP，支持页面操作、表单填写、截图与测试。",
+      "vendor": "Microsoft",
+      "categories": [
+        "开发工具"
+      ],
+      "official": true,
+      "verified": true,
+      "homepage": "https://github.com/microsoft/playwright-mcp",
+      "repository": "https://github.com/microsoft/playwright-mcp",
+      "license": "Apache-2.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "tools": [],
+      "last_checked": "2026-10-30",
+      "possibly_broken": false,
+      "auth_note": "无需额外凭据。",
+      "detail_path": "servers/io.github.microsoft__playwright-mcp/",
+      "install": [
+        {
+          "id": "dsh",
+          "label": "DSH",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "DSH → MCP连接器 → 导入 JSON；也可写入项目 .mcp.json。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-microsoft-playwright-mcp\": {\n      \"type\": \"stdio\",\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"@playwright/mcp@0.0.83\"\n      ],\n      \"env\": {}\n    }\n  }\n}\n"
+        },
+        {
+          "id": "claude",
+          "label": "Claude Desktop",
+          "subtitle": "claude_desktop_config.json",
+          "filename": "claude_desktop_config.json",
+          "hint": "写入 claude_desktop_config.json 后完全重启。macOS：~/Library/Application Support/Claude/；Windows：%APPDATA%\\Claude\\。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-microsoft-playwright-mcp\": {\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"@playwright/mcp@0.0.83\"\n      ],\n      \"env\": {}\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "写入项目 .cursor/mcp.json 或全局 ~/.cursor/mcp.json。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-microsoft-playwright-mcp\": {\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"@playwright/mcp@0.0.83\"\n      ],\n      \"env\": {}\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cline",
+          "label": "Cline",
+          "subtitle": "MCP Servers",
+          "filename": "cline_mcp_settings.json",
+          "hint": "在 Cline 的 MCP Servers 配置中粘贴。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-microsoft-playwright-mcp\": {\n      \"type\": \"stdio\",\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"@playwright/mcp@0.0.83\"\n      ],\n      \"env\": {},\n      \"disabled\": false,\n      \"autoApprove\": []\n    }\n  }\n}\n"
+        }
+      ],
+      "credentials": []
+    },
+    {
+      "name": "io.github.modelcontextprotocol/sqlite",
+      "display_name": "SQLite",
+      "description": "查询和管理本地 SQLite 数据库，支持建表、读写、汇总与数据分析。",
+      "vendor": "Model Context Protocol",
+      "categories": [
+        "数据库"
+      ],
+      "official": true,
+      "verified": true,
+      "homepage": "https://modelcontextprotocol.io",
+      "repository": "https://github.com/modelcontextprotocol/servers-archived",
+      "license": "MIT",
+      "transport": {
+        "type": "stdio"
+      },
+      "tools": [],
+      "last_checked": "2026-10-30",
+      "possibly_broken": false,
+      "auth_note": "无需额外凭据。",
+      "detail_path": "servers/io.github.modelcontextprotocol__sqlite/",
+      "install": [
+        {
+          "id": "dsh",
+          "label": "DSH",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "DSH → MCP连接器 → 导入 JSON；也可写入项目 .mcp.json。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-modelcontextprotocol-sqlite\": {\n      \"type\": \"stdio\",\n      \"command\": \"uvx\",\n      \"args\": [\n        \"mcp-server-sqlite@2025.4.25\",\n        \"--db-path\",\n        \"/path/to/database.db\"\n      ],\n      \"env\": {}\n    }\n  }\n}\n"
+        },
+        {
+          "id": "claude",
+          "label": "Claude Desktop",
+          "subtitle": "claude_desktop_config.json",
+          "filename": "claude_desktop_config.json",
+          "hint": "写入 claude_desktop_config.json 后完全重启。macOS：~/Library/Application Support/Claude/；Windows：%APPDATA%\\Claude\\。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-modelcontextprotocol-sqlite\": {\n      \"command\": \"uvx\",\n      \"args\": [\n        \"mcp-server-sqlite@2025.4.25\",\n        \"--db-path\",\n        \"/path/to/database.db\"\n      ],\n      \"env\": {}\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "写入项目 .cursor/mcp.json 或全局 ~/.cursor/mcp.json。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-modelcontextprotocol-sqlite\": {\n      \"command\": \"uvx\",\n      \"args\": [\n        \"mcp-server-sqlite@2025.4.25\",\n        \"--db-path\",\n        \"/path/to/database.db\"\n      ],\n      \"env\": {}\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cline",
+          "label": "Cline",
+          "subtitle": "MCP Servers",
+          "filename": "cline_mcp_settings.json",
+          "hint": "在 Cline 的 MCP Servers 配置中粘贴。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
+          "code": "{\n  \"mcpServers\": {\n    \"io-github-modelcontextprotocol-sqlite\": {\n      \"type\": \"stdio\",\n      \"command\": \"uvx\",\n      \"args\": [\n        \"mcp-server-sqlite@2025.4.25\",\n        \"--db-path\",\n        \"/path/to/database.db\"\n      ],\n      \"env\": {},\n      \"disabled\": false,\n      \"autoApprove\": []\n    }\n  }\n}\n"
+        }
+      ],
+      "credentials": []
+    }
+  ]
+}

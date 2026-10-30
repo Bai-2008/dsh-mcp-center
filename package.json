@@ -20,6 +20,7 @@
     "build:site": "npm run build:web && astro build && node scripts/relativize-assets.mjs",
     "preview": "astro preview",
     "check:web": "npm run build:web && astro check",
+    "build:plugin": "node scripts/build-dsh-plugin.mjs",
     "sync:tools": "node scripts/sync-tools.mjs",
     "sync:health": "node scripts/sync-health.mjs"
   },
