@@ -24,7 +24,7 @@
 C:\Users\36184\Documents\deepseek-harness\default-workspace\dsh-mcp-center\dsh-plugin
 ```
 
-或安装打包后的 tgz。安装后打开 **设置 → 插件**，会出现「MCP 市场」Tab。
+或安装打包后的 tgz。安装后需要**重启一次 DSH**，然后打开 **设置 → 插件**，会出现「MCP 市场」Tab。
 
 ## 数据更新
 

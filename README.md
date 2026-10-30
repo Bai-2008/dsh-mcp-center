@@ -282,7 +282,7 @@ npm run build:plugin
 dsh-plugin/
 ```
 
-插件安装后需要重新加载 Client 模块才能看到新的 Tab。
+安装后需要重启一次 DSH（或使用重启按钮/重新打开应用），Client 模块才会加载并显示新的「MCP 市场」Tab。
 
 ## 自动投稿
 
