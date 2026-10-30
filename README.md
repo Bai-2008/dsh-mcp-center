@@ -585,7 +585,7 @@ dist/registry.json     verified: true    # 构建产物
 3. workflow 自动注入仓库路径：
    - 项目站点：`SITE_BASE=/<repo-name>/`
    - 用户/组织站点（`<owner>.github.io`）自动使用 `/`
-   - `SITE_ORIGIN=https://<owner>.github.io`
+   - `SITE_ORIGIN`：优先读取仓库变量 `SITE_ORIGIN`，否则为 `https://<owner>.github.io`
    - `SITE_REPO_URL=https://github.com/<owner>/<repo>`
 4. 部署产物为 `dist-site/`，包含 `index.json`、Schema、sitemap、robots 和每个条目的静态详情页
 

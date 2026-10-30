@@ -44,6 +44,11 @@ gh label create possibly-broken \
 
 **建议使用专用机器账号或 GitHub App token，而不是唯一维护者本人的 PAT。** PR 作者不能 approve 自己的 PR；如果机器人用唯一维护者的身份开 PR，这个 PR 将无法满足“1 个 approval”的分支保护规则。
 
+如果只有一个人维护，有两种实际可行的选择：
+
+1. 建一个专用机器账号，加入仓库 Collaborator，用它的 fine-grained PAT；你来 approve 机器人 PR。
+2. 放弃 approval 门禁，只保留 `validate` 必需检查，用你本人的 PAT。这样自动化 PR 可以自己合并，但少了一层人工审核。
+
 ### `MCP_SYNC_SECRETS`（可选）
 
 用于给需要认证的 remote MCP 提供同步凭据。值是 JSON：
@@ -92,12 +97,26 @@ workflow 文件里也显式声明了 `permissions`，但仓库级设置过低时
 
 ### 同步状态直推与分支保护
 
-`sync.yml` 每天会把 `sync/state.json` 直接提交到 `main`。如果启用了分支保护，需要二选一：
+`sync.yml` 每天会把 `sync/state.json` 直接提交到 `main`。如果启用了严格 ruleset，需要二选一：
 
 1. 在 Ruleset 的 **Bypass list** 中加入 **GitHub Actions**（推荐，仅用于自动化状态提交）；
 2. 不允许 bypass，并把 `sync.yml` 改成通过 PR 更新状态（需要自行调整 workflow）。
 
 如果不加 bypass，状态提交会失败，连续失败计数无法累计。
+
+**用户仓库的已知限制**：GitHub 可能拒绝把 GitHub Actions 加入用户仓库 ruleset 的 bypass。API 会返回：
+
+```text
+Actor GitHub Actions integration must be part of the ruleset source or owner organization
+```
+
+这时不能用“GitHub Actions bypass + 严格 ruleset”的组合。实际可选：
+
+- 只要求 `validate`，不要求人工 approve；
+- 允许 Repository admin bypass，接受维护者可以绕过规则；
+- 把 `sync/state.json` 改成 PR 更新，再启用严格 ruleset。
+
+不要直接启用一个会阻断 `sync.yml` 直推、又没有 bypass 的 ruleset。
 
 ## 5. 已知限制
 
@@ -112,7 +131,7 @@ workflow 文件里也显式声明了 `permissions`，但仓库级设置过低时
 `pages.yml` 在 `main` 推送时构建 `dist-site/` 并部署，自动注入：
 
 - `SITE_BASE`：项目站点为 `/<repo-name>/`，`<owner>.github.io` 用户站为 `/`
-- `SITE_ORIGIN`：`https://<owner>.github.io`
+- `SITE_ORIGIN`：优先读取仓库变量 `SITE_ORIGIN`，否则为 `https://<owner>.github.io`
 - `SITE_REPO_URL`：当前 GitHub 仓库地址
 
 如果使用自定义域名，需要把 `SITE_ORIGIN` 改成自定义域名，并相应调整 `SITE_BASE`。
