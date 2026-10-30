@@ -67,6 +67,7 @@
   "disabled": "Disabled",
   "connected": "Connected",
   "notConnected": "Not connected",
+  "stateUnknown": "Status unknown",
   "recovering": "Retrying",
   "reauthorize": "Reauthorization needed",
   "connectionError": "Connection error",

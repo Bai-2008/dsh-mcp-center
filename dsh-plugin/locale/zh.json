@@ -67,6 +67,7 @@
   "disabled": "已停用",
   "connected": "已连接",
   "notConnected": "未连接",
+  "stateUnknown": "状态未知",
   "recovering": "自动重试中",
   "reauthorize": "需重新授权",
   "connectionError": "连接异常",

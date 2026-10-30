@@ -410,7 +410,8 @@ window.__ModuleLoader__.load({
         border: 1px solid var(--dsw-alias-brand-primary);
         border-radius: 7px;
         background: var(--dsw-alias-brand-primary);
-        color: var(--dsw-alias-label-primary-foreground);
+        color: #fff;
+        color: var(--dsw-static-neutral-00);
         font-size: 11px;
         font-weight: 650;
         cursor: pointer;
@@ -570,6 +571,7 @@ window.__ModuleLoader__.load({
       if (state === "recovering") return t("recovering");
       if (state === "needs-auth" || state === "reauthorize") return t("reauthorize");
       if (state === "error" || state === "connection-error") return t("connectionError");
+      if (state === "unknown" || state === undefined || state === null) return t("stateUnknown");
       return t("notConnected");
     }
 
