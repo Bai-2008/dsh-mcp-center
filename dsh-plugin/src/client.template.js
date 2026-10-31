@@ -533,6 +533,81 @@ window.__ModuleLoader__.load({
       .mc-modal-required { margin: 8px 0 0; padding: 0; list-style: none; display: grid; gap: 3px; }
       .mc-modal-required li { color: var(--dsw-alias-label-secondary); font-size: 10px; }
       .mc-modal-required code { color: var(--dsw-alias-label-primary); }
+      .mc-form { display: grid; gap: 12px; }
+      .mc-field { display: grid; gap: 4px; min-width: 0; }
+      .mc-field-head {
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
+        flex-wrap: wrap;
+        color: var(--dsw-alias-label-primary);
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .mc-field-head small {
+        color: var(--dsw-alias-label-tertiary);
+        font-size: 9px;
+        font-weight: 400;
+      }
+      .mc-required-mark { color: var(--dsw-alias-state-error-primary); font-weight: 700; }
+      .mc-input {
+        width: 100%;
+        min-height: 32px;
+        padding: 6px 8px;
+        border: 1px solid var(--dsw-alias-border-l1);
+        border-radius: 6px;
+        outline: 0;
+        background: var(--dsw-alias-bg-base);
+        color: var(--dsw-alias-label-primary);
+        font-size: 11px;
+      }
+      .mc-input:focus { border-color: var(--dsw-alias-brand-primary); }
+      .mc-input::placeholder { color: var(--dsw-alias-label-tertiary); }
+      .mc-field-help {
+        color: var(--dsw-alias-label-tertiary);
+        font-size: 9.5px;
+        line-height: 1.5;
+      }
+      .mc-field-help a { margin-left: 2px; }
+      .mc-args { min-height: 88px; font-size: 10.5px; }
+      .mc-transport-line {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        min-width: 0;
+        padding: 7px 9px;
+        border: 1px solid var(--dsw-alias-border-l1);
+        border-radius: 6px;
+        background: var(--dsw-alias-bg-layer-1);
+        color: var(--dsw-alias-label-tertiary);
+        font-size: 9.5px;
+      }
+      .mc-transport-line code {
+        min-width: 0;
+        overflow: hidden;
+        color: var(--dsw-alias-label-secondary);
+        font-family: ui-monospace, monospace;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .mc-form-note {
+        margin: 0;
+        padding: 8px 9px;
+        border-radius: 6px;
+        background: var(--dsw-alias-bg-layer-1);
+        color: var(--dsw-alias-label-tertiary);
+        font-size: 10px;
+      }
+      .mc-form-error {
+        margin: 10px 0 0;
+        padding: 8px 9px;
+        border: 1px solid color-mix(in srgb, var(--dsw-alias-state-error-primary) 35%, transparent);
+        border-radius: 6px;
+        background: color-mix(in srgb, var(--dsw-alias-state-error-primary) 8%, transparent);
+        color: var(--dsw-alias-state-error-primary);
+        font-size: 10.5px;
+        line-height: 1.5;
+      }
       .mc-modal-actions {
         display: flex;
         justify-content: flex-end;
@@ -675,6 +750,113 @@ window.__ModuleLoader__.load({
     }
 
     const CONNECTOR_API = "/mcp-connector/api";
+    const CONNECTOR_TIMEOUTS = {
+      status: 20_000,
+      catalog: 30_000,
+      configure: 145_000,
+      importJson: 145_000,
+      reconfigureConnection: 145_000,
+      setEnabled: 130_000,
+      healthCheck: 20_000,
+      reconnect: 30_000,
+      disconnect: 30_000,
+      refreshCatalog: 90_000,
+      connect: 310_000,
+      editableConnectionConfig: 20_000,
+    };
+
+    function credentialFieldKey(credential) {
+      return `${credential.kind}:${credential.name}`;
+    }
+
+    function slugServerName(input) {
+      const slug = String(input)
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9_-]+/g, "-")
+        .replace(/^[^a-z0-9]+/, "")
+        .replace(/[^a-z0-9]+$/, "")
+        .slice(0, 63);
+      return slug || "mcp-server";
+    }
+
+    function normalizeRemoteUrl(value) {
+      try {
+        const url = new URL(String(value));
+        return `${url.origin}${url.pathname}`.replace(/\/$/, "");
+      } catch {
+        return String(value ?? "").replace(/\/$/, "");
+      }
+    }
+
+    function buildInstallPayload(entry, form) {
+      const values = form.values ?? {};
+      const get = (credential) => String(values[credentialFieldKey(credential)] ?? "").trim();
+      const missing = (entry.credentials ?? [])
+        .filter((credential) => credential.required && !get(credential))
+        .map((credential) => credential.name);
+      if (missing.length > 0) return { ok: false, missing };
+
+      if (entry.transport.type === "stdio") {
+        const env = {};
+        for (const credential of entry.credentials ?? []) {
+          const value = get(credential);
+          if (credential.kind === "环境变量" && value) env[credential.name] = value;
+        }
+        const args = String(form.argsText ?? "")
+          .split(/\r?\n/)
+          .map((line) => line.trim())
+          .filter(Boolean);
+        const params = {
+          name: entry.display_name,
+          serverName: slugServerName(entry.name),
+          transport: "stdio",
+          command: entry.transport.command,
+          args,
+          envJson: JSON.stringify(env),
+        };
+        const cwd = String(form.cwd ?? "").trim();
+        if (cwd) params.cwd = cwd;
+        return { ok: true, params };
+      }
+
+      let url = String(entry.transport.url ?? "");
+      for (const key of Object.keys(entry.transport.variables ?? {})) {
+        const credential = (entry.credentials ?? []).find(
+          (candidate) => candidate.name === `{${key}}` || candidate.name === key,
+        );
+        if (!credential) continue;
+        url = url.split(`{${key}}`).join(encodeURIComponent(get(credential)));
+      }
+      if (/\{[^}]+\}/.test(url)) return { ok: false, missing: ["URL"] };
+
+      const headers = {};
+      for (const header of entry.transport.headers ?? []) {
+        const credential = (entry.credentials ?? []).find(
+          (candidate) => candidate.kind === "Header" && candidate.name === header.name,
+        );
+        if (!credential) continue;
+        let value = get(credential);
+        if (!value) continue;
+        if (/^authorization$/i.test(header.name) && !/^Bearer\s/i.test(value)) {
+          value = `Bearer ${value}`;
+        }
+        headers[header.name] = value;
+      }
+
+      return {
+        ok: true,
+        params: {
+          name: entry.display_name,
+          serverName: slugServerName(entry.name),
+          transport: "streamable-http",
+          url,
+          headersJson: JSON.stringify(headers),
+          authMode: "none",
+          allowInsecurePrivateNetwork: false,
+        },
+      };
+    }
 
     async function callConnector(method, params = {}, timeoutMs = 30_000) {
       const controller = new AbortController();
@@ -682,11 +864,24 @@ window.__ModuleLoader__.load({
       try {
         const response = await fetch(CONNECTOR_API, {
           method: "POST",
-          headers: { "content-type": "application/json" },
+          headers: { "content-type": "application/json", accept: "application/json" },
           body: JSON.stringify({ method, params }),
+          credentials: "same-origin",
+          cache: "no-store",
           signal: controller.signal,
         });
-        const data = await response.json();
+        let data;
+        try {
+          data = await response.json();
+        } catch {
+          return {
+            ok: false,
+            message:
+              response.status === 401
+                ? "登录状态已失效，请刷新页面"
+                : `MCP 连接器返回了无效响应（HTTP ${response.status}）`,
+          };
+        }
         if (!response.ok && data?.ok !== false) {
           return { ok: false, message: `HTTP ${response.status}` };
         }
@@ -732,6 +927,8 @@ window.__ModuleLoader__.load({
       const [modal, setModal] = useState(null);
       const [modalBusy, setModalBusy] = useState(false);
       const [updating, setUpdating] = useState(false);
+      const [busy, setBusy] = useState({});
+      const statusSequence = useRef(0);
 
       const categories = useMemo(
         () => [
@@ -784,10 +981,18 @@ window.__ModuleLoader__.load({
       const required =
         selected?.credentials.filter((credential) => credential.required) ?? [];
       const siteUrl = `${DATA.site.origin}${DATA.site.base}`;
+      const installedServerNames = useMemo(
+        () => new Set(connector.items.map((item) => item.serverName).filter(Boolean)),
+        [connector.items],
+      );
+      const isEntryInstalled = (entry) =>
+        installedServerNames.has(slugServerName(entry.name));
 
       async function refreshConnections() {
+        const sequence = ++statusSequence.current;
         setConnector((current) => ({ ...current, loading: true }));
-        const result = await callConnector("status", {}, 20_000);
+        const result = await callConnector("status", {}, CONNECTOR_TIMEOUTS.status);
+        if (sequence !== statusSequence.current) return;
         if (result.ok) {
           setConnector({
             available: true,
@@ -830,22 +1035,40 @@ window.__ModuleLoader__.load({
           return;
         }
         if (!requireConnector()) return;
-        const config = entry.install.find((item) => item.id === "dsh") ?? entry.install[0];
-        if (!config) {
-          notify(t("noInstall"), true);
-          return;
+        const values = {};
+        for (const credential of entry.credentials ?? []) {
+          values[credentialFieldKey(credential)] = "";
         }
         setModal({
           kind: "install",
-          title: `${t("installToConnector")} · ${entry.display_name}`,
-          json: config.code,
           entry,
+          title: `${t("installNow")} · ${entry.display_name}`,
+          values,
+          argsText:
+            entry.transport.type === "stdio"
+              ? (entry.transport.args ?? []).join("\n")
+              : "",
+          cwd: "",
+          error: "",
+        });
+      }
+
+      function openUninstall(item) {
+        setModal({
+          kind: "confirm",
+          title: `${t("uninstall")} · ${item.name || item.key}`,
+          message: t("confirmUninstall"),
+          key: item.key,
         });
       }
 
       async function openEdit(item) {
         if (!requireConnector()) return;
-        const result = await callConnector("editableConnectionConfig", { key: item.key }, 20_000);
+        const result = await callConnector(
+          "editableConnectionConfig",
+          { key: item.key },
+          CONNECTOR_TIMEOUTS.editableConnectionConfig,
+        );
         if (!result.ok) {
           notify(result.message || t("editLoadFailed"), true);
           return;
@@ -855,58 +1078,161 @@ window.__ModuleLoader__.load({
           title: `${t("editTitle")} · ${item.name || item.key}`,
           json: result.detail?.json || "",
           key: item.key,
+          error: "",
         });
       }
 
-      async function submitModal() {
-        if (!modal) return;
-        if (modal.kind === "install" && /<YOUR_[A-Z0-9_]+>/.test(modal.json)) {
-          notify(t("placeholderRemaining"), true);
+      function setModalError(message) {
+        setModal((current) => (current ? { ...current, error: message } : current));
+      }
+
+      async function installFromCatalog(entry) {
+        const catalog = await callConnector(
+          "catalog",
+          {},
+          CONNECTOR_TIMEOUTS.catalog,
+        );
+        if (!catalog.ok) return null;
+        const target = normalizeRemoteUrl(entry.transport.url);
+        const match = (catalog.detail?.items ?? []).find((item) =>
+          (item.servers ?? []).some(
+            (server) => normalizeRemoteUrl(server.url) === target,
+          ),
+        );
+        if (!match || !["oauth2-pkce", "none"].includes(match.authMode)) {
+          return null;
+        }
+        return callConnector(
+          "connect",
+          { connectorId: match.id },
+          CONNECTOR_TIMEOUTS.connect,
+        );
+      }
+
+      async function submitInstall() {
+        if (!modal?.entry) return;
+        const built = buildInstallPayload(modal.entry, modal);
+        if (!built.ok) {
+          setModalError(
+            built.missing?.length
+              ? `${t("fillRequired")}: ${built.missing.join(", ")}`
+              : t("installInvalid"),
+          );
           return;
         }
-        let parsed;
-        try {
-          parsed = JSON.parse(modal.json);
-        } catch {
-          notify(`${t("installJsonInvalid")}`, true);
-          return;
-        }
+        setModalError("");
         setModalBusy(true);
         try {
-          const result =
-            modal.kind === "install"
-              ? await callConnector("importJson", { json: JSON.stringify(parsed, null, 2) }, 145_000)
-              : await callConnector(
-                  "reconfigureConnection",
-                  { key: modal.key, json: JSON.stringify(parsed, null, 2) },
-                  145_000,
-                );
+          let result = await callConnector(
+            "configure",
+            built.params,
+            CONNECTOR_TIMEOUTS.configure,
+          );
+          if (
+            !result.ok &&
+            (modal.entry.credentials ?? []).length === 0 &&
+            modal.entry.transport.type !== "stdio"
+          ) {
+            const fallback = await installFromCatalog(modal.entry);
+            if (fallback) result = fallback;
+          }
           if (!result.ok) {
-            notify(result.message || t("actionFailed"), true);
+            setModalError(result.message || t("actionFailed"));
             return;
           }
           setModal(null);
           setView("installed");
-          notify(modal.kind === "install" ? t("installSuccess") : t("editSuccess"));
+          notify(result.message || t("installSuccess"));
           await refreshConnections();
         } finally {
           setModalBusy(false);
         }
       }
 
-      async function action(method, params, timeout, successText) {
+      async function submitEdit() {
+        if (!modal) return;
+        let parsed;
+        try {
+          parsed = JSON.parse(modal.json);
+        } catch {
+          setModalError(t("installJsonInvalid"));
+          return;
+        }
+        setModalError("");
+        setModalBusy(true);
+        try {
+          const result = await callConnector(
+            "reconfigureConnection",
+            { key: modal.key, json: JSON.stringify(parsed, null, 2) },
+            CONNECTOR_TIMEOUTS.reconfigureConnection,
+          );
+          if (!result.ok) {
+            setModalError(result.message || t("actionFailed"));
+            return;
+          }
+          setModal(null);
+          setView("installed");
+          notify(t("editSuccess"));
+          await refreshConnections();
+        } finally {
+          setModalBusy(false);
+        }
+      }
+
+      async function submitConfirm() {
+        if (!modal?.key) return;
+        setModalBusy(true);
+        try {
+          const result = await callConnector(
+            "disconnect",
+            { key: modal.key },
+            CONNECTOR_TIMEOUTS.disconnect,
+          );
+          if (!result.ok) {
+            setModalError(result.message || t("actionFailed"));
+            return;
+          }
+          setModal(null);
+          notify(t("uninstallSuccess"));
+          await refreshConnections();
+        } finally {
+          setModalBusy(false);
+        }
+      }
+
+      async function submitModal() {
+        if (!modal) return;
+        if (modal.kind === "install") return submitInstall();
+        if (modal.kind === "edit") return submitEdit();
+        if (modal.kind === "confirm") return submitConfirm();
+      }
+
+      async function action(method, params, timeout, successText, key) {
         if (!requireConnector()) return;
-        const result = await callConnector(method, params, timeout);
-        notify(result.ok ? successText : result.message || t("actionFailed"), !result.ok);
-        await refreshConnections();
+        if (key && busy[key]) return;
+        if (key) setBusy((current) => ({ ...current, [key]: true }));
+        try {
+          const result = await callConnector(method, params, timeout);
+          notify(result.ok ? successText : result.message || t("actionFailed"), !result.ok);
+          await refreshConnections();
+        } finally {
+          if (key) {
+            setBusy((current) => {
+              const next = { ...current };
+              delete next[key];
+              return next;
+            });
+          }
+        }
       }
 
       async function toggleConnection(item) {
         await action(
           "setEnabled",
           { key: item.key, enabled: item.enabled === false },
-          130_000,
+          CONNECTOR_TIMEOUTS.setEnabled,
           t("enableSuccess"),
+          item.key,
         );
       }
 
@@ -914,30 +1240,40 @@ window.__ModuleLoader__.load({
         await action(
           "healthCheck",
           item.connectorId ? { connectorId: item.connectorId } : {},
-          20_000,
+          CONNECTOR_TIMEOUTS.healthCheck,
           t("checkSuccess"),
+          item.key,
         );
       }
 
       async function reconnectConnection(item) {
-        await action("reconnect", { key: item.key }, 30_000, t("reconnectSuccess"));
-      }
-
-      async function uninstallConnection(item) {
-        if (!window.confirm(t("confirmUninstall"))) return;
-        await action("disconnect", { key: item.key }, 30_000, t("uninstallSuccess"));
+        await action(
+          "reconnect",
+          { key: item.key },
+          CONNECTOR_TIMEOUTS.reconnect,
+          t("reconnectSuccess"),
+          item.key,
+        );
       }
 
       async function updateAll() {
         if (!requireConnector()) return;
         setUpdating(true);
-        const catalog = await callConnector("refreshCatalog", {}, 60_000);
+        const catalog = await callConnector(
+          "refreshCatalog",
+          {},
+          CONNECTOR_TIMEOUTS.refreshCatalog,
+        );
         if (!catalog.ok) {
           setUpdating(false);
           notify(catalog.message || t("actionFailed"), true);
           return;
         }
-        const health = await callConnector("healthCheck", {}, 20_000);
+        const health = await callConnector(
+          "healthCheck",
+          {},
+          CONNECTOR_TIMEOUTS.healthCheck,
+        );
         setUpdating(false);
         notify(health.ok ? t("refreshSuccess") : health.message || t("actionFailed"), !health.ok);
         await refreshConnections();
@@ -982,6 +1318,8 @@ window.__ModuleLoader__.load({
                     { tone: "transport" },
                     transportLabel(t, selected.transport?.type),
                   ),
+                  isEntryInstalled(selected) &&
+                    h(Badge, { tone: "verified" }, t("installedTab")),
                 ),
               ),
               h("p", { className: "mc-detail-desc" }, selected.description),
@@ -1017,7 +1355,7 @@ window.__ModuleLoader__.load({
                   style: { marginTop: 10 },
                   onClick: () => openInstall(selected),
                 },
-                t("installToConnector"),
+                isEntryInstalled(selected) ? t("reinstall") : t("installNow"),
               ),
             ),
           ),
@@ -1204,7 +1542,12 @@ window.__ModuleLoader__.load({
                   type: "button",
                   className: "mc-secondary",
                   onClick: () =>
-                    action("healthCheck", {}, 20_000, t("checkSuccess")),
+                    action(
+                      "healthCheck",
+                      {},
+                      CONNECTOR_TIMEOUTS.healthCheck,
+                      t("checkSuccess"),
+                    ),
                   disabled: !available,
                 },
                 t("checkAll"),
@@ -1282,6 +1625,7 @@ window.__ModuleLoader__.load({
                             {
                               type: "button",
                               className: "mc-secondary",
+                              disabled: Boolean(busy[item.key]),
                               onClick: () => toggleConnection(item),
                             },
                             enabled ? t("disable") : t("enable"),
@@ -1291,6 +1635,7 @@ window.__ModuleLoader__.load({
                             {
                               type: "button",
                               className: "mc-secondary",
+                              disabled: Boolean(busy[item.key]),
                               onClick: () => checkConnection(item),
                             },
                             t("check"),
@@ -1300,6 +1645,7 @@ window.__ModuleLoader__.load({
                             {
                               type: "button",
                               className: "mc-secondary",
+                              disabled: Boolean(busy[item.key]),
                               onClick: () => reconnectConnection(item),
                             },
                             t("reconnect"),
@@ -1309,7 +1655,9 @@ window.__ModuleLoader__.load({
                             {
                               type: "button",
                               className: "mc-secondary",
-                              disabled: item.canEditConfiguration === false,
+                              disabled:
+                                item.canEditConfiguration === false ||
+                                Boolean(busy[item.key]),
                               title:
                                 item.canEditConfiguration === false
                                   ? t("editLoadFailed")
@@ -1323,7 +1671,8 @@ window.__ModuleLoader__.load({
                             {
                               type: "button",
                               className: "mc-secondary danger",
-                              onClick: () => uninstallConnection(item),
+                              disabled: Boolean(busy[item.key]),
+                              onClick: () => openUninstall(item),
                             },
                             t("uninstall"),
                           ),
@@ -1336,10 +1685,14 @@ window.__ModuleLoader__.load({
 
       const renderModal = () => {
         if (!modal) return null;
-        const modalRequired =
-          modal.kind === "install"
-            ? modal.entry?.credentials.filter((credential) => credential.required) ?? []
-            : [];
+        const isInstall = modal.kind === "install";
+        const isConfirm = modal.kind === "confirm";
+        const updateValue = (key, value) =>
+          setModal((current) =>
+            current
+              ? { ...current, values: { ...(current.values ?? {}), [key]: value } }
+              : current,
+          );
         return h(
           "div",
           {
@@ -1363,34 +1716,134 @@ window.__ModuleLoader__.load({
               h(
                 "p",
                 { className: "mc-modal-note" },
-                modal.kind === "install" ? t("installHint") : t("editHint"),
+                isInstall
+                  ? t("installNativeHint")
+                  : isConfirm
+                    ? modal.message
+                    : t("editHint"),
               ),
-              modalRequired.length > 0 &&
-                h(
-                  "ul",
-                  { className: "mc-modal-required" },
-                  modalRequired.map((credential) =>
-                    h(
-                      "li",
-                      { key: `${credential.kind}:${credential.name}` },
-                      h("code", null, credential.name),
-                      ` — ${credential.description || ""}`,
-                    ),
-                  ),
-                ),
             ),
             h(
               "div",
               { className: "mc-modal-body" },
-              h("textarea", {
-                className: "mc-textarea",
-                value: modal.json,
-                spellCheck: false,
-                onChange: (event) =>
-                  setModal((current) =>
-                    current ? { ...current, json: event.target.value } : current,
+              isInstall &&
+                h(
+                  "div",
+                  { className: "mc-form" },
+                  h(
+                    "div",
+                    { className: "mc-transport-line" },
+                    h("span", null, t("transport")),
+                    h("code", null, transportLabel(t, modal.entry?.transport?.type)),
+                    h("span", null, "·"),
+                    h(
+                      "code",
+                      { title: modal.entry?.transport?.url || "" },
+                      modal.entry?.transport?.type === "stdio"
+                        ? `${modal.entry?.transport?.command || ""} ${(modal.entry?.transport?.args ?? []).join(" ")}`
+                        : modal.entry?.transport?.url || "",
+                    ),
                   ),
-              }),
+                  (modal.entry?.credentials ?? []).map((credential) => {
+                    const key = credentialFieldKey(credential);
+                    return h(
+                      "label",
+                      { className: "mc-field", key },
+                      h(
+                        "span",
+                        { className: "mc-field-head" },
+                        h("span", null, credential.name),
+                        credential.required && h("b", { className: "mc-required-mark" }, " *"),
+                        h(
+                          "small",
+                          null,
+                          credential.kind,
+                          credential.required ? "" : ` · ${t("optional")}`,
+                        ),
+                      ),
+                      h("input", {
+                        className: "mc-input",
+                        type: credential.secret ? "password" : "text",
+                        autoComplete: "off",
+                        spellCheck: false,
+                        placeholder: credential.placeholder || "",
+                        value: modal.values?.[key] ?? "",
+                        onChange: (event) => updateValue(key, event.target.value),
+                      }),
+                      h(
+                        "span",
+                        { className: "mc-field-help" },
+                        credential.description || "",
+                        credential.obtain_at &&
+                          h(
+                            "a",
+                            {
+                              href: credential.obtain_at,
+                              target: "_blank",
+                              rel: "noreferrer",
+                            },
+                            ` ${t("apply")} ↗`,
+                          ),
+                      ),
+                    );
+                  }),
+                  modal.entry?.transport?.type === "stdio" &&
+                    h(
+                      "label",
+                      { className: "mc-field" },
+                      h(
+                        "span",
+                        { className: "mc-field-head" },
+                        h("span", null, t("argsLabel")),
+                      ),
+                      h("textarea", {
+                        className: "mc-textarea mc-args",
+                        spellCheck: false,
+                        value: modal.argsText ?? "",
+                        onChange: (event) =>
+                          setModal((current) =>
+                            current ? { ...current, argsText: event.target.value } : current,
+                          ),
+                      }),
+                      h("span", { className: "mc-field-help" }, t("argsHint")),
+                    ),
+                  modal.entry?.transport?.type === "stdio" &&
+                    h(
+                      "label",
+                      { className: "mc-field" },
+                      h(
+                        "span",
+                        { className: "mc-field-head" },
+                        h("span", null, t("cwdLabel")),
+                      ),
+                      h("input", {
+                        className: "mc-input",
+                        type: "text",
+                        spellCheck: false,
+                        value: modal.cwd ?? "",
+                        placeholder: "/path/to/project",
+                        onChange: (event) =>
+                          setModal((current) =>
+                            current ? { ...current, cwd: event.target.value } : current,
+                          ),
+                      }),
+                    ),
+                  !(modal.entry?.credentials ?? []).length &&
+                    modal.entry?.transport?.type !== "stdio" &&
+                    h("p", { className: "mc-form-note" }, t("noRequired")),
+                ),
+              !isInstall &&
+                !isConfirm &&
+                h("textarea", {
+                  className: "mc-textarea",
+                  value: modal.json ?? "",
+                  spellCheck: false,
+                  onChange: (event) =>
+                    setModal((current) =>
+                      current ? { ...current, json: event.target.value } : current,
+                    ),
+                }),
+              modal.error && h("p", { className: "mc-form-error" }, modal.error),
             ),
             h(
               "div",
@@ -1409,17 +1862,21 @@ window.__ModuleLoader__.load({
                 "button",
                 {
                   type: "button",
-                  className: "mc-primary",
+                  className: isConfirm ? "mc-secondary danger" : "mc-primary",
                   disabled: modalBusy,
                   onClick: submitModal,
                 },
                 modalBusy
-                  ? modal.kind === "install"
-                    ? t("importing")
-                    : t("saving")
-                  : modal.kind === "install"
-                    ? t("import")
-                    : t("save"),
+                  ? isInstall
+                    ? t("installing")
+                    : isConfirm
+                      ? t("uninstalling")
+                      : t("saving")
+                  : isInstall
+                    ? t("installNow")
+                    : isConfirm
+                      ? t("uninstall")
+                      : t("save"),
               ),
             ),
           ),
@@ -1574,6 +2031,7 @@ window.__ModuleLoader__.load({
                       entry.official && h(Badge, { tone: "official" }, t("official")),
                       entry.verified && h(Badge, { tone: "verified" }, t("verified")),
                       h(Badge, { tone: "transport" }, transportLabel(t, entry.transport?.type)),
+                      isEntryInstalled(entry) && h(Badge, { tone: "verified" }, t("installedTab")),
                       entry.possibly_broken && h(Badge, { tone: "broken" }, "⚠"),
                     ),
                   ),
