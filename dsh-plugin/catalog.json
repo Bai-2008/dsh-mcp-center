@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-31T05:47:35.323Z",
+  "generated_at": "2026-10-31T05:49:36.388Z",
   "site": {
     "origin": "https://bai-2008.github.io",
     "base": "/dsh-mcp-center/",
@@ -1853,8 +1853,6 @@
         "type": "stdio",
         "command": "uvx",
         "args": [
-          "--from",
-          "mcp-server-weibo",
           "mcp-server-weibo"
         ]
       },
@@ -1870,7 +1868,7 @@
           "subtitle": "mcp.json",
           "filename": "mcp.json",
           "hint": "DSH → MCP连接器 → 导入 JSON；也可写入项目 .mcp.json。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
-          "code": "{\n  \"mcpServers\": {\n    \"com-weibo-mcp\": {\n      \"type\": \"stdio\",\n      \"command\": \"uvx\",\n      \"args\": [\n        \"--from\",\n        \"mcp-server-weibo\",\n        \"mcp-server-weibo\"\n      ],\n      \"env\": {}\n    }\n  }\n}\n"
+          "code": "{\n  \"mcpServers\": {\n    \"com-weibo-mcp\": {\n      \"type\": \"stdio\",\n      \"command\": \"uvx\",\n      \"args\": [\n        \"mcp-server-weibo\"\n      ],\n      \"env\": {}\n    }\n  }\n}\n"
         },
         {
           "id": "claude",
@@ -1878,7 +1876,7 @@
           "subtitle": "claude_desktop_config.json",
           "filename": "claude_desktop_config.json",
           "hint": "写入 claude_desktop_config.json 后完全重启。macOS：~/Library/Application Support/Claude/；Windows：%APPDATA%\\Claude\\。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
-          "code": "{\n  \"mcpServers\": {\n    \"com-weibo-mcp\": {\n      \"command\": \"uvx\",\n      \"args\": [\n        \"--from\",\n        \"mcp-server-weibo\",\n        \"mcp-server-weibo\"\n      ],\n      \"env\": {}\n    }\n  }\n}\n"
+          "code": "{\n  \"mcpServers\": {\n    \"com-weibo-mcp\": {\n      \"command\": \"uvx\",\n      \"args\": [\n        \"mcp-server-weibo\"\n      ],\n      \"env\": {}\n    }\n  }\n}\n"
         },
         {
           "id": "cursor",
@@ -1886,7 +1884,7 @@
           "subtitle": "mcp.json",
           "filename": "mcp.json",
           "hint": "写入项目 .cursor/mcp.json 或全局 ~/.cursor/mcp.json。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
-          "code": "{\n  \"mcpServers\": {\n    \"com-weibo-mcp\": {\n      \"command\": \"uvx\",\n      \"args\": [\n        \"--from\",\n        \"mcp-server-weibo\",\n        \"mcp-server-weibo\"\n      ],\n      \"env\": {}\n    }\n  }\n}\n"
+          "code": "{\n  \"mcpServers\": {\n    \"com-weibo-mcp\": {\n      \"command\": \"uvx\",\n      \"args\": [\n        \"mcp-server-weibo\"\n      ],\n      \"env\": {}\n    }\n  }\n}\n"
         },
         {
           "id": "cline",
@@ -1894,7 +1892,7 @@
           "subtitle": "MCP Servers",
           "filename": "cline_mcp_settings.json",
           "hint": "在 Cline 的 MCP Servers 配置中粘贴。将示例路径和 <YOUR_...> 占位符替换为本机真实值，不要把真实凭据提交回仓库。",
-          "code": "{\n  \"mcpServers\": {\n    \"com-weibo-mcp\": {\n      \"type\": \"stdio\",\n      \"command\": \"uvx\",\n      \"args\": [\n        \"--from\",\n        \"mcp-server-weibo\",\n        \"mcp-server-weibo\"\n      ],\n      \"env\": {},\n      \"disabled\": false,\n      \"autoApprove\": []\n    }\n  }\n}\n"
+          "code": "{\n  \"mcpServers\": {\n    \"com-weibo-mcp\": {\n      \"type\": \"stdio\",\n      \"command\": \"uvx\",\n      \"args\": [\n        \"mcp-server-weibo\"\n      ],\n      \"env\": {},\n      \"disabled\": false,\n      \"autoApprove\": []\n    }\n  }\n}\n"
         }
       ],
       "credentials": []

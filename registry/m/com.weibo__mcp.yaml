@@ -11,8 +11,6 @@ transport:
   type: stdio
   command: uvx
   args:
-    - "--from"
-    - "mcp-server-weibo"
     - "mcp-server-weibo"
 tools: []
 categories:
