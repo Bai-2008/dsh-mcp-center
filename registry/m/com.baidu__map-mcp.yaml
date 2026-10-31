@@ -4,7 +4,7 @@ display_name: 百度地图
 description: 百度地图官方 MCP，提供地理编码、POI 搜索、路径规划、天气、IP 定位和路况查询。
 description_en: Official Baidu Maps MCP for geocoding, POI search, routing,
   weather and traffic.
-version: 0.2.4
+version: 1.0.5
 homepage: https://lbsyun.baidu.com/
 repository: https://github.com/baidu-maps/mcp
 vendor: 百度地图

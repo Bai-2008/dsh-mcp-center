@@ -3,7 +3,7 @@ name: com.flomoapp/mcp
 display_name: flomo 浮墨
 description: 社区维护的 flomo MCP，通过个人 API 地址把 AI 生成的想法、笔记直接写入 flomo。
 description_en: Community flomo MCP for writing notes and ideas through a personal API URL.
-version: 1.0.0
+version: 0.0.1
 homepage: https://flomoapp.com/
 repository: https://github.com/chatmcp/mcp-server-flomo
 vendor: flomo 社区项目

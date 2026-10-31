@@ -4,7 +4,7 @@ display_name: 微信读书
 description: 社区维护的微信读书 MCP，支持书架、书籍搜索、笔记划线、热门书评和阅读进度。
 description_en: Community WeRead MCP for bookshelf, search, highlights, reviews
   and reading progress.
-version: 1.0.0
+version: 0.2.2
 homepage: https://github.com/freestylefly/mcp-server-weread
 repository: https://github.com/freestylefly/mcp-server-weread
 vendor: 微信读书社区项目

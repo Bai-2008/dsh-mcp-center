@@ -5,8 +5,7 @@ description: Notion 官方托管 MCP，支持工作区搜索、页面读取与�
 description_en: Official hosted Notion MCP for workspace search, pages and databases.
 version: 1.0.0
 homepage: https://developers.notion.com/guides/mcp/get-started-with-mcp
-repository: https://github.com/makenotion/notion-next
-repository_subfolder: src/cloudflare-mcp
+repository: https://github.com/makenotion/notion-mcp-server
 vendor: Notion
 transport:
   type: streamable_http

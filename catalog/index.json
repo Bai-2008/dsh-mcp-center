@@ -1,13 +1,13 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-10-31T07:36:52.114Z",
+  "generated_at": "2026-10-31T08:51:26.002Z",
   "site": {
     "name": "MCP 市场",
     "origin": "https://bai-2008.github.io",
     "base": "/dsh-mcp-center/",
     "repo_url": "https://github.com/Bai-2008/dsh-mcp-center",
     "submit_url": "https://github.com/Bai-2008/dsh-mcp-center/issues/new?template=submit-server.yml",
-    "generated_at": "2026-10-31T07:36:52.114Z"
+    "generated_at": "2026-10-31T08:51:26.002Z"
   },
   "count": 29,
   "stats": {
@@ -375,7 +375,7 @@
       "display_name": "百度地图",
       "description": "百度地图官方 MCP，提供地理编码、POI 搜索、路径规划、天气、IP 定位和路况查询。",
       "description_en": "Official Baidu Maps MCP for geocoding, POI search, routing, weather and traffic.",
-      "version": "0.2.4",
+      "version": "1.0.5",
       "homepage": "https://lbsyun.baidu.com/",
       "repository": "https://github.com/baidu-maps/mcp",
       "vendor": "百度地图",
@@ -513,7 +513,11 @@
       "icon": "icons/com.dida365__mcp.svg",
       "detail_path": "servers/com.dida365__mcp/",
       "possibly_broken": false,
-      "health": null,
+      "health": {
+        "status": "skipped",
+        "consecutive_failures": 0,
+        "last_success": null
+      },
       "install": [
         {
           "id": "dsh",
@@ -606,7 +610,11 @@
       "icon": "icons/com.didi__mcp.ico",
       "detail_path": "servers/com.didi__mcp/",
       "possibly_broken": false,
-      "health": null,
+      "health": {
+        "status": "skipped",
+        "consecutive_failures": 0,
+        "last_success": null
+      },
       "install": [
         {
           "id": "dsh",
@@ -700,7 +708,11 @@
       "icon": "icons/com.variflight__aviation.ico",
       "detail_path": "servers/com.variflight__aviation/",
       "possibly_broken": false,
-      "health": null,
+      "health": {
+        "status": "skipped",
+        "consecutive_failures": 0,
+        "last_success": null
+      },
       "install": [
         {
           "id": "dsh",
@@ -792,7 +804,11 @@
       "icon": "icons/com.amap__mcp.ico",
       "detail_path": "servers/com.amap__mcp/",
       "possibly_broken": false,
-      "health": null,
+      "health": {
+        "status": "skipped",
+        "consecutive_failures": 0,
+        "last_success": null
+      },
       "install": [
         {
           "id": "dsh",
@@ -885,7 +901,11 @@
       "icon": "icons/cn.mcd__mcp.ico",
       "detail_path": "servers/cn.mcd__mcp/",
       "possibly_broken": false,
-      "health": null,
+      "health": {
+        "status": "skipped",
+        "consecutive_failures": 0,
+        "last_success": null
+      },
       "install": [
         {
           "id": "dsh",
@@ -978,7 +998,11 @@
       "icon": "icons/com.metaso__search-mcp.png",
       "detail_path": "servers/com.metaso__search-mcp/",
       "possibly_broken": false,
-      "health": null,
+      "health": {
+        "status": "skipped",
+        "consecutive_failures": 0,
+        "last_success": null
+      },
       "install": [
         {
           "id": "dsh",
@@ -1070,7 +1094,11 @@
       "icon": "icons/com.lkcoffee__order-mcp.ico",
       "detail_path": "servers/com.lkcoffee__order-mcp/",
       "possibly_broken": false,
-      "health": null,
+      "health": {
+        "status": "skipped",
+        "consecutive_failures": 0,
+        "last_success": null
+      },
       "install": [
         {
           "id": "dsh",
@@ -1163,7 +1191,11 @@
       "icon": "icons/com.tencent__map-mcp.ico",
       "detail_path": "servers/com.tencent__map-mcp/",
       "possibly_broken": false,
-      "health": null,
+      "health": {
+        "status": "skipped",
+        "consecutive_failures": 0,
+        "last_success": null
+      },
       "install": [
         {
           "id": "dsh",
@@ -1256,7 +1288,11 @@
       "icon": "icons/com.tencent__meeting-mcp.ico",
       "detail_path": "servers/com.tencent__meeting-mcp/",
       "possibly_broken": false,
-      "health": null,
+      "health": {
+        "status": "skipped",
+        "consecutive_failures": 0,
+        "last_success": null
+      },
       "install": [
         {
           "id": "dsh",
@@ -1349,7 +1385,11 @@
       "icon": "icons/com.tencent__weiyun-mcp.ico",
       "detail_path": "servers/com.tencent__weiyun-mcp/",
       "possibly_broken": false,
-      "health": null,
+      "health": {
+        "status": "skipped",
+        "consecutive_failures": 0,
+        "last_success": null
+      },
       "install": [
         {
           "id": "dsh",
@@ -1442,7 +1482,11 @@
       "icon": "icons/com.tencent__docs-mcp.ico",
       "detail_path": "servers/com.tencent__docs-mcp/",
       "possibly_broken": false,
-      "health": null,
+      "health": {
+        "status": "skipped",
+        "consecutive_failures": 0,
+        "last_success": null
+      },
       "install": [
         {
           "id": "dsh",
@@ -1535,7 +1579,11 @@
       "icon": "icons/com.tuniu__travel.svg",
       "detail_path": "servers/com.tuniu__travel/",
       "possibly_broken": false,
-      "health": null,
+      "health": {
+        "status": "skipped",
+        "consecutive_failures": 0,
+        "last_success": null
+      },
       "install": [
         {
           "id": "dsh",
@@ -1834,7 +1882,11 @@
       "icon": "icons/cloud.dchub__mcp-server.svg",
       "detail_path": "servers/cloud.dchub__mcp-server/",
       "possibly_broken": false,
-      "health": null,
+      "health": {
+        "status": "ok",
+        "consecutive_failures": 0,
+        "last_success": "2026-10-31T08:23:54.683Z"
+      },
       "install": [
         {
           "id": "dsh",
@@ -2077,7 +2129,11 @@
       "icon": "icons/io.github.github__github-mcp-server.svg",
       "detail_path": "servers/io.github.github__github-mcp-server/",
       "possibly_broken": false,
-      "health": null,
+      "health": {
+        "status": "skipped",
+        "consecutive_failures": 0,
+        "last_success": null
+      },
       "install": [
         {
           "id": "dsh",
@@ -2230,8 +2286,7 @@
       "description_en": "Official hosted Notion MCP for workspace search, pages and databases.",
       "version": "1.0.0",
       "homepage": "https://developers.notion.com/guides/mcp/get-started-with-mcp",
-      "repository": "https://github.com/makenotion/notion-next",
-      "repository_subfolder": "src/cloudflare-mcp",
+      "repository": "https://github.com/makenotion/notion-mcp-server",
       "vendor": "Notion",
       "transport": {
         "type": "streamable_http",
@@ -2261,7 +2316,11 @@
       "icon": "icons/com.notion__mcp.png",
       "detail_path": "servers/com.notion__mcp/",
       "possibly_broken": false,
-      "health": null,
+      "health": {
+        "status": "skipped",
+        "consecutive_failures": 0,
+        "last_success": null
+      },
       "install": [
         {
           "id": "dsh",
@@ -2344,7 +2403,11 @@
       "icon": "icons/com.pixso__mcp.ico",
       "detail_path": "servers/com.pixso__mcp/",
       "possibly_broken": false,
-      "health": null,
+      "health": {
+        "status": "skipped",
+        "consecutive_failures": 0,
+        "last_success": null
+      },
       "install": [
         {
           "id": "dsh",
@@ -2557,7 +2620,7 @@
       "display_name": "12306",
       "description": "社区维护的 12306 火车票查询 MCP，支持余票、过站和中转方案查询，不直接购票。",
       "description_en": "Community 12306 MCP for ticket availability, through-station and transfer searches.",
-      "version": "1.0.0",
+      "version": "0.3.10",
       "homepage": "https://github.com/Joooook/12306-mcp",
       "repository": "https://github.com/Joooook/12306-mcp",
       "vendor": "12306 社区项目",
@@ -2713,7 +2776,7 @@
       "display_name": "微信读书",
       "description": "社区维护的微信读书 MCP，支持书架、书籍搜索、笔记划线、热门书评和阅读进度。",
       "description_en": "Community WeRead MCP for bookshelf, search, highlights, reviews and reading progress.",
-      "version": "1.0.0",
+      "version": "0.2.2",
       "homepage": "https://github.com/freestylefly/mcp-server-weread",
       "repository": "https://github.com/freestylefly/mcp-server-weread",
       "vendor": "微信读书社区项目",
@@ -2908,7 +2971,7 @@
       "display_name": "flomo 浮墨",
       "description": "社区维护的 flomo MCP，通过个人 API 地址把 AI 生成的想法、笔记直接写入 flomo。",
       "description_en": "Community flomo MCP for writing notes and ideas through a personal API URL.",
-      "version": "1.0.0",
+      "version": "0.0.1",
       "homepage": "https://flomoapp.com/",
       "repository": "https://github.com/chatmcp/mcp-server-flomo",
       "vendor": "flomo 社区项目",
