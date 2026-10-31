@@ -85,7 +85,7 @@ for (const entry of index.entries) {
     homepage: entry.homepage,
     repository: entry.repository ?? null,
     license: entry.license,
-    transport: { type: entry.transport.type },
+    transport: entry.transport,
     tools: entry.tools,
     last_checked: entry.last_checked,
     possibly_broken: entry.possibly_broken,

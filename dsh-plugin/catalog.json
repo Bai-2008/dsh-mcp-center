@@ -59,7 +59,17 @@
       "repository": null,
       "license": "Proprietary",
       "transport": {
-        "type": "streamable_http"
+        "type": "streamable_http",
+        "url": "https://mcp.amap.com/mcp?key={key}",
+        "headers": [],
+        "variables": {
+          "key": {
+            "description": "高德开放平台 Web 服务 Key",
+            "obtain_at": "https://lbs.amap.com/api/mcp-server/create-project-and-key",
+            "required": true,
+            "secret": true
+          }
+        }
       },
       "tools": [],
       "last_checked": "2026-10-30",
@@ -126,7 +136,17 @@
       "repository": "https://github.com/M-China/mcd-mcp-server",
       "license": "Proprietary",
       "transport": {
-        "type": "streamable_http"
+        "type": "streamable_http",
+        "url": "https://mcp.mcd.cn/",
+        "headers": [
+          {
+            "name": "Authorization",
+            "description": "Bearer <麦当劳开放平台 MCP Token>",
+            "obtain_at": "https://open.mcd.cn/mcp",
+            "required": true,
+            "secret": true
+          }
+        ]
       },
       "tools": [],
       "last_checked": "2026-10-30",
@@ -193,7 +213,17 @@
       "repository": null,
       "license": "Proprietary",
       "transport": {
-        "type": "streamable_http"
+        "type": "streamable_http",
+        "url": "https://gwmcp.lkcoffee.com/order/user/mcp",
+        "headers": [
+          {
+            "name": "Authorization",
+            "description": "Bearer <瑞幸开放平台 MCP Token>",
+            "obtain_at": "https://open.lkcoffee.com/mcp",
+            "required": true,
+            "secret": true
+          }
+        ]
       },
       "tools": [],
       "last_checked": "2026-10-30",
@@ -260,7 +290,21 @@
       "repository": "https://github.com/upstash/context7",
       "license": "MIT",
       "transport": {
-        "type": "stdio"
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@upstash/context7-mcp@4.4.4"
+        ],
+        "env": [
+          {
+            "name": "CONTEXT7_API_KEY",
+            "description": "可选 API Key，用于提高请求配额。",
+            "obtain_at": "https://context7.com/dashboard",
+            "required": false,
+            "secret": true
+          }
+        ]
       },
       "tools": [],
       "last_checked": "2026-10-30",
@@ -327,7 +371,12 @@
       "repository": "https://github.com/modelcontextprotocol/servers",
       "license": "MIT",
       "transport": {
-        "type": "stdio"
+        "type": "stdio",
+        "command": "uvx",
+        "args": [
+          "mcp-server-fetch@2026.10.28"
+        ],
+        "env": []
       },
       "tools": [],
       "last_checked": "2026-10-30",
@@ -384,7 +433,14 @@
       "repository": "https://github.com/modelcontextprotocol/servers",
       "license": "MIT",
       "transport": {
-        "type": "stdio"
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-filesystem@2.1.0",
+          "/path/to/allowed/directory"
+        ],
+        "env": []
       },
       "tools": [],
       "last_checked": "2026-10-30",
@@ -441,7 +497,17 @@
       "repository": "https://github.com/github/github-mcp-server",
       "license": "MIT",
       "transport": {
-        "type": "streamable_http"
+        "type": "streamable_http",
+        "url": "https://api.githubcopilot.com/mcp/",
+        "headers": [
+          {
+            "name": "Authorization",
+            "description": "Bearer <GitHub PAT 或 App Token>",
+            "obtain_at": "https://github.com/settings/tokens",
+            "required": true,
+            "secret": true
+          }
+        ]
       },
       "tools": [],
       "last_checked": "2026-10-30",
@@ -508,7 +574,9 @@
       "repository": "https://github.com/makenotion/notion-next",
       "license": "Proprietary",
       "transport": {
-        "type": "streamable_http"
+        "type": "streamable_http",
+        "url": "https://mcp.notion.com/mcp",
+        "headers": []
       },
       "tools": [],
       "last_checked": "2026-10-30",
@@ -565,7 +633,13 @@
       "repository": "https://github.com/microsoft/playwright-mcp",
       "license": "Apache-2.0",
       "transport": {
-        "type": "stdio"
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@playwright/mcp@0.0.83"
+        ],
+        "env": []
       },
       "tools": [],
       "last_checked": "2026-10-30",
@@ -622,7 +696,14 @@
       "repository": "https://github.com/modelcontextprotocol/servers-archived",
       "license": "MIT",
       "transport": {
-        "type": "stdio"
+        "type": "stdio",
+        "command": "uvx",
+        "args": [
+          "mcp-server-sqlite@2025.4.25",
+          "--db-path",
+          "/path/to/database.db"
+        ],
+        "env": []
       },
       "tools": [],
       "last_checked": "2026-10-30",
