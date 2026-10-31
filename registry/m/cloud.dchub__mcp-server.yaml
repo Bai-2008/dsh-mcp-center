@@ -1,0 +1,33 @@
+"$schema": "../../schema/registry.schema.json"
+name: cloud.dchub/mcp-server
+display_name: DC Hub
+description: DC Hub 是数据中心选址的实时数据层。其数据中心电力指数（DCPI）每日评估 300 多个市场中数据中心可以获得电网电力的位置。免费开始使用。
+description_en: Live data-center site-selection data, with a daily power index for 300+ markets.
+version: 2.12.44
+homepage: https://dchub.cloud/connect
+repository: https://github.com/azmartone67/dchub-mcp-server
+vendor: DC Hub
+transport:
+  type: streamable_http
+  url: https://dchub.cloud/mcp
+tools: []
+categories:
+  - AI
+  - 其他
+tags:
+  - 数据中心
+  - 能源
+  - 电网
+  - 选址
+  - data center
+  - energy
+official: true
+verified: false
+clients:
+  - claude-desktop
+  - cursor
+  - vscode
+  - chatgpt
+  - windsurf
+license: MIT
+last_checked: 2026-10-31

@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-10-31T05:49:36.388Z",
+  "generated_at": "2026-10-31T06:38:41.249Z",
   "site": {
     "origin": "https://bai-2008.github.io",
     "base": "/dsh-mcp-center/",
     "repo_url": "https://github.com/Bai-2008/dsh-mcp-center"
   },
-  "count": 28,
+  "count": 29,
   "categories": [
     {
       "name": "餐饮",
@@ -37,11 +37,11 @@
     },
     {
       "name": "AI",
-      "count": 0
+      "count": 1
     },
     {
       "name": "其他",
-      "count": 1
+      "count": 2
     }
   ],
   "entries": [
@@ -1226,6 +1226,65 @@
           "obtain_at": "https://context7.com/dashboard"
         }
       ]
+    },
+    {
+      "name": "cloud.dchub/mcp-server",
+      "display_name": "DC Hub",
+      "description": "DC Hub 是数据中心选址的实时数据层。其数据中心电力指数（DCPI）每日评估 300 多个市场中数据中心可以获得电网电力的位置。免费开始使用。",
+      "vendor": "DC Hub",
+      "categories": [
+        "AI",
+        "其他"
+      ],
+      "official": true,
+      "verified": true,
+      "homepage": "https://dchub.cloud/connect",
+      "repository": "https://github.com/azmartone67/dchub-mcp-server",
+      "license": "MIT",
+      "transport": {
+        "type": "streamable_http",
+        "url": "https://dchub.cloud/mcp"
+      },
+      "tools": [],
+      "last_checked": "2026-10-31",
+      "possibly_broken": false,
+      "auth_note": "该服务使用 OAuth 或客户端登录；首次连接会按客户端提示进入授权流程。",
+      "detail_path": "servers/cloud.dchub__mcp-server/",
+      "install": [
+        {
+          "id": "dsh",
+          "label": "DSH",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "DSH → MCP连接器 → 导入 JSON；当前传输：Streamable HTTP。",
+          "code": "{\n  \"mcpServers\": {\n    \"cloud-dchub-mcp-server\": {\n      \"type\": \"streamable-http\",\n      \"url\": \"https://dchub.cloud/mcp\",\n      \"headers\": {}\n    }\n  }\n}\n"
+        },
+        {
+          "id": "claude",
+          "label": "Claude Desktop",
+          "subtitle": "mcp-remote 桥接",
+          "filename": "claude_desktop_config.json",
+          "hint": "Claude Desktop 的 JSON 配置只支持 stdio；这里用 mcp-remote 桥接远程 URL，也可在 Settings → Connectors 直接添加 URL。",
+          "code": "{\n  \"mcpServers\": {\n    \"cloud-dchub-mcp-server\": {\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"mcp-remote\",\n        \"https://dchub.cloud/mcp\"\n      ]\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "subtitle": "mcp.json",
+          "filename": "mcp.json",
+          "hint": "写入项目 .cursor/mcp.json 或全局 ~/.cursor/mcp.json。OAuth 服务可在客户端弹窗中完成授权。",
+          "code": "{\n  \"mcpServers\": {\n    \"cloud-dchub-mcp-server\": {\n      \"url\": \"https://dchub.cloud/mcp\",\n      \"headers\": {}\n    }\n  }\n}\n"
+        },
+        {
+          "id": "cline",
+          "label": "Cline",
+          "subtitle": "MCP Servers",
+          "filename": "cline_mcp_settings.json",
+          "hint": "在 Cline 的 MCP Servers 配置中粘贴；type 已按 streamableHttp / sse 设置。",
+          "code": "{\n  \"mcpServers\": {\n    \"cloud-dchub-mcp-server\": {\n      \"type\": \"streamableHttp\",\n      \"url\": \"https://dchub.cloud/mcp\",\n      \"headers\": {},\n      \"disabled\": false,\n      \"autoApprove\": []\n    }\n  }\n}\n"
+        }
+      ],
+      "credentials": []
     },
     {
       "name": "io.github.modelcontextprotocol/fetch",
