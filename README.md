@@ -271,6 +271,7 @@ Claude Desktop 的远程配置会标注为桥接方案；如果客户端版本�
 - 数据来自同一份 registry，构建时生成内联快照，离线可用
 - 对接 `dsh-mcp-connector`：在插件内直接安装、卸载、检查、启用/停用、重连、更新、编辑连接
 - 安装表单直接调用连接器 `configure`；无凭据的远程 OAuth 服务回退到连接器目录 `connect`
+- 安装时输入凭据会保存插件自己的本机副本：`$DSH_PROFILE_DIR/dsh-mcp-center/credentials.json`
 - 插件本身不执行 MCP 工具；连接操作走连接器的同源 HTTP API
 
 ```bash
