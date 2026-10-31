@@ -1,0 +1,1389 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="dark" />
+<title>MCP 市场 · 60 秒宣传片</title>
+<style>
+  :root {
+    --bg: #06070a;
+    --panel: #0d0f14;
+    --panel-2: #11141b;
+    --line: rgba(255, 255, 255, 0.1);
+    --line-strong: rgba(255, 255, 255, 0.18);
+    --text: #f2f4f8;
+    --muted: #8e96a8;
+    --muted-2: #636b7d;
+    --blue: #4f8cff;
+    --blue-2: #8db7ff;
+    --blue-soft: rgba(79, 140, 255, 0.14);
+    --gold: #d8b15c;
+    --green: #45d6a4;
+    --red: #ff6b72;
+    --font: "PingFang SC", "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; background: #030407; }
+  body {
+    color: var(--text);
+    font-family: var(--font);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+  button { font: inherit; color: inherit; }
+  a { color: inherit; }
+
+  .viewport {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(circle at 50% 40%, rgba(29, 48, 92, 0.3), transparent 52%),
+      #030407;
+  }
+
+  .stage {
+    position: relative;
+    width: min(100vw, 177.7778vh);
+    height: min(56.25vw, 100vh);
+    overflow: hidden;
+    background: var(--bg);
+    container-type: size;
+    font-size: 1cqw;
+    isolation: isolate;
+    box-shadow: 0 0 8em rgba(0, 0, 0, 0.8);
+  }
+
+  .stage::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 18% 18%, rgba(79, 140, 255, 0.16), transparent 30%),
+      radial-gradient(circle at 80% 84%, rgba(79, 140, 255, 0.08), transparent 34%),
+      linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+    background-size: auto, auto, 4em 4em, 4em 4em;
+    opacity: 0.86;
+    pointer-events: none;
+  }
+  .stage::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 52%, rgba(0, 0, 0, 0.54) 100%);
+    pointer-events: none;
+    z-index: 20;
+  }
+
+  .grain {
+    position: absolute;
+    inset: -50%;
+    opacity: 0.035;
+    pointer-events: none;
+    z-index: 19;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+    animation: grainShift 0.45s steps(2) infinite;
+  }
+  @keyframes grainShift {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(-2%, 1%); }
+    50% { transform: translate(1%, -2%); }
+    75% { transform: translate(2%, 2%); }
+    100% { transform: translate(-1%, -1%); }
+  }
+
+  .topbar {
+    position: absolute;
+    top: 2.25em;
+    left: 3.1em;
+    right: 3.1em;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.8em;
+    font-size: 1.02em;
+    letter-spacing: 0.01em;
+  }
+  .brand-mark {
+    width: 2.15em;
+    height: 2.15em;
+    border: 1px solid rgba(141, 183, 255, 0.35);
+    border-radius: 0.5em;
+    display: grid;
+    place-items: center;
+    background: rgba(79, 140, 255, 0.08);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+  }
+  .brand-mark svg { width: 1.2em; height: 1.2em; fill: none; stroke: var(--blue-2); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .brand-copy { display: flex; align-items: baseline; gap: 0.65em; }
+  .brand-copy strong { font-size: 0.95em; font-weight: 650; letter-spacing: 0.02em; }
+  .brand-copy span { color: var(--muted-2); font-family: var(--mono); font-size: 0.63em; letter-spacing: 0.12em; text-transform: uppercase; }
+  .scene-id {
+    color: var(--muted-2);
+    font-family: var(--mono);
+    font-size: 0.64em;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .scene-id b { color: var(--blue-2); font-weight: 500; }
+
+  .scenes { position: absolute; inset: 0; z-index: 5; }
+  .scene {
+    position: absolute;
+    inset: 0;
+    padding: 7.4em 5em 5.3em;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.62s ease, visibility 0.62s;
+  }
+  .scene.active { opacity: 1; visibility: visible; }
+  .scene .anim {
+    opacity: 0;
+    transform: translateY(1.2em);
+    filter: blur(0.45em);
+  }
+  .scene.active .anim {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    animation: enter 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--d, 0ms);
+  }
+  html.static .scene .anim {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    animation: none !important;
+  }
+  @keyframes enter {
+    from { opacity: 0; transform: translateY(1.4em); filter: blur(0.5em); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+  }
+
+  .kicker {
+    display: flex;
+    align-items: center;
+    gap: 0.8em;
+    margin-bottom: 1em;
+    color: var(--blue-2);
+    font-family: var(--mono);
+    font-size: 0.7em;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .kicker::before {
+    content: "";
+    width: 1.8em;
+    height: 1px;
+    background: var(--blue);
+    box-shadow: 0 0 0.8em var(--blue);
+  }
+  .kicker.gold { color: var(--gold); }
+  .kicker.gold::before { background: var(--gold); box-shadow: 0 0 0.8em var(--gold); }
+  .kicker.red { color: var(--red); }
+  .kicker.red::before { background: var(--red); box-shadow: 0 0 0.8em var(--red); }
+
+  h1, h2, h3, p { margin: 0; }
+  h1 {
+    font-size: 7.35em;
+    line-height: 1.04;
+    letter-spacing: -0.055em;
+    font-weight: 660;
+  }
+  h2 {
+    font-size: 4.35em;
+    line-height: 1.1;
+    letter-spacing: -0.045em;
+    font-weight: 640;
+  }
+  .hl { color: var(--blue-2); }
+  .hl-gold { color: var(--gold); }
+  .lede {
+    margin-top: 1.35em;
+    max-width: 31em;
+    color: var(--muted);
+    font-size: 1.35em;
+    line-height: 1.8;
+    letter-spacing: 0.01em;
+  }
+  .micro {
+    color: var(--muted-2);
+    font-family: var(--mono);
+    font-size: 0.64em;
+    letter-spacing: 0.08em;
+  }
+
+  /* ---------- scene 1 ---------- */
+  .scene-1 { padding-top: 9.2em; }
+  .scene-1 .hook { position: relative; z-index: 3; }
+  .scene-1 h1 { text-shadow: 0 0 2.2em rgba(79, 140, 255, 0.13); }
+  .scene-1 .lede { max-width: 29em; }
+  .hook-meta {
+    display: flex;
+    gap: 1.1em;
+    margin-top: 3.2em;
+    color: var(--muted-2);
+    font-family: var(--mono);
+    font-size: 0.67em;
+    letter-spacing: 0.08em;
+  }
+  .hook-meta span { display: inline-flex; align-items: center; gap: 0.55em; }
+  .hook-meta i { width: 0.45em; height: 0.45em; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0.8em var(--blue); }
+  .big-mark {
+    position: absolute;
+    right: -1.2em;
+    top: 2.4em;
+    width: 31em;
+    height: 31em;
+    opacity: 0.55;
+    z-index: 1;
+    animation: markFloat 9s ease-in-out infinite;
+  }
+  .big-mark svg { width: 100%; height: 100%; }
+  .big-mark .ring { fill: none; stroke: rgba(79, 140, 255, 0.34); stroke-width: 2; }
+  .big-mark .ring-2 { fill: none; stroke: rgba(79, 140, 255, 0.16); stroke-width: 1.3; stroke-dasharray: 3 7; transform-origin: center; animation: spin 34s linear infinite; }
+  .big-mark .node { fill: var(--blue); opacity: 0.8; }
+  .big-mark .edge { stroke: rgba(141, 183, 255, 0.48); stroke-width: 2.1; fill: none; stroke-dasharray: 2 4; animation: dash 12s linear infinite; }
+  @keyframes markFloat { 50% { transform: translateY(-1.2em) rotate(1.5deg); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes dash { to { stroke-dashoffset: -120; } }
+
+  .terminal {
+    position: absolute;
+    right: 3.2em;
+    bottom: 5.2em;
+    width: 33em;
+    border: 1px solid var(--line);
+    border-radius: 0.8em;
+    background: rgba(9, 11, 16, 0.88);
+    box-shadow: 0 2em 6em rgba(0, 0, 0, 0.35);
+    z-index: 4;
+    transform: rotate(-2deg);
+    backdrop-filter: blur(10px);
+  }
+  .terminal-bar { display: flex; align-items: center; gap: 0.45em; padding: 0.8em 1em; border-bottom: 1px solid var(--line); }
+  .terminal-bar i { width: 0.55em; height: 0.55em; border-radius: 50%; background: #3d4250; }
+  .terminal-bar i:first-child { background: #6e7688; }
+  .terminal-bar span { margin-left: auto; color: var(--muted-2); font-family: var(--mono); font-size: 0.6em; letter-spacing: 0.08em; }
+  .terminal pre { margin: 0; padding: 1.2em 1.3em 1.4em; color: #b9c7dd; font-family: var(--mono); font-size: 0.69em; line-height: 1.85; white-space: pre-wrap; }
+  .terminal .k { color: #8db7ff; }
+  .terminal .s { color: #a7d8b9; }
+  .terminal .e { color: #ff8f95; }
+  .terminal .c { color: #5c6578; }
+
+  /* ---------- scene 2 ---------- */
+  .scene-2 .pain-copy { max-width: 31em; position: relative; z-index: 4; }
+  .scene-2 h2 { margin-top: 0.3em; }
+  .pain-grid {
+    position: absolute;
+    right: 4.2em;
+    top: 8.2em;
+    width: 42em;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9em;
+  }
+  .pain-card {
+    position: relative;
+    min-height: 8.2em;
+    padding: 1.25em 1.3em;
+    border: 1px solid var(--line);
+    border-radius: 0.65em;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.008));
+    overflow: hidden;
+  }
+  .pain-card::after {
+    content: "×";
+    position: absolute;
+    right: 0.55em;
+    bottom: -0.15em;
+    color: rgba(255, 107, 114, 0.18);
+    font-family: var(--mono);
+    font-size: 4.8em;
+    line-height: 1;
+    font-weight: 300;
+  }
+  .pain-card .num { color: var(--red); font-family: var(--mono); font-size: 0.62em; letter-spacing: 0.12em; }
+  .pain-card strong { display: block; margin-top: 0.55em; font-size: 1.22em; font-weight: 600; }
+  .pain-card p { margin-top: 0.3em; color: var(--muted-2); font-size: 0.68em; line-height: 1.6; }
+  .pain-bottom {
+    position: absolute;
+    left: 5em;
+    bottom: 5.2em;
+    display: flex;
+    align-items: center;
+    gap: 1.1em;
+    color: var(--muted);
+    font-size: 0.95em;
+  }
+  .pain-bottom strong { color: var(--red); font-weight: 550; }
+  .before-terminal {
+    position: absolute;
+    left: 5em;
+    bottom: 10.5em;
+    width: 42em;
+    border: 1px solid rgba(255, 107, 114, 0.22);
+    border-radius: 0.65em;
+    background: rgba(13, 10, 12, 0.78);
+    box-shadow: 0 1.8em 4.5em rgba(0, 0, 0, 0.36);
+    overflow: hidden;
+  }
+  .before-terminal .bt-head {
+    display: flex;
+    align-items: center;
+    gap: 0.45em;
+    padding: 0.65em 0.9em;
+    border-bottom: 1px solid rgba(255, 107, 114, 0.16);
+    color: var(--muted-2);
+    font-family: var(--mono);
+    font-size: 0.56em;
+    letter-spacing: 0.05em;
+  }
+  .before-terminal .bt-head i { width: 0.5em; height: 0.5em; border-radius: 50%; background: rgba(255, 107, 114, 0.55); }
+  .before-terminal .bt-head span { margin-left: auto; color: rgba(255, 107, 114, 0.8); }
+  .before-terminal pre {
+    margin: 0;
+    padding: 0.9em 1em;
+    color: #c5b3b8;
+    font-family: var(--mono);
+    font-size: 0.62em;
+    line-height: 1.8;
+    white-space: pre-wrap;
+  }
+  .before-terminal pre b { color: #ff9ca1; font-weight: 400; }
+  .before-terminal pre em { color: var(--muted-2); font-style: normal; }
+  .error-line {
+    position: absolute;
+    right: 4.2em;
+    bottom: 4.5em;
+    color: var(--red);
+    font-family: var(--mono);
+    font-size: 0.66em;
+    letter-spacing: 0.02em;
+    opacity: 0.85;
+  }
+  .error-line span { display: inline-block; padding: 0.2em 0.55em; border: 1px solid rgba(255, 107, 114, 0.3); border-radius: 0.3em; background: rgba(255, 107, 114, 0.07); }
+
+  /* ---------- shared window ---------- */
+  .window {
+    border: 1px solid var(--line-strong);
+    border-radius: 0.85em;
+    background: #0a0c11;
+    box-shadow: 0 2.6em 8em rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.025) inset;
+    overflow: hidden;
+  }
+  .win-bar {
+    height: 3.1em;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0 1.1em;
+    border-bottom: 1px solid var(--line);
+    background: #0c0e13;
+  }
+  .win-dots { display: flex; gap: 0.42em; }
+  .win-dots i { width: 0.58em; height: 0.58em; border-radius: 50%; background: #363b48; }
+  .win-dots i:nth-child(1) { background: #6f7688; }
+  .win-title { margin-left: 0.5em; color: var(--muted-2); font-family: var(--mono); font-size: 0.58em; letter-spacing: 0.06em; }
+  .win-bar .right { margin-left: auto; color: var(--muted-2); font-family: var(--mono); font-size: 0.56em; }
+  .win-bar .right b { color: var(--green); font-weight: 500; }
+
+  /* ---------- scene 3 plugin ---------- */
+  .scene-3 h2 { max-width: 22em; }
+  .scene-3 .scene-head { position: relative; z-index: 4; }
+  .scene-3 .scene-head .lede { margin-top: 0.8em; max-width: 29em; font-size: 1.05em; }
+  .dsh-window {
+    position: absolute;
+    left: 9em;
+    right: 9em;
+    bottom: 4.1em;
+    height: 29em;
+    display: grid;
+    grid-template-columns: 14.5em 1fr;
+    z-index: 3;
+  }
+  .dsh-side {
+    position: relative;
+    border-right: 1px solid var(--line);
+    background: #080a0e;
+    padding: 1.2em 1em;
+  }
+  .dsh-logo { display: flex; align-items: center; gap: 0.55em; padding: 0.2em 0.4em 1.2em; color: var(--muted-strong); font-size: 0.72em; font-weight: 600; }
+  .dsh-logo i { width: 1.5em; height: 1.5em; border-radius: 0.35em; border: 1px solid rgba(141, 183, 255, 0.4); background: var(--blue-soft); display: grid; place-items: center; color: var(--blue-2); font-family: var(--mono); font-size: 0.7em; font-style: normal; }
+  .dsh-nav { display: grid; gap: 0.28em; }
+  .dsh-nav span { display: flex; align-items: center; gap: 0.55em; padding: 0.52em 0.6em; border-radius: 0.35em; color: var(--muted-2); font-size: 0.66em; }
+  .dsh-nav span::before { content: ""; width: 0.75em; height: 0.75em; border: 1px solid currentColor; border-radius: 0.18em; opacity: 0.55; }
+  .dsh-nav span.on { color: var(--text); background: rgba(79, 140, 255, 0.13); }
+  .dsh-nav span.on::before { border-color: var(--blue-2); background: var(--blue); box-shadow: 0 0 0.55em rgba(79, 140, 255, 0.65); }
+  .dsh-side .side-foot { position: absolute; bottom: 1.2em; left: 2.1em; color: var(--muted-2); font-family: var(--mono); font-size: 0.52em; }
+  .dsh-main { min-width: 0; padding: 1.2em 1.5em 1.3em; }
+  .dsh-top { display: flex; align-items: center; gap: 1.2em; border-bottom: 1px solid var(--line); padding-bottom: 0.8em; }
+  .dsh-top strong { font-size: 0.9em; font-weight: 600; }
+  .dsh-top .tab { position: relative; color: var(--muted-2); font-size: 0.66em; padding-bottom: 0.55em; margin-bottom: -0.9em; }
+  .dsh-top .tab.on { color: var(--text); }
+  .dsh-top .tab.on::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--blue); box-shadow: 0 0 0.8em var(--blue); }
+  .dsh-head { display: flex; align-items: flex-end; gap: 1em; margin-top: 1.3em; }
+  .dsh-head h3 { font-size: 1.35em; font-weight: 620; letter-spacing: -0.03em; }
+  .source-badge { margin-left: auto; display: inline-flex; align-items: center; gap: 0.4em; padding: 0.27em 0.6em; border: 1px solid rgba(69, 214, 164, 0.25); border-radius: 0.35em; background: rgba(69, 214, 164, 0.07); color: var(--green); font-family: var(--mono); font-size: 0.54em; white-space: nowrap; }
+  .source-badge i { width: 0.4em; height: 0.4em; border-radius: 50%; background: var(--green); box-shadow: 0 0 0.55em var(--green); }
+  .dsh-search { display: flex; align-items: center; gap: 0.6em; height: 2.35em; margin-top: 0.9em; padding: 0 0.8em; border: 1px solid var(--line); border-radius: 0.4em; color: var(--muted-2); font-size: 0.6em; background: rgba(255, 255, 255, 0.018); }
+  .dsh-search::before { content: "⌕"; font-size: 1.3em; color: var(--muted-2); }
+  .chips { display: flex; gap: 0.38em; margin-top: 0.75em; flex-wrap: wrap; }
+  .chip { padding: 0.24em 0.55em; border: 1px solid var(--line); border-radius: 0.3em; color: var(--muted-2); font-size: 0.53em; }
+  .chip.on { border-color: rgba(79, 140, 255, 0.5); color: var(--blue-2); background: var(--blue-soft); }
+  .svc-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.62em; margin-top: 0.8em; }
+  .svc-card { position: relative; padding: 0.72em; border: 1px solid var(--line); border-radius: 0.48em; background: #0f1218; min-width: 0; }
+  .svc-card.hot { border-color: rgba(79, 140, 255, 0.55); box-shadow: 0 0 0 1px rgba(79, 140, 255, 0.12), 0 0 2.2em rgba(79, 140, 255, 0.09); }
+  .svc-top { display: flex; align-items: center; gap: 0.55em; }
+  .icon { flex: 0 0 auto; width: 2.15em; height: 2.15em; border-radius: 0.45em; display: grid; place-items: center; color: white; font-size: 0.85em; font-weight: 700; letter-spacing: -0.04em; background: linear-gradient(140deg, #3479e8, #1b4eaa); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.13); }
+  .icon.green { background: linear-gradient(140deg, #1b9b71, #0b5d47); }
+  .icon.orange { background: linear-gradient(140deg, #d9853c, #8c4b1f); }
+  .icon.gold { background: linear-gradient(140deg, #b9954a, #6f5524); }
+  .icon.dark { background: linear-gradient(140deg, #3b4356, #1b202d); font-size: 0.63em; }
+  .icon.purple { background: linear-gradient(140deg, #8069df, #41318f); }
+  .svc-name { min-width: 0; }
+  .svc-name strong { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 0.7em; font-weight: 600; }
+  .svc-name span { display: block; margin-top: 0.13em; color: var(--muted-2); font-family: var(--mono); font-size: 0.48em; }
+  .svc-desc { margin-top: 0.48em; color: var(--muted-2); font-size: 0.53em; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 3em; }
+  .badges { display: flex; gap: 0.28em; margin-top: 0.5em; flex-wrap: wrap; }
+  .badge { padding: 0.2em 0.4em; border-radius: 0.25em; font-size: 0.49em; line-height: 1.2; color: var(--muted); border: 1px solid var(--line); }
+  .badge.blue { color: var(--blue-2); border-color: rgba(79, 140, 255, 0.3); background: var(--blue-soft); }
+  .badge.gold { color: var(--gold); border-color: rgba(216, 177, 92, 0.28); background: rgba(216, 177, 92, 0.08); }
+  .badge.green { color: var(--green); border-color: rgba(69, 214, 164, 0.25); background: rgba(69, 214, 164, 0.06); }
+
+  .callout {
+    position: absolute;
+    z-index: 5;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55em;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 0.58em;
+    letter-spacing: 0.03em;
+  }
+  .callout i { width: 0.55em; height: 0.55em; border-radius: 50%; border: 1px solid var(--blue); box-shadow: 0 0 0.6em rgba(79, 140, 255, 0.5); }
+  .callout.left { left: 5.4em; bottom: 19em; }
+  .callout.right { right: 5.4em; bottom: 19em; }
+
+  /* ---------- scene 4 website ---------- */
+  .scene-4 { padding-top: 5.8em; }
+  .scene-4 .scene-head { text-align: center; }
+  .scene-4 h2 { margin-top: 0.16em; }
+  .scene-4 .lede { margin: 0.7em auto 0; max-width: 40em; font-size: 0.98em; }
+  .browser {
+    position: absolute;
+    left: 5.8em;
+    right: 5.8em;
+    bottom: 3.7em;
+    height: 35em;
+    border: 1px solid var(--line-strong);
+    border-radius: 0.8em;
+    background: #0a0c10;
+    box-shadow: 0 2.8em 8em rgba(0, 0, 0, 0.55);
+    overflow: hidden;
+  }
+  .browser-bar { height: 2.8em; display: flex; align-items: center; gap: 0.5em; padding: 0 1em; border-bottom: 1px solid var(--line); background: #0c0e13; }
+  .browser-bar .url { flex: 1; height: 1.65em; margin: 0 1em; padding: 0 0.8em; border: 1px solid var(--line); border-radius: 0.3em; background: rgba(255, 255, 255, 0.025); color: var(--muted-2); font-family: var(--mono); font-size: 0.55em; display: flex; align-items: center; gap: 0.45em; }
+  .browser-bar .url b { color: var(--green); font-weight: 400; }
+  .site-header { display: flex; align-items: center; gap: 1.2em; padding: 0.9em 1.3em 0.8em; border-bottom: 1px solid var(--line); }
+  .site-brand { display: flex; align-items: center; gap: 0.5em; }
+  .site-brand .brand-mark { width: 1.75em; height: 1.75em; border-radius: 0.35em; }
+  .site-brand .brand-mark svg { width: 1em; height: 1em; }
+  .site-brand strong { font-size: 0.8em; }
+  .site-brand small { color: var(--muted-2); font-family: var(--mono); font-size: 0.48em; }
+  .site-search { margin-left: auto; display: flex; align-items: center; gap: 0.4em; width: 10em; height: 1.8em; padding: 0 0.55em; border: 1px solid var(--line); border-radius: 0.32em; color: var(--muted-2); font-size: 0.55em; }
+  .site-search kbd { margin-left: auto; color: var(--muted-2); font-family: var(--mono); font-size: 0.8em; }
+  .site-body { padding: 1.1em 1.35em; }
+  .market-head { display: flex; align-items: flex-end; gap: 0.8em; }
+  .market-head h3 { font-size: 1.35em; letter-spacing: -0.035em; }
+  .market-head .count { color: var(--muted-2); font-family: var(--mono); font-size: 0.56em; padding-bottom: 0.35em; }
+  .market-head .online { margin-left: auto; padding-bottom: 0.35em; color: var(--green); font-family: var(--mono); font-size: 0.54em; }
+  .site-chips { display: flex; gap: 0.35em; margin-top: 0.65em; flex-wrap: wrap; }
+  .site-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.55em; margin-top: 0.8em; }
+  .site-card { padding: 0.65em; border: 1px solid var(--line); border-radius: 0.45em; background: #0f1218; }
+  .site-card .svc-desc { font-size: 0.51em; min-height: 2.8em; }
+  .site-card .svc-name strong { font-size: 0.67em; }
+  .site-card .icon { width: 1.95em; height: 1.95em; font-size: 0.75em; }
+  .site-stats { display: flex; gap: 1.6em; margin-top: 0.9em; padding-top: 0.7em; border-top: 1px solid var(--line); color: var(--muted-2); font-family: var(--mono); font-size: 0.52em; }
+  .site-stats b { color: var(--text); font-weight: 500; }
+
+  /* ---------- scene 5 install ---------- */
+  .scene-5 .install-copy { position: absolute; left: 5em; top: 9.2em; width: 33em; z-index: 4; }
+  .scene-5 h2 { margin-top: 0.25em; font-size: 4.1em; }
+  .steps { display: grid; gap: 0.7em; margin-top: 2em; }
+  .step { display: flex; align-items: center; gap: 0.8em; color: var(--muted-2); font-size: 0.72em; }
+  .step i { width: 1.35em; height: 1.35em; border: 1px solid var(--line-strong); border-radius: 50%; display: grid; place-items: center; font-family: var(--mono); font-size: 0.8em; color: var(--muted-2); font-style: normal; }
+  .step strong { color: var(--muted); font-weight: 500; }
+  .step.on i { border-color: var(--green); color: var(--green); background: rgba(69, 214, 164, 0.08); }
+  .step.on strong { color: var(--green); }
+  .install-modal {
+    position: absolute;
+    right: 6.5em;
+    top: 7.8em;
+    width: 49em;
+    border: 1px solid var(--line-strong);
+    border-radius: 0.8em;
+    background: #0c0e13;
+    box-shadow: 0 2.2em 7em rgba(0, 0, 0, 0.65);
+    z-index: 3;
+    overflow: hidden;
+  }
+  .modal-head { display: flex; align-items: center; gap: 0.75em; padding: 1.05em 1.2em; border-bottom: 1px solid var(--line); }
+  .modal-head .icon { width: 2.4em; height: 2.4em; }
+  .modal-head strong { font-size: 0.95em; }
+  .modal-head small { display: block; margin-top: 0.1em; color: var(--muted-2); font-family: var(--mono); font-size: 0.52em; }
+  .modal-head .badge { margin-left: auto; }
+  .modal-body { padding: 1em 1.2em 1.15em; }
+  .field { margin-bottom: 0.75em; }
+  .field label { display: block; margin-bottom: 0.35em; color: var(--muted-2); font-size: 0.56em; }
+  .field .input { height: 2.15em; display: flex; align-items: center; gap: 0.4em; padding: 0 0.65em; border: 1px solid var(--line); border-radius: 0.32em; background: rgba(255, 255, 255, 0.02); color: var(--muted); font-family: var(--mono); font-size: 0.56em; }
+  .field .input.secret { color: var(--blue-2); letter-spacing: 0.12em; }
+  .field .input .ok { margin-left: auto; color: var(--green); font-family: var(--font); letter-spacing: 0; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6em; }
+  .modal-foot { display: flex; align-items: center; gap: 0.7em; padding: 0.85em 1.2em; border-top: 1px solid var(--line); background: rgba(255, 255, 255, 0.012); }
+  .modal-foot .note { color: var(--muted-2); font-size: 0.5em; line-height: 1.4; }
+  .btn { margin-left: auto; padding: 0.62em 1.1em; border: 1px solid rgba(79, 140, 255, 0.6); border-radius: 0.35em; background: var(--blue); color: white; font-size: 0.62em; font-weight: 600; box-shadow: 0 0.5em 1.8em rgba(79, 140, 255, 0.25); }
+  .btn.ghost { margin-left: 0; background: transparent; color: var(--muted); border-color: var(--line); box-shadow: none; }
+  .install-checks { display: flex; gap: 1em; margin-top: 1em; }
+  .check { display: flex; align-items: center; gap: 0.4em; color: var(--muted-2); font-size: 0.56em; }
+  .check i { width: 1.1em; height: 1.1em; border: 1px solid var(--line); border-radius: 50%; display: grid; place-items: center; font-style: normal; font-size: 0.8em; }
+  .check.done { color: var(--green); }
+  .check.done i { border-color: rgba(69, 214, 164, 0.5); background: rgba(69, 214, 164, 0.1); }
+  .code-note {
+    display: none;
+  }
+  .install-pipeline {
+    position: absolute;
+    left: 5em;
+    right: 7em;
+    bottom: 14em;
+    display: flex;
+    align-items: center;
+    gap: 0.65em;
+    padding: 0.75em 0.9em;
+    border: 1px solid var(--line);
+    border-radius: 0.5em;
+    background: rgba(255, 255, 255, 0.018);
+    z-index: 4;
+  }
+  .pipe-label {
+    margin-right: 0.35em;
+    color: var(--muted-2);
+    font-family: var(--mono);
+    font-size: 0.52em;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+  .pipe-node {
+    padding: 0.42em 0.65em;
+    border: 1px solid var(--line);
+    border-radius: 0.3em;
+    color: var(--muted);
+    font-size: 0.56em;
+    white-space: nowrap;
+  }
+  .pipe-node.hi { border-color: rgba(79, 140, 255, 0.35); color: var(--blue-2); background: var(--blue-soft); }
+  .pipe-node.done { border-color: rgba(69, 214, 164, 0.28); color: var(--green); }
+  .pipe-arrow { color: var(--muted-2); font-family: var(--mono); font-size: 0.62em; }
+  .safe-card {
+    position: absolute;
+    right: 6.5em;
+    top: 31.5em;
+    width: 34em;
+    display: flex;
+    align-items: center;
+    gap: 0.9em;
+    padding: 0.85em 1em;
+    border: 1px solid var(--line);
+    border-radius: 0.5em;
+    background: linear-gradient(135deg, rgba(69, 214, 164, 0.07), rgba(255, 255, 255, 0.012));
+    z-index: 4;
+  }
+  .safe-card .shield {
+    flex: 0 0 auto;
+    width: 2.7em;
+    height: 2.7em;
+    border: 1px solid rgba(69, 214, 164, 0.35);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: var(--green);
+    font-size: 0.82em;
+  }
+  .safe-card strong { display: block; font-size: 0.7em; font-weight: 550; }
+  .safe-card span { display: block; margin-top: 0.2em; color: var(--muted-2); font-family: var(--mono); font-size: 0.5em; word-break: break-all; }
+
+  /* ---------- scene 6 manage ---------- */
+  .scene-6 { padding-top: 6.4em; }
+  .scene-6 .scene-head { position: relative; z-index: 4; }
+  .scene-6 h2 { max-width: 18em; }
+  .manage-window { position: absolute; left: 7.2em; right: 7.2em; bottom: 4.2em; height: 28.5em; z-index: 3; }
+  .manage-head { display: flex; align-items: center; gap: 0.8em; padding: 1em 1.2em; border-bottom: 1px solid var(--line); }
+  .manage-head strong { font-size: 1em; }
+  .manage-head span { color: var(--muted-2); font-family: var(--mono); font-size: 0.52em; }
+  .manage-head .manage-actions { margin-left: auto; display: flex; gap: 0.4em; }
+  .pill { padding: 0.3em 0.55em; border: 1px solid var(--line); border-radius: 0.28em; color: var(--muted); font-size: 0.5em; }
+  .pill.blue { color: var(--blue-2); border-color: rgba(79, 140, 255, 0.35); background: var(--blue-soft); }
+  .manage-list { padding: 0.5em 1.2em 0.8em; }
+  .manage-row { display: grid; grid-template-columns: 1.7em 1fr 5.5em 4.5em 8.5em; align-items: center; gap: 0.7em; padding: 0.62em 0.35em; border-bottom: 1px solid rgba(255, 255, 255, 0.055); }
+  .manage-row:last-child { border-bottom: 0; }
+  .manage-row .icon { width: 1.65em; height: 1.65em; font-size: 0.62em; border-radius: 0.35em; }
+  .manage-name strong { display: block; font-size: 0.68em; font-weight: 550; }
+  .manage-name span { display: block; margin-top: 0.1em; color: var(--muted-2); font-family: var(--mono); font-size: 0.46em; }
+  .status { display: inline-flex; align-items: center; gap: 0.35em; font-size: 0.54em; color: var(--green); }
+  .status i { width: 0.4em; height: 0.4em; border-radius: 50%; background: currentColor; box-shadow: 0 0 0.5em currentColor; }
+  .status.warn { color: var(--gold); }
+  .tools { color: var(--muted-2); font-family: var(--mono); font-size: 0.5em; }
+  .row-actions { display: flex; gap: 0.3em; justify-content: flex-end; }
+  .row-actions span { padding: 0.25em 0.45em; border: 1px solid var(--line); border-radius: 0.25em; color: var(--muted-2); font-size: 0.46em; }
+  .row-actions span.hot { color: var(--blue-2); border-color: rgba(79, 140, 255, 0.35); }
+  .manage-foot { display: flex; gap: 0.5em; padding: 0.7em 1.2em; border-top: 1px solid var(--line); color: var(--muted-2); font-size: 0.48em; }
+  .manage-foot span { padding: 0.22em 0.45em; border: 1px solid var(--line); border-radius: 0.25em; }
+
+  /* ---------- scene 7 network ---------- */
+  .scene-7 { padding-top: 6.2em; }
+  .scene-7 .scene-head { text-align: center; }
+  .scene-7 h2 { margin-top: 0.16em; }
+  .scene-7 .lede { margin: 0.65em auto 0; max-width: 40em; font-size: 0.98em; }
+  .relay {
+    position: absolute;
+    left: 3em;
+    right: 3em;
+    top: 17em;
+    bottom: 4.2em;
+    display: grid;
+    grid-template-columns: 20em 7em 19em 7em 23em;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+  }
+  .source-list { display: grid; gap: 0.6em; align-content: center; }
+  .source-pill { display: flex; align-items: center; gap: 0.55em; padding: 0.62em 0.75em; border: 1px solid var(--line); border-radius: 0.34em; background: rgba(255, 255, 255, 0.018); color: var(--muted); font-family: var(--mono); font-size: 0.7em; white-space: nowrap; }
+  .source-pill i { width: 0.38em; height: 0.38em; border-radius: 50%; background: var(--blue); opacity: 0.8; }
+  .source-pill:nth-child(odd) { transform: translateX(0.8em); }
+  .source-pill:nth-child(even) { transform: translateX(-0.2em); }
+  .relay-arrow { position: relative; height: 1px; background: linear-gradient(90deg, rgba(79, 140, 255, 0.08), rgba(79, 140, 255, 0.55)); }
+  .relay-arrow::after { content: ""; position: absolute; right: -0.05em; top: -0.22em; width: 0.45em; height: 0.45em; border-top: 1px solid var(--blue); border-right: 1px solid var(--blue); transform: rotate(45deg); }
+  .relay-arrow::before { content: ""; position: absolute; top: -0.15em; width: 0.3em; height: 0.3em; border-radius: 50%; background: var(--blue-2); box-shadow: 0 0 0.7em var(--blue); animation: packet 2.2s linear infinite; }
+  @keyframes packet { from { left: 0; opacity: 0; } 15% { opacity: 1; } to { left: 100%; opacity: 0; } }
+  .proxy-node { align-self: center; padding: 1.8em 1.1em; border: 1px solid rgba(79, 140, 255, 0.35); border-radius: 0.5em; background: linear-gradient(160deg, rgba(79, 140, 255, 0.16), rgba(79, 140, 255, 0.04)); text-align: center; }
+  .proxy-node .glyph { width: 2.8em; height: 2.8em; margin: 0 auto 0.75em; border: 1px solid rgba(141, 183, 255, 0.45); border-radius: 50%; display: grid; place-items: center; color: var(--blue-2); font-family: var(--mono); font-size: 1em; }
+  .proxy-node strong { display: block; font-size: 0.95em; font-weight: 550; }
+  .proxy-node span { display: block; margin-top: 0.35em; color: var(--muted-2); font-family: var(--mono); font-size: 0.56em; line-height: 1.55; }
+  .plugin-node { position: relative; padding: 1.8em 1.2em; border: 1px solid var(--line-strong); border-radius: 0.6em; background: #0c0e13; box-shadow: 0 1.4em 3.5em rgba(0, 0, 0, 0.4); text-align: center; }
+  .plugin-node .brand-mark { margin: 0 auto 0.8em; width: 3.8em; height: 3.8em; }
+  .plugin-node .brand-mark svg { width: 2em; height: 2em; }
+  .plugin-node strong { display: block; font-size: 1.08em; font-weight: 600; }
+  .plugin-node span { display: block; margin-top: 0.35em; color: var(--muted-2); font-family: var(--mono); font-size: 0.56em; }
+  .plugin-node .live { margin-top: 0.8em; display: inline-flex; align-items: center; gap: 0.4em; padding: 0.3em 0.55em; border: 1px solid rgba(69, 214, 164, 0.3); border-radius: 0.3em; color: var(--green); font-family: var(--mono); font-size: 0.52em; }
+  .plugin-node .live i { width: 0.35em; height: 0.35em; border-radius: 50%; background: var(--green); box-shadow: 0 0 0.5em var(--green); }
+  .relay-stats { position: absolute; left: 50%; bottom: 0.4em; transform: translateX(-50%); display: flex; gap: 1em; color: var(--muted-2); font-family: var(--mono); font-size: 0.55em; white-space: nowrap; }
+
+  /* ---------- scene 8 finale ---------- */
+  .scene-8 { display: grid; place-items: center; text-align: center; padding: 6.2em 5em 5em; }
+  .scene-8 .finale { position: relative; z-index: 3; }
+  .finale .brand-mark { margin: 0 auto 1.1em; width: 4.1em; height: 4.1em; border-radius: 0.8em; box-shadow: 0 0 3em rgba(79, 140, 255, 0.2); }
+  .finale .brand-mark svg { width: 2.1em; height: 2.1em; }
+  .finale .wordmark { font-size: 1.1em; letter-spacing: 0.26em; color: var(--blue-2); font-family: var(--mono); text-indent: 0.26em; }
+  .finale h2 { margin-top: 0.7em; font-size: 4.6em; line-height: 1.12; }
+  .finale .lede { margin: 1.1em auto 0; max-width: 31em; font-size: 1.02em; }
+  .finale-stats { display: flex; justify-content: center; gap: 3.2em; margin-top: 2.2em; }
+  .stat b { display: block; font-size: 2.15em; font-weight: 600; letter-spacing: -0.04em; line-height: 1; color: var(--text); }
+  .stat span { display: block; margin-top: 0.35em; color: var(--muted-2); font-family: var(--mono); font-size: 0.52em; letter-spacing: 0.06em; }
+  .finale-links { display: flex; justify-content: center; gap: 0.6em; margin-top: 2.3em; flex-wrap: wrap; }
+  .finale-links a { padding: 0.55em 0.85em; border: 1px solid var(--line); border-radius: 0.35em; color: var(--muted); font-family: var(--mono); font-size: 0.52em; text-decoration: none; }
+  .finale-links a.primary { border-color: rgba(79, 140, 255, 0.45); color: var(--blue-2); background: var(--blue-soft); }
+  .scene-8 .orb { position: absolute; width: 44em; height: 44em; border-radius: 50%; border: 1px solid rgba(79, 140, 255, 0.12); z-index: 1; }
+  .scene-8 .orb::before, .scene-8 .orb::after { content: ""; position: absolute; inset: 4em; border: 1px solid rgba(79, 140, 255, 0.08); border-radius: 50%; }
+  .scene-8 .orb::after { inset: 8em; border-style: dashed; }
+
+  /* ---------- controls ---------- */
+  .controls {
+    position: absolute;
+    left: 2.1em;
+    right: 2.1em;
+    bottom: 1.35em;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    gap: 0.65em;
+    padding: 0.55em 0.7em;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 0.55em;
+    background: rgba(6, 7, 10, 0.76);
+    backdrop-filter: blur(12px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .stage.idle:not(:hover) .controls { opacity: 0; transform: translateY(0.4em); pointer-events: none; }
+  .ctrl { width: 1.85em; height: 1.85em; border: 1px solid transparent; border-radius: 0.3em; background: transparent; display: grid; place-items: center; color: var(--muted); cursor: pointer; }
+  .ctrl:hover { color: var(--text); background: rgba(255, 255, 255, 0.06); }
+  .ctrl svg { width: 0.9em; height: 0.9em; fill: currentColor; }
+  .timeline { position: relative; flex: 1; height: 1.85em; display: flex; align-items: center; cursor: pointer; }
+  .timeline::before { content: ""; position: absolute; left: 0; right: 0; height: 2px; background: rgba(255, 255, 255, 0.12); border-radius: 2px; }
+  .timeline .fill { position: relative; width: 0%; height: 2px; background: var(--blue); border-radius: 2px; box-shadow: 0 0 0.8em rgba(79, 140, 255, 0.8); }
+  .timeline .fill::after { content: ""; position: absolute; right: -0.22em; top: -0.2em; width: 0.45em; height: 0.45em; border-radius: 50%; background: var(--blue-2); box-shadow: 0 0 0.7em var(--blue); }
+  .time { min-width: 5.6em; color: var(--muted-2); font-family: var(--mono); font-size: 0.56em; text-align: right; letter-spacing: 0.03em; }
+  .chapters { display: flex; gap: 0.25em; }
+  .chapter { width: 0.38em; height: 0.38em; border-radius: 50%; background: rgba(255, 255, 255, 0.18); cursor: pointer; transition: background 0.2s, transform 0.2s; }
+  .chapter.active { background: var(--blue-2); transform: scale(1.3); box-shadow: 0 0 0.5em var(--blue); }
+
+  .replay {
+    position: absolute;
+    inset: 0;
+    z-index: 35;
+    display: grid;
+    place-items: center;
+    background: rgba(4, 5, 8, 0.55);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s;
+    backdrop-filter: blur(4px);
+  }
+  .stage.ended .replay { opacity: 1; visibility: visible; }
+  .replay button {
+    padding: 0.9em 1.5em;
+    border: 1px solid rgba(79, 140, 255, 0.5);
+    border-radius: 0.4em;
+    background: rgba(79, 140, 255, 0.13);
+    color: var(--blue-2);
+    font-size: 0.8em;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+  }
+
+  @media (max-width: 700px) {
+    .topbar { top: 1.4em; left: 1.4em; right: 1.4em; }
+    .scene { padding: 6em 2.2em 4.2em; }
+    .scene-1 { padding-top: 7em; }
+    .scene-1 .lede { font-size: 1.15em; }
+    .terminal { display: none; }
+    .big-mark { width: 22em; height: 22em; right: -6em; top: 1em; opacity: 0.35; }
+    .pain-grid { position: static; width: auto; margin-top: 1.4em; }
+    .pain-card { min-height: 0; }
+    .pain-bottom { left: 2.2em; bottom: 3.2em; font-size: 0.8em; }
+    .error-line { display: none; }
+    .dsh-window { left: 2em; right: 2em; bottom: 3em; height: 30em; grid-template-columns: 9em 1fr; }
+    .dsh-side { padding: 0.8em 0.6em; }
+    .dsh-side .side-foot { display: none; }
+    .dsh-main { padding: 0.8em; }
+    .svc-grid { grid-template-columns: 1fr 1fr; }
+    .svc-card:nth-child(n+5) { display: none; }
+    .callout { display: none; }
+    .browser { left: 2em; right: 2em; bottom: 3em; height: 33em; }
+    .site-grid { grid-template-columns: 1fr 1fr; }
+    .site-card:nth-child(n+5) { display: none; }
+    .scene-5 .install-copy { left: 2.2em; top: 6.2em; width: auto; }
+    .scene-5 h2 { font-size: 2.9em; }
+    .steps { display: none; }
+    .install-modal { left: 2.2em; right: 2.2em; top: 17em; width: auto; }
+    .code-note { display: none; }
+    .safe-card, .install-pipeline { display: none; }
+    .manage-window { left: 2em; right: 2em; bottom: 3em; height: 30em; }
+    .manage-row { grid-template-columns: 1.5em 1fr 4.5em 6.5em; }
+    .tools { display: none; }
+    .relay { left: 2.2em; right: 2.2em; bottom: 3.4em; height: 30em; grid-template-columns: 8.5em 2.2em 8.5em 2.2em 11em; }
+    .source-pill { font-size: 0.45em; }
+    .source-pill:nth-child(odd), .source-pill:nth-child(even) { transform: none; }
+    .proxy-node { padding: 0.6em 0.4em; }
+    .plugin-node { padding: 0.7em 0.5em; }
+    .relay-stats { font-size: 0.45em; }
+    .scene-8 h2 { font-size: 3em; }
+    .finale-stats { gap: 1.6em; }
+    .controls { left: 1em; right: 1em; bottom: 0.8em; }
+    .chapters { display: none; }
+    .time { min-width: 4.2em; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .grain, .big-mark, .big-mark .ring-2, .big-mark .edge { animation: none !important; }
+    .scene.active .anim { animation-duration: 0.01s !important; }
+  }
+
+  @media (orientation: portrait) and (max-width: 900px) {
+    .stage {
+      width: 100vw;
+      height: 100vh;
+      font-size: 1.8cqw;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="viewport">
+  <main class="stage" id="stage" aria-label="MCP 市场宣传片">
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M5 7.5 10 12l-5 4.5"/><path d="M12 16.5h7"/></svg>
+        </span>
+        <span class="brand-copy">
+          <strong>MCP 市场</strong>
+          <span>DSH · MCP CENTER</span>
+        </span>
+      </div>
+      <div class="scene-id"><b id="sceneIndex">01</b> / 08</div>
+    </header>
+
+    <div class="scenes">
+      <!-- 01 -->
+      <section class="scene scene-1" data-scene="0" data-title="开场">
+        <div class="hook">
+          <p class="kicker anim" style="--d:80ms">DSH · MCP MARKET / 2026</p>
+          <h1 class="anim" style="--d:220ms"><span>MCP 不该</span><br><span class="hl">这么难装。</span></h1>
+          <p class="lede anim" style="--d:520ms">改 JSON、找 Key、配四个客户端——<br>然后，重启。</p>
+          <div class="hook-meta anim" style="--d:820ms">
+            <span><i></i>29 个 MCP</span>
+            <span><i></i>116 套安装配置</span>
+            <span><i></i>一个插件接管</span>
+          </div>
+        </div>
+
+        <div class="big-mark" aria-hidden="true">
+          <svg viewBox="0 0 600 600">
+            <circle class="ring" cx="300" cy="300" r="214"/>
+            <circle class="ring-2" cx="300" cy="300" r="248"/>
+            <path class="edge" d="M300 86 440 172 440 344 300 430 160 344 160 172Z"/>
+            <path class="edge" d="M300 86v344M160 172l280 172M440 172 160 344"/>
+            <circle class="node" cx="300" cy="86" r="8"/>
+            <circle class="node" cx="440" cy="172" r="8"/>
+            <circle class="node" cx="440" cy="344" r="8"/>
+            <circle class="node" cx="300" cy="430" r="8"/>
+            <circle class="node" cx="160" cy="344" r="8"/>
+            <circle class="node" cx="160" cy="172" r="8"/>
+            <circle class="node" cx="300" cy="300" r="13"/>
+          </svg>
+        </div>
+
+        <div class="terminal anim" style="--d:1000ms">
+          <div class="terminal-bar"><i></i><i></i><i></i><span>mcp.json</span></div>
+          <pre><span class="c">// 手动配置一个 MCP</span>
+{
+  <span class="k">"mcpServers"</span>: {
+    <span class="k">"tencent-docs"</span>: {
+      <span class="k">"url"</span>: <span class="s">"https://docs.qq.com/openapi/mcp"</span>,
+      <span class="k">"headers"</span>: {
+        <span class="k">"Authorization"</span>: <span class="s">"••••••••"</span>
+      }
+    }
+  }
+}
+<span class="e">// 还要配 4 份，再重启</span></pre>
+        </div>
+      </section>
+
+      <!-- 02 -->
+      <section class="scene scene-2" data-scene="1" data-title="痛点">
+        <div class="pain-copy">
+          <p class="kicker red anim" style="--d:80ms">BEFORE / 手动时代</p>
+          <h2 class="anim" style="--d:200ms">你原本<br>要做什么？</h2>
+          <p class="lede anim" style="--d:480ms; font-size: 1.08em;">每一个 MCP，都是一次配置考试。</p>
+        </div>
+
+        <div class="pain-grid">
+          <div class="pain-card anim" style="--d:600ms"><div class="num">01 / JSON</div><strong>改配置</strong><p>找到文件，改 mcpServers，处理引号和缩进。</p></div>
+          <div class="pain-card anim" style="--d:720ms"><div class="num">02 / KEY</div><strong>找 Key</strong><p>翻控制台、复制 Token，还要分清 Bearer 和原始值。</p></div>
+          <div class="pain-card anim" style="--d:840ms"><div class="num">03 / CLIENTS</div><strong>配 4 份</strong><p>DSH、Claude、Cursor、Cline，格式还都不一样。</p></div>
+          <div class="pain-card anim" style="--d:960ms"><div class="num">04 / RESTART</div><strong>再重启</strong><p>改完不一定生效，生效不一定连得上。</p></div>
+        </div>
+
+        <div class="before-terminal anim" style="--d:1120ms">
+          <div class="bt-head"><i></i>手动配置 / 失败现场<span>mcp.json</span></div>
+          <pre><em>$</em> cat ~/.dsh/mcp.json
+  <b>"url"</b>: <b>""</b>              <em>← 忘了填</em>
+  <b>"Authorization"</b>: <b>""</b>    <em>← 又忘了</em>
+<em>✕</em> invalid url
+<em>✕</em> 401 Unauthorized</pre>
+        </div>
+
+        <div class="pain-bottom anim" style="--d:1250ms">每一步，都能劝退一个新手。</div>
+      </section>
+
+      <!-- 03 -->
+      <section class="scene scene-3" data-scene="2" data-title="插件">
+        <div class="scene-head">
+          <p class="kicker anim" style="--d:80ms">AFTER / 一个 Tab</p>
+          <h2 class="anim" style="--d:180ms">现在，它只是<br>一个 Tab。</h2>
+          <p class="lede anim" style="--d:430ms">设置 → 插件 → MCP 市场。原生 React，不是网页套壳。</p>
+        </div>
+
+        <div class="dsh-window window anim" style="--d:640ms">
+          <aside class="dsh-side">
+            <div class="dsh-logo"><i>DS</i> DeepSeek Harness</div>
+            <nav class="dsh-nav">
+              <span>会话</span>
+              <span>工作区</span>
+              <span class="on">插件</span>
+              <span>设置</span>
+            </nav>
+            <div class="side-foot">MCP CENTER · 0.8.0</div>
+          </aside>
+          <div class="dsh-main">
+            <div class="dsh-top">
+              <strong>插件</strong>
+              <span class="tab">已安装 6</span>
+              <span class="tab on">MCP 市场</span>
+            </div>
+            <div class="dsh-head">
+              <h3>MCP 市场</h3>
+              <span class="source-badge"><i></i>在线目录 · gh-proxy</span>
+            </div>
+            <div class="dsh-search">搜索 MCP、描述、工具…</div>
+            <div class="chips">
+              <span class="chip on">全部 29</span><span class="chip">出行</span><span class="chip">办公</span><span class="chip">开发工具</span><span class="chip">搜索</span><span class="chip">AI</span>
+            </div>
+            <div class="svc-grid">
+              <div class="svc-card hot">
+                <div class="svc-top"><span class="icon">高</span><div class="svc-name"><strong>高德地图</strong><span>com.amap/mcp</span></div></div>
+                <div class="svc-desc">地点搜索、路线规划、天气与周边服务。</div>
+                <div class="badges"><span class="badge gold">官方</span><span class="badge blue">已连接</span></div>
+              </div>
+              <div class="svc-card">
+                <div class="svc-top"><span class="icon green">文</span><div class="svc-name"><strong>腾讯文档</strong><span>com.tencent/docs-mcp</span></div></div>
+                <div class="svc-desc">创建和编辑文档、表格、幻灯片与智能表格。</div>
+                <div class="badges"><span class="badge gold">官方</span><span class="badge">streamable_http</span></div>
+              </div>
+              <div class="svc-card">
+                <div class="svc-top"><span class="icon orange">滴</span><div class="svc-name"><strong>滴答清单</strong><span>com.dida365/mcp</span></div></div>
+                <div class="svc-desc">任务、清单、习惯、专注记录与日历。</div>
+                <div class="badges"><span class="badge gold">官方</span><span class="badge blue">已连接</span></div>
+              </div>
+              <div class="svc-card">
+                <div class="svc-top"><span class="icon">百</span><div class="svc-name"><strong>百度地图</strong><span>com.baidu/map-mcp</span></div></div>
+                <div class="svc-desc">地理编码、POI、路线规划、天气与路况。</div>
+                <div class="badges"><span class="badge gold">官方</span><span class="badge">stdio</span></div>
+              </div>
+              <div class="svc-card">
+                <div class="svc-top"><span class="icon green">语</span><div class="svc-name"><strong>语雀</strong><span>com.yuque/mcp</span></div></div>
+                <div class="svc-desc">搜索知识库、读写文档与维护目录。</div>
+                <div class="badges"><span class="badge gold">官方</span><span class="badge">stdio</span></div>
+              </div>
+              <div class="svc-card">
+                <div class="svc-top"><span class="icon dark">DC</span><div class="svc-name"><strong>DC Hub</strong><span>cloud.dchub/mcp-server</span></div></div>
+                <div class="svc-desc">数据中心选址、电网电力指数与能源数据。</div>
+                <div class="badges"><span class="badge gold">官方</span><span class="badge blue">AI</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="callout left"><i></i>设置 → 插件 → MCP 市场</div>
+        <div class="callout right"><i></i>原生 React · 主题自适应</div>
+      </section>
+
+      <!-- 04 -->
+      <section class="scene scene-4" data-scene="3" data-title="市场">
+        <div class="scene-head">
+          <p class="kicker anim" style="--d:80ms">ONLINE MARKET / 线上市场</p>
+          <h2 class="anim" style="--d:180ms">29 个 MCP，一次逛完。</h2>
+          <p class="lede anim" style="--d:420ms">搜索、分类、官方标识、四端配置。国内个人服务，优先收录。</p>
+        </div>
+
+        <div class="browser anim" style="--d:620ms">
+          <div class="browser-bar">
+            <div class="win-dots"><i></i><i></i><i></i></div>
+            <div class="url"><b>●</b> bai-2008.github.io/dsh-mcp-center</div>
+            <div class="right">MCP 市场</div>
+          </div>
+          <div class="site-header">
+            <div class="site-brand">
+              <span class="brand-mark"><svg viewBox="0 0 24 24"><path d="M5 7.5 10 12l-5 4.5"/><path d="M12 16.5h7"/></svg></span>
+              <span><strong>MCP 市场</strong><small>dsh-mcp-center</small></span>
+            </div>
+            <div class="site-search">搜索 <kbd>⌘K</kbd></div>
+            <span class="badge">投稿 ↗</span>
+          </div>
+          <div class="site-body">
+            <div class="market-head">
+              <h3>全部 MCP</h3>
+              <span class="count">29 个条目</span>
+              <span class="online">● 数据已同步</span>
+            </div>
+            <div class="site-chips">
+              <span class="chip on">全部 29</span><span class="chip">出行 7</span><span class="chip">办公 9</span><span class="chip">开发工具 6</span><span class="chip">搜索 2</span><span class="chip">AI 1</span><span class="chip">其他 2</span>
+            </div>
+            <div class="site-grid">
+              <div class="site-card"><div class="svc-top"><span class="icon green">文</span><div class="svc-name"><strong>腾讯文档</strong><span>com.tencent/docs-mcp</span></div></div><div class="svc-desc">文档、表格、幻灯片、思维导图与智能表格。</div><div class="badges"><span class="badge gold">官方</span><span class="badge">远程</span></div></div>
+              <div class="site-card"><div class="svc-top"><span class="icon orange">滴</span><div class="svc-name"><strong>滴答清单</strong><span>com.dida365/mcp</span></div></div><div class="svc-desc">任务、清单、习惯、专注记录与日历。</div><div class="badges"><span class="badge gold">官方</span><span class="badge">远程</span></div></div>
+              <div class="site-card"><div class="svc-top"><span class="icon">高</span><div class="svc-name"><strong>高德地图</strong><span>com.amap/mcp</span></div></div><div class="svc-desc">地点搜索、路线规划、天气与周边服务。</div><div class="badges"><span class="badge gold">官方</span><span class="badge">远程</span></div></div>
+              <div class="site-card"><div class="svc-top"><span class="icon green">语</span><div class="svc-name"><strong>语雀</strong><span>com.yuque/mcp</span></div></div><div class="svc-desc">搜索知识库、读写文档与维护目录。</div><div class="badges"><span class="badge gold">官方</span><span class="badge">本地</span></div></div>
+              <div class="site-card"><div class="svc-top"><span class="icon dark">DC</span><div class="svc-name"><strong>DC Hub</strong><span>cloud.dchub/mcp-server</span></div></div><div class="svc-desc">数据中心选址、电力指数与能源数据。</div><div class="badges"><span class="badge gold">官方</span><span class="badge blue">AI</span></div></div>
+              <div class="site-card"><div class="svc-top"><span class="icon purple">瑞</span><div class="svc-name"><strong>瑞幸咖啡</strong><span>com.lkcoffee/order-mcp</span></div></div><div class="svc-desc">门店、菜单、点单、取餐码与订单状态。</div><div class="badges"><span class="badge gold">官方</span><span class="badge blue">已连接</span></div></div>
+              <div class="site-card"><div class="svc-top"><span class="icon">百</span><div class="svc-name"><strong>百度地图</strong><span>com.baidu/map-mcp</span></div></div><div class="svc-desc">地理编码、POI、路线规划、天气与路况。</div><div class="badges"><span class="badge gold">官方</span><span class="badge">本地</span></div></div>
+              <div class="site-card"><div class="svc-top"><span class="icon orange">飞</span><div class="svc-name"><strong>飞常准</strong><span>com.variflight/aviation</span></div></div><div class="svc-desc">航班搜索、动态、中转方案与机场天气。</div><div class="badges"><span class="badge gold">官方</span><span class="badge">远程</span></div></div>
+              <div class="site-card"><div class="svc-top"><span class="icon green">铁</span><div class="svc-name"><strong>12306</strong><span>cn.12306/tickets</span></div></div><div class="svc-desc">余票、过站与中转方案查询。</div><div class="badges"><span class="badge">社区</span><span class="badge">本地</span></div></div>
+            </div>
+            <div class="site-stats"><span><b>29</b> 个 MCP</span><span><b>21</b> 个国内服务</span><span><b>116</b> 套安装配置</span><span><b>4</b> 个客户端</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 -->
+      <section class="scene scene-5" data-scene="4" data-title="安装">
+        <div class="install-copy">
+          <p class="kicker anim" style="--d:80ms">INSTALL / 一次点击</p>
+          <h2 class="anim" style="--d:180ms">填一个 Key，<br>剩下的交给插件。</h2>
+          <p class="lede anim" style="--d:430ms; font-size: 0.98em;">地址、Headers、传输类型都已预填。安装完直接连接，工具自动注册。</p>
+          <div class="steps">
+            <div class="step anim on" style="--d:700ms"><i>1</i><strong>写入配置</strong></div>
+            <div class="step anim on" style="--d:850ms"><i>2</i><strong>建立连接</strong></div>
+            <div class="step anim on" style="--d:1000ms"><i>3</i><strong>获取工具</strong></div>
+          </div>
+        </div>
+
+        <div class="install-modal anim" style="--d:620ms">
+          <div class="modal-head">
+            <span class="icon green">文</span>
+            <div><strong>安装 腾讯文档</strong><small>com.tencent/docs-mcp</small></div>
+            <span class="badge gold">官方</span>
+          </div>
+          <div class="modal-body">
+            <div class="field"><label>MCP 地址</label><div class="input">https://docs.qq.com/openapi/mcp <span class="ok">✓ 可访问</span></div></div>
+            <div class="field-row">
+              <div class="field"><label>传输方式</label><div class="input">streamable_http</div></div>
+              <div class="field"><label>Authorization</label><div class="input secret">•••••••••••••••• <span class="ok">已填写</span></div></div>
+            </div>
+            <div class="field"><label>安装到</label><div class="input">DSH · desktop · 当前配置 <span class="ok">✓</span></div></div>
+            <div class="install-checks">
+              <span class="check done"><i>✓</i>配置已写入</span>
+              <span class="check done"><i>✓</i>连接已建立</span>
+              <span class="check done"><i>✓</i>工具已获取</span>
+            </div>
+          </div>
+          <div class="modal-foot">
+            <span class="note">凭据只保存在本机<br>不会上传到目录仓库</span>
+            <button class="btn ghost" type="button">取消</button>
+            <button class="btn" type="button">安装并连接</button>
+          </div>
+        </div>
+        <div class="safe-card anim" style="--d:1320ms">
+          <span class="shield">◈</span>
+          <div><strong>凭据只留在本机</strong><span>$DSH_PROFILE_DIR/dsh-mcp-center/credentials.json</span></div>
+        </div>
+        <div class="install-pipeline anim" style="--d:1180ms">
+          <span class="pipe-label">安装链路</span>
+          <span class="pipe-node">读取目录</span><span class="pipe-arrow">→</span>
+          <span class="pipe-node">预填配置</span><span class="pipe-arrow">→</span>
+          <span class="pipe-node hi">本机凭据</span><span class="pipe-arrow">→</span>
+          <span class="pipe-node">连接</span><span class="pipe-arrow">→</span>
+          <span class="pipe-node done">工具注册</span>
+        </div>
+        <div class="code-note anim" style="--d:1250ms"><b>configure</b>({<br>&nbsp;&nbsp;transport: <b>"streamable-http"</b>,<br>&nbsp;&nbsp;headers: { Authorization: <b>"••••"</b> }<br>})</div>
+      </section>
+
+      <!-- 06 -->
+      <section class="scene scene-6" data-scene="5" data-title="管理">
+        <div class="scene-head">
+          <p class="kicker anim" style="--d:80ms">MANAGE / 全生命周期</p>
+          <h2 class="anim" style="--d:180ms">装完，才是开始。</h2>
+          <p class="lede anim" style="--d:440ms">连接、检查、备份、卸载——都在同一个面板。</p>
+        </div>
+
+        <div class="manage-window window anim" style="--d:560ms">
+          <div class="manage-head">
+            <strong>已安装的连接</strong><span>6 个连接 · 4 个已启用</span>
+            <div class="manage-actions"><span class="pill blue">检查全部</span><span class="pill">更新全部</span><span class="pill">备份</span></div>
+          </div>
+          <div class="manage-list">
+            <div class="manage-row"><span class="icon green">文</span><div class="manage-name"><strong>腾讯文档</strong><span>com-tencent-docs-mcp</span></div><span class="status"><i></i>已连接</span><span class="tools">21 tools</span><div class="row-actions"><span class="hot">检查</span><span>编辑</span><span>更多</span></div></div>
+            <div class="manage-row"><span class="icon">高</span><div class="manage-name"><strong>高德地图</strong><span>com-amap-mcp</span></div><span class="status"><i></i>已连接</span><span class="tools">12 tools</span><div class="row-actions"><span class="hot">检查</span><span>编辑</span><span>更多</span></div></div>
+            <div class="manage-row"><span class="icon orange">滴</span><div class="manage-name"><strong>滴答清单</strong><span>com-dida365-mcp</span></div><span class="status"><i></i>已连接</span><span class="tools">18 tools</span><div class="row-actions"><span class="hot">检查</span><span>编辑</span><span>更多</span></div></div>
+            <div class="manage-row"><span class="icon purple">瑞</span><div class="manage-name"><strong>瑞幸咖啡</strong><span>com-lkcoffee-order-mcp</span></div><span class="status warn"><i></i>需重新授权</span><span class="tools">8 tools</span><div class="row-actions"><span class="hot">重连</span><span>编辑</span><span>更多</span></div></div>
+            <div class="manage-row"><span class="icon dark">DC</span><div class="manage-name"><strong>DC Hub</strong><span>cloud-dchub-mcp-server</span></div><span class="status"><i></i>已连接</span><span class="tools">94 tools</span><div class="row-actions"><span class="hot">检查</span><span>编辑</span><span>更多</span></div></div>
+          </div>
+          <div class="manage-foot"><span>检查</span><span>重连</span><span>重命名</span><span>注入模式</span><span>工具</span><span>备份</span><span>编辑</span><span>卸载</span></div>
+        </div>
+      </section>
+
+      <!-- 07 -->
+      <section class="scene scene-7" data-scene="6" data-title="在线目录">
+        <div class="scene-head">
+          <p class="kicker anim" style="--d:80ms">LIVE CATALOG / 在线目录</p>
+          <h2 class="anim" style="--d:180ms">目录在线，插件不动。</h2>
+          <p class="lede anim" style="--d:420ms">7 个源自动回退。新增 MCP 后，点一下「刷新目录」就能看到。</p>
+        </div>
+
+        <div class="relay">
+          <div class="source-list anim" style="--d:560ms">
+            <span class="source-pill"><i></i>GitHub Pages</span>
+            <span class="source-pill"><i></i>GitHub raw</span>
+            <span class="source-pill"><i></i>gh-proxy.com</span>
+            <span class="source-pill"><i></i>ghproxy.net</span>
+            <span class="source-pill"><i></i>ghfast.top</span>
+            <span class="source-pill"><i></i>moeyy</span>
+            <span class="source-pill"><i></i>llkk</span>
+          </div>
+          <div class="relay-arrow"></div>
+          <div class="proxy-node anim" style="--d:720ms">
+            <div class="glyph">⇄</div>
+            <strong>Host 代理</strong>
+            <span>同源 · 8s 超时<br>首个成功结果</span>
+          </div>
+          <div class="relay-arrow"></div>
+          <div class="plugin-node anim" style="--d:880ms">
+            <span class="brand-mark"><svg viewBox="0 0 24 24"><path d="M5 7.5 10 12l-5 4.5"/><path d="M12 16.5h7"/></svg></span>
+            <strong>MCP 市场</strong>
+            <span>5 分钟缓存<br>刷新即更新</span>
+            <span class="live"><i></i>在线目录</span>
+          </div>
+          <div class="relay-stats">7 源并行 <span>·</span> 8s 超时 <span>·</span> 5min 缓存 <span>·</span> 无内置快照</div>
+        </div>
+      </section>
+
+      <!-- 08 -->
+      <section class="scene scene-8" data-scene="7" data-title="结尾">
+        <div class="orb" aria-hidden="true"></div>
+        <div class="finale">
+          <span class="brand-mark anim" style="--d:80ms"><svg viewBox="0 0 24 24"><path d="M5 7.5 10 12l-5 4.5"/><path d="M12 16.5h7"/></svg></span>
+          <div class="wordmark anim" style="--d:180ms">DSH · MCP CENTER</div>
+          <h2 class="anim" style="--d:300ms">让每一个 MCP，<br><span class="hl">都变成一次点击。</span></h2>
+          <p class="lede anim" style="--d:600ms">装一次，后面交给市场。</p>
+          <div class="finale-stats anim" style="--d:800ms">
+            <div class="stat"><b data-count="29">29</b><span>个 MCP</span></div>
+            <div class="stat"><b data-count="116">116</b><span>套安装配置</span></div>
+            <div class="stat"><b data-count="7">7</b><span>个目录源</span></div>
+          </div>
+          <div class="finale-links anim" style="--d:1000ms">
+            <a class="primary" href="https://bai-2008.github.io/dsh-mcp-center/" target="_blank" rel="noreferrer">bai-2008.github.io/dsh-mcp-center ↗</a>
+            <a href="https://github.com/Bai-2008/dsh-mcp-center" target="_blank" rel="noreferrer">GitHub ↗</a>
+            <a href="https://bai-2008.github.io/dsh-mcp-center/" target="_blank" rel="noreferrer">设置 → 插件 → MCP 市场</a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="controls" id="controls">
+      <button class="ctrl" id="toggle" type="button" aria-label="播放/暂停">
+        <svg id="playIcon" viewBox="0 0 16 16"><path d="M4 2.5v11l9-5.5z"/></svg>
+      </button>
+      <div class="timeline" id="timeline" role="slider" tabindex="0" aria-label="播放进度" aria-valuemin="0" aria-valuemax="60" aria-valuenow="0">
+        <div class="fill" id="fill"></div>
+      </div>
+      <div class="time" id="time">00:00 / 01:00</div>
+      <div class="chapters" id="chapters" aria-label="章节"></div>
+      <button class="ctrl" id="restart" type="button" aria-label="重新播放">
+        <svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7L3 6V2.5h3.5L5 4a6 6 0 1 1-2 6z"/></svg>
+      </button>
+      <button class="ctrl" id="fullscreen" type="button" aria-label="全屏">
+        <svg viewBox="0 0 16 16"><path d="M2 6V2h4v1.5H3.5V6zM10 2h4v4h-1.5V3.5H10zM2 10h1.5v2.5H6V14H2zM12.5 10H14v4h-4v-1.5h2.5z"/></svg>
+      </button>
+    </div>
+
+    <div class="replay" id="replay">
+      <button type="button" id="replayButton">↻ 重新播放</button>
+    </div>
+  </main>
+</div>
+
+<script>
+  (() => {
+    const stage = document.getElementById("stage");
+    const scenes = Array.from(document.querySelectorAll(".scene"));
+    const chapters = document.getElementById("chapters");
+    const fill = document.getElementById("fill");
+    const timeEl = document.getElementById("time");
+    const toggle = document.getElementById("toggle");
+    const playIcon = document.getElementById("playIcon");
+    const timeline = document.getElementById("timeline");
+    const sceneIndex = document.getElementById("sceneIndex");
+    const replay = document.getElementById("replay");
+
+    const starts = [0, 6, 13, 21, 28, 36, 44, 52];
+    const duration = 60;
+    const sceneTitles = scenes.map((scene) => scene.dataset.title);
+
+    let current = 0;
+    let playing = true;
+    let last = performance.now();
+    let idleTimer = 0;
+    let lastActive = -1;
+
+    starts.forEach((start, index) => {
+      const dot = document.createElement("button");
+      dot.className = "chapter";
+      dot.type = "button";
+      dot.setAttribute("aria-label", sceneTitles[index]);
+      dot.title = sceneTitles[index];
+      dot.addEventListener("click", () => {
+        seek(start);
+        play();
+      });
+      chapters.appendChild(dot);
+    });
+
+    function format(seconds) {
+      const value = Math.max(0, Math.min(duration, Math.floor(seconds)));
+      return `${String(Math.floor(value / 60)).padStart(2, "0")}:${String(value % 60).padStart(2, "0")}`;
+    }
+
+    function activeAt(time) {
+      let index = 0;
+      for (let i = 0; i < starts.length; i += 1) {
+        if (time >= starts[i]) index = i;
+      }
+      return index;
+    }
+
+    function renderCounters(index, time) {
+      const scene = scenes[index];
+      if (!scene) return;
+      const counters = scene.querySelectorAll("[data-count]");
+      if (!counters.length) return;
+      const local = Math.max(0, Math.min(1, (time - starts[index]) / 2.2));
+      const eased = 1 - Math.pow(1 - local, 3);
+      counters.forEach((node) => {
+        const target = Number(node.dataset.count || 0);
+        node.textContent = String(Math.round(target * eased));
+      });
+    }
+
+    function render() {
+      const index = activeAt(current);
+      if (index !== lastActive) {
+        scenes.forEach((scene, sceneIndexValue) => {
+          scene.classList.toggle("active", sceneIndexValue === index);
+        });
+        lastActive = index;
+        sceneIndex.textContent = String(index + 1).padStart(2, "0");
+        Array.from(chapters.children).forEach((dot, dotIndex) => {
+          dot.classList.toggle("active", dotIndex === index);
+        });
+      }
+      const percent = (current / duration) * 100;
+      fill.style.width = `${percent}%`;
+      timeEl.textContent = `${format(current)} / ${format(duration)}`;
+      timeline.setAttribute("aria-valuenow", String(Math.round(current)));
+      renderCounters(index, current);
+      stage.classList.toggle("ended", current >= duration - 0.05 && !playing);
+      replay.style.pointerEvents = current >= duration - 0.05 ? "auto" : "none";
+    }
+
+    function seek(value) {
+      current = Math.max(0, Math.min(duration, Number(value) || 0));
+      stage.classList.remove("ended");
+      render();
+    }
+
+    function play() {
+      if (current >= duration - 0.05) current = 0;
+      playing = true;
+      stage.classList.remove("ended");
+      last = performance.now();
+      updatePlayIcon();
+      showControls();
+    }
+
+    function pause() {
+      playing = false;
+      updatePlayIcon();
+      showControls();
+    }
+
+    function updatePlayIcon() {
+      playIcon.innerHTML = playing
+        ? '<path d="M4 2.5h3v11H4zM9 2.5h3v11H9z"/>'
+        : '<path d="M4 2.5v11l9-5.5z"/>';
+      toggle.setAttribute("aria-label", playing ? "暂停" : "播放");
+    }
+
+    function showControls() {
+      stage.classList.remove("idle");
+      clearTimeout(idleTimer);
+      if (playing) {
+        idleTimer = setTimeout(() => stage.classList.add("idle"), 2200);
+      }
+    }
+
+    function tick(now) {
+      const delta = Math.min(0.1, (now - last) / 1000);
+      last = now;
+      if (playing) {
+        current = Math.min(duration, current + delta);
+        if (current >= duration) {
+          playing = false;
+          updatePlayIcon();
+          stage.classList.add("ended");
+        }
+        render();
+      }
+      requestAnimationFrame(tick);
+    }
+
+    toggle.addEventListener("click", () => {
+      if (playing) pause();
+      else play();
+    });
+    document.getElementById("restart").addEventListener("click", () => {
+      seek(0);
+      play();
+    });
+    document.getElementById("replayButton").addEventListener("click", () => {
+      seek(0);
+      play();
+    });
+    timeline.addEventListener("click", (event) => {
+      const rect = timeline.getBoundingClientRect();
+      seek(((event.clientX - rect.left) / rect.width) * duration);
+      play();
+    });
+    timeline.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") { seek(current + 5); event.preventDefault(); }
+      if (event.key === "ArrowLeft") { seek(current - 5); event.preventDefault(); }
+      if (event.key === "Home") { seek(0); event.preventDefault(); }
+      if (event.key === "End") { seek(duration); event.preventDefault(); }
+    });
+    document.getElementById("fullscreen").addEventListener("click", () => {
+      if (!document.fullscreenElement) stage.requestFullscreen?.();
+      else document.exitFullscreen?.();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.target instanceof HTMLInputElement) return;
+      if (event.code === "Space") { event.preventDefault(); playing ? pause() : play(); }
+      if (event.key === "ArrowRight" && event.shiftKey) { seek(current + 5); }
+      if (event.key === "ArrowLeft" && event.shiftKey) { seek(current - 5); }
+      if (event.key === "r" || event.key === "R") { seek(0); play(); }
+      if (event.key === "f" || event.key === "F") {
+        if (!document.fullscreenElement) stage.requestFullscreen?.();
+        else document.exitFullscreen?.();
+      }
+    });
+
+    document.addEventListener("mousemove", showControls, { passive: true });
+    document.addEventListener("touchstart", showControls, { passive: true });
+
+    const params = new URLSearchParams(location.search);
+    const requestedScene = Number(params.get("scene"));
+    const requestedTime = Number(params.get("t"));
+    if (Number.isFinite(requestedScene) && requestedScene >= 1 && requestedScene <= starts.length) {
+      current = starts[requestedScene - 1];
+    } else if (Number.isFinite(requestedTime) && params.has("t")) {
+      current = Math.max(0, Math.min(duration, requestedTime));
+    }
+    if (params.get("paused") === "1" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      playing = false;
+    }
+    if (params.get("paused") === "1") stage.classList.add("idle");
+    if (params.get("static") === "1") document.documentElement.classList.add("static");
+
+    updatePlayIcon();
+    render();
+    showControls();
+    last = performance.now();
+    requestAnimationFrame(tick);
+  })();
+</script>
+</body>
+</html>

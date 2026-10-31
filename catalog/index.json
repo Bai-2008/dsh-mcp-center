@@ -1,13 +1,13 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-10-31T06:54:31.221Z",
+  "generated_at": "2026-10-31T07:25:35.836Z",
   "site": {
     "name": "MCP 市场",
     "origin": "https://bai-2008.github.io",
     "base": "/dsh-mcp-center/",
     "repo_url": "https://github.com/Bai-2008/dsh-mcp-center",
     "submit_url": "https://github.com/Bai-2008/dsh-mcp-center/issues/new?template=submit-server.yml",
-    "generated_at": "2026-10-31T06:54:31.221Z"
+    "generated_at": "2026-10-31T07:25:35.836Z"
   },
   "count": 29,
   "stats": {

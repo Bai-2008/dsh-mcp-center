@@ -272,6 +272,7 @@ Claude Desktop 的远程配置会标注为桥接方案；如果客户端版本�
 - 安装表单直接调用连接器 `configure`；无凭据的远程 OAuth 服务回退到连接器目录 `connect`
 - 安装时输入凭据会保存插件自己的本机副本：`$DSH_PROFILE_DIR/dsh-mcp-center/credentials.json`
 - 插件本身不执行 MCP 工具；连接操作走连接器的同源 HTTP API
+- 60 秒 HTML 宣传片：`web/public/promo.html`，线上地址 `/promo.html`
 
 ```bash
 npm run build:web
