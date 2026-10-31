@@ -120,5 +120,14 @@
   "headerLabel": "Header",
   "envLabel": "Environment",
   "bearerLabel": "Bearer Token",
-  "apiKeyLabel": "API Key"
+  "apiKeyLabel": "API Key",
+  "credentialCopyNote": "This copy is stored by the market plugin on this machine only.",
+  "credentialCopyMissing": "This connection has no market copy yet (it may predate this feature). Enter it once below.",
+  "credentialCopyFormHint": "This only saves the plugin's copy; it does not change the live connection.",
+  "saveCredentialCopy": "Save credential copy",
+  "showPlaintext": "Show plaintext",
+  "hidePlaintext": "Hide plaintext",
+  "credentialCopySaved": "Credential copy saved",
+  "credentialCopyEmpty": "Enter at least one credential first",
+  "credentialCopyFailed": "Could not save the credential copy"
 }

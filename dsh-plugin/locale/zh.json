@@ -120,5 +120,14 @@
   "headerLabel": "Header",
   "envLabel": "环境变量",
   "bearerLabel": "Bearer Token",
-  "apiKeyLabel": "API Key"
+  "apiKeyLabel": "API Key",
+  "credentialCopyNote": "以下是本插件保存的凭据副本，仅保存在本机。",
+  "credentialCopyMissing": "这条连接没有本插件保存的副本（可能安装于该功能之前）。在下面补录一次即可。",
+  "credentialCopyFormHint": "仅保存插件自己的副本，不会修改当前连接。",
+  "saveCredentialCopy": "保存凭据副本",
+  "showPlaintext": "显示明文",
+  "hidePlaintext": "隐藏明文",
+  "credentialCopySaved": "凭据副本已保存",
+  "credentialCopyEmpty": "请先填写至少一项凭据",
+  "credentialCopyFailed": "凭据副本保存失败"
 }

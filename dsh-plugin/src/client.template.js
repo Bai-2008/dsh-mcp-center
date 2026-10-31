@@ -653,6 +653,21 @@ window.__ModuleLoader__.load({
         font-size: 9.5px;
         line-height: 1.55;
       }
+      .mc-credential-panel-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .mc-credential-panel-head .mc-credential-note { margin: 0 0 7px; }
+      .mc-credential-panel-head .mc-secondary { flex: none; }
+      .mc-credential-copy-form {
+        display: grid;
+        gap: 10px;
+        margin-top: 12px;
+        padding-top: 10px;
+        border-top: 1px solid var(--dsw-alias-border-l1);
+      }
       .mc-credential-list { display: grid; gap: 4px; }
       .mc-credential-row {
         display: flex;
@@ -883,6 +898,7 @@ window.__ModuleLoader__.load({
     }
 
     const CONNECTOR_API = "/mcp-connector/api";
+    const CREDENTIAL_API = "/dsh-mcp-center/api/credentials";
     const CONNECTOR_TIMEOUTS = {
       status: 20_000,
       catalog: 30_000,
@@ -989,6 +1005,88 @@ window.__ModuleLoader__.load({
           allowInsecurePrivateNetwork: false,
         },
       };
+    }
+
+    async function callCredentialStore(method, body, timeoutMs = 10_000) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const response = await fetch(CREDENTIAL_API, {
+          method,
+          headers: { "content-type": "application/json", accept: "application/json" },
+          body: body === undefined ? undefined : JSON.stringify(body),
+          credentials: "same-origin",
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        let data;
+        try {
+          data = await response.json();
+        } catch {
+          return { ok: false, message: `凭据副本服务返回了无效响应（HTTP ${response.status}）` };
+        }
+        if (!response.ok && data?.ok !== false) {
+          return { ok: false, message: `HTTP ${response.status}` };
+        }
+        return data;
+      } catch (error) {
+        return {
+          ok: false,
+          message: controller.signal.aborted
+            ? "凭据副本服务超时"
+            : `凭据副本服务不可用：${error?.message || error}`,
+        };
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    async function loadCredentialCopy(serverName) {
+      if (!serverName) return null;
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 10_000);
+      try {
+        const response = await fetch(
+          `${CREDENTIAL_API}?serverName=${encodeURIComponent(serverName)}`,
+          {
+            headers: { accept: "application/json" },
+            credentials: "same-origin",
+            cache: "no-store",
+            signal: controller.signal,
+          },
+        );
+        if (response.status === 404) return null;
+        const data = await response.json();
+        return data.ok ? data.entry : null;
+      } catch {
+        return null;
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    async function saveCredentialCopy(serverName, label, fields) {
+      return callCredentialStore("POST", { serverName, label, fields });
+    }
+
+    async function deleteCredentialCopy(serverName) {
+      if (!serverName) return;
+      await callCredentialStore("DELETE", { serverName });
+    }
+
+    function buildCredentialFields(entry, values) {
+      return (entry?.credentials ?? [])
+        .map((credential) => {
+          const key = credentialFieldKey(credential);
+          return {
+            key,
+            label: credential.name,
+            kind: credential.kind,
+            secret: credential.secret === true,
+            value: String(values?.[key] ?? ""),
+          };
+        })
+        .filter((field) => field.value.trim().length > 0);
     }
 
     async function callConnector(method, params = {}, timeoutMs = 30_000) {
@@ -1215,6 +1313,7 @@ window.__ModuleLoader__.load({
           title: `${t("uninstall")} · ${item.name || item.key}`,
           message: t("confirmUninstall"),
           key: item.key,
+          serverName: item.serverName || "",
         });
       }
 
@@ -1229,19 +1328,65 @@ window.__ModuleLoader__.load({
           notify(result.message || t("editLoadFailed"), true);
           return;
         }
+        const serverName = item.serverName || slugServerName(item.name || item.key || "");
+        const copyEntry = DATA.entries.find(
+          (entry) => slugServerName(entry.name) === serverName,
+        );
+        const credentialCopy = await loadCredentialCopy(serverName);
+        const copyValues = {};
+        for (const credential of copyEntry?.credentials ?? []) {
+          const fieldKey = credentialFieldKey(credential);
+          copyValues[fieldKey] =
+            credentialCopy?.fields?.find((field) => field.key === fieldKey)?.value ?? "";
+        }
         setModal({
           kind: "edit",
           title: `${t("editTitle")} · ${item.name || item.key}`,
           json: result.detail?.json || "",
           key: item.key,
           itemUrl: item.url || "",
+          serverName,
+          copyEntry,
+          credentialCopy,
+          copyValues,
           error: "",
           showCredentials: false,
+          showSecrets: false,
         });
       }
 
       function setModalError(message) {
         setModal((current) => (current ? { ...current, error: message } : current));
+      }
+
+      async function saveCopyFromModal() {
+        if (!modal?.copyEntry) return;
+        const fields = buildCredentialFields(modal.copyEntry, modal.copyValues ?? {});
+        if (fields.length === 0) {
+          setModalError(t("credentialCopyEmpty"));
+          return;
+        }
+        setModalError("");
+        setModalBusy(true);
+        try {
+          const result = await saveCredentialCopy(
+            modal.serverName,
+            modal.copyEntry.display_name,
+            fields,
+          );
+          if (!result.ok) {
+            setModalError(result.message || t("credentialCopyFailed"));
+            return;
+          }
+          setModal((current) =>
+            current
+              ? { ...current, credentialCopy: result.entry, copySaved: true }
+              : current,
+          );
+          notify(t("credentialCopySaved"));
+        } finally {
+          setModalBusy(false);
+        }
       }
 
       async function installFromCatalog(entry) {
@@ -1298,9 +1443,22 @@ window.__ModuleLoader__.load({
             setModalError(result.message || t("actionFailed"));
             return;
           }
+          const fields = buildCredentialFields(modal.entry, modal.values ?? {});
+          const copySaved =
+            fields.length === 0 ||
+            (await saveCredentialCopy(
+              slugServerName(modal.entry.name),
+              modal.entry.display_name,
+              fields,
+            )).ok;
           setModal(null);
           setView("installed");
-          notify(result.message || t("installSuccess"));
+          notify(
+            `${result.message || t("installSuccess")}${
+              copySaved ? "" : ` · ${t("credentialCopyFailed")}`
+            }`,
+            !copySaved,
+          );
           await refreshConnections();
         } finally {
           setModalBusy(false);
@@ -1328,9 +1486,24 @@ window.__ModuleLoader__.load({
             setModalError(result.message || t("actionFailed"));
             return;
           }
+          const fields = modal.copyEntry
+            ? buildCredentialFields(modal.copyEntry, modal.copyValues ?? {})
+            : [];
+          const copySaved =
+            fields.length === 0 ||
+            (await saveCredentialCopy(
+              modal.serverName,
+              modal.copyEntry.display_name,
+              fields,
+            )).ok;
           setModal(null);
           setView("installed");
-          notify(t("editSuccess"));
+          notify(
+            `${t("editSuccess")}${
+              copySaved ? "" : ` · ${t("credentialCopyFailed")}`
+            }`,
+            !copySaved,
+          );
           await refreshConnections();
         } finally {
           setModalBusy(false);
@@ -1350,6 +1523,7 @@ window.__ModuleLoader__.load({
             setModalError(result.message || t("actionFailed"));
             return;
           }
+          await deleteCredentialCopy(modal.serverName);
           setModal(null);
           notify(t("uninstallSuccess"));
           await refreshConnections();
@@ -2102,75 +2276,183 @@ window.__ModuleLoader__.load({
                 h(
                   "div",
                   { className: "mc-credential-panel" },
-                  h("p", { className: "mc-credential-note" }, t("credentialMasked")),
-                  credentialSummary
+                  modal.credentialCopy?.fields?.length
                     ? h(
                         "div",
-                        { className: "mc-credential-list" },
+                        null,
                         h(
                           "div",
-                          { className: "mc-credential-row", key: "auth-mode" },
-                          h("span", null, t("authMode")),
-                          h("code", null, credentialSummary.authMode),
-                        ),
-                        credentialSummary.url &&
+                          { className: "mc-credential-panel-head" },
+                          h("p", { className: "mc-credential-note" }, t("credentialCopyNote")),
                           h(
-                            "div",
-                            { className: "mc-credential-row", key: "url" },
-                            h("span", null, "URL"),
+                            "button",
+                            {
+                              type: "button",
+                              className: "mc-secondary",
+                              onClick: () =>
+                                setModal((current) =>
+                                  current
+                                    ? { ...current, showSecrets: !current.showSecrets }
+                                    : current,
+                                ),
+                            },
+                            modal.showSecrets
+                              ? t("hidePlaintext")
+                              : t("showPlaintext"),
+                          ),
+                        ),
+                        h(
+                          "div",
+                          { className: "mc-credential-list" },
+                          modal.credentialCopy.fields.map((field) =>
                             h(
-                              "code",
-                              { title: credentialSummary.url.value },
-                              credentialSummary.url.hidden
-                                ? credentialSummary.url.value ||
-                                    (modal.itemUrl
-                                      ? maskConnectionUrl(modal.itemUrl)
-                                      : t("credentialUrlHidden"))
-                                : credentialSummary.url.value,
+                              "div",
+                              { className: "mc-credential-row", key: field.key },
+                              h("span", null, `${field.kind || "Field"} · ${field.label}`),
+                              h(
+                                "code",
+                                { title: field.secret ? undefined : field.value },
+                                field.secret && !modal.showSecrets
+                                  ? "••••••"
+                                  : field.value,
+                              ),
                             ),
                           ),
-                        credentialSummary.headers.map((header) =>
-                          h(
-                            "div",
-                            { className: "mc-credential-row", key: `header:${header.name}` },
-                            h("span", null, `${t("headerLabel")} · ${header.name}`),
-                            h("code", null, header.value),
-                          ),
                         ),
-                        credentialSummary.env.map((entry) =>
-                          h(
-                            "div",
-                            { className: "mc-credential-row", key: `env:${entry.name}` },
-                            h("span", null, `${t("envLabel")} · ${entry.name}`),
-                            h("code", null, entry.value),
-                          ),
-                        ),
-                        credentialSummary.bearerToken &&
-                          h(
-                            "div",
-                            { className: "mc-credential-row", key: "bearer" },
-                            h("span", null, t("bearerLabel")),
-                            h("code", null, credentialSummary.bearerToken),
-                          ),
-                        credentialSummary.apiKeyValue &&
-                          h(
-                            "div",
-                            { className: "mc-credential-row", key: "api-key" },
-                            h(
-                              "span",
-                              null,
-                              `${t("apiKeyLabel")}${credentialSummary.apiKeyHeader ? ` · ${credentialSummary.apiKeyHeader}` : ""}`,
-                            ),
-                            h("code", null, credentialSummary.apiKeyValue),
-                          ),
-                        !credentialSummary.url &&
-                          credentialSummary.headers.length === 0 &&
-                          credentialSummary.env.length === 0 &&
-                          !credentialSummary.bearerToken &&
-                          !credentialSummary.apiKeyValue &&
-                          h("p", { className: "mc-form-note" }, t("credentialNone")),
                       )
-                    : h("p", { className: "mc-form-note" }, t("credentialNone")),
+                    : h(
+                        "p",
+                        { className: "mc-credential-note" },
+                        modal.copyEntry
+                          ? t("credentialCopyMissing")
+                          : t("credentialMasked"),
+                      ),
+                  modal.copyEntry &&
+                    h(
+                      "div",
+                      { className: "mc-credential-copy-form" },
+                      h(
+                        "div",
+                        { className: "mc-credential-panel-head" },
+                        h(
+                          "p",
+                          { className: "mc-credential-note" },
+                          t("credentialCopyFormHint"),
+                        ),
+                        h(
+                          "button",
+                          {
+                            type: "button",
+                            className: "mc-secondary",
+                            disabled: modalBusy,
+                            onClick: saveCopyFromModal,
+                          },
+                          modalBusy ? t("saving") : t("saveCredentialCopy"),
+                        ),
+                      ),
+                      modal.copyEntry.credentials.map((credential) => {
+                        const fieldKey = credentialFieldKey(credential);
+                        return h(
+                          "label",
+                          { className: "mc-field", key: `copy:${fieldKey}` },
+                          h(
+                            "span",
+                            { className: "mc-field-head" },
+                            h("span", null, credential.name),
+                            credential.required && h("b", { className: "mc-required-mark" }, " *"),
+                            h("small", null, credential.kind),
+                          ),
+                          h("input", {
+                            className: "mc-input",
+                            type: credential.secret ? "password" : "text",
+                            autoComplete: "off",
+                            spellCheck: false,
+                            placeholder: credential.placeholder || "",
+                            value: modal.copyValues?.[fieldKey] ?? "",
+                            onChange: (event) =>
+                              setModal((current) =>
+                                current
+                                  ? {
+                                      ...current,
+                                      copyValues: {
+                                        ...(current.copyValues ?? {}),
+                                        [fieldKey]: event.target.value,
+                                      },
+                                    }
+                                  : current,
+                              ),
+                          }),
+                        );
+                      }),
+                    ),
+                  !modal.copyEntry &&
+                    credentialSummary &&
+                    h(
+                      "div",
+                      { className: "mc-credential-list" },
+                      h(
+                        "div",
+                        { className: "mc-credential-row", key: "auth-mode" },
+                        h("span", null, t("authMode")),
+                        h("code", null, credentialSummary.authMode),
+                      ),
+                      credentialSummary.url &&
+                        h(
+                          "div",
+                          { className: "mc-credential-row", key: "url" },
+                          h("span", null, "URL"),
+                          h(
+                            "code",
+                            { title: credentialSummary.url.value },
+                            credentialSummary.url.hidden
+                              ? credentialSummary.url.value ||
+                                  (modal.itemUrl
+                                    ? maskConnectionUrl(modal.itemUrl)
+                                    : t("credentialUrlHidden"))
+                              : credentialSummary.url.value,
+                          ),
+                        ),
+                      credentialSummary.headers.map((header) =>
+                        h(
+                          "div",
+                          { className: "mc-credential-row", key: `header:${header.name}` },
+                          h("span", null, `${t("headerLabel")} · ${header.name}`),
+                          h("code", null, header.value),
+                        ),
+                      ),
+                      credentialSummary.env.map((entry) =>
+                        h(
+                          "div",
+                          { className: "mc-credential-row", key: `env:${entry.name}` },
+                          h("span", null, `${t("envLabel")} · ${entry.name}`),
+                          h("code", null, entry.value),
+                        ),
+                      ),
+                      credentialSummary.bearerToken &&
+                        h(
+                          "div",
+                          { className: "mc-credential-row", key: "bearer" },
+                          h("span", null, t("bearerLabel")),
+                          h("code", null, credentialSummary.bearerToken),
+                        ),
+                      credentialSummary.apiKeyValue &&
+                        h(
+                          "div",
+                          { className: "mc-credential-row", key: "api-key" },
+                          h(
+                            "span",
+                            null,
+                            `${t("apiKeyLabel")}${credentialSummary.apiKeyHeader ? ` · ${credentialSummary.apiKeyHeader}` : ""}`,
+                          ),
+                          h("code", null, credentialSummary.apiKeyValue),
+                        ),
+                      !credentialSummary.url &&
+                        credentialSummary.headers.length === 0 &&
+                        credentialSummary.env.length === 0 &&
+                        !credentialSummary.bearerToken &&
+                        !credentialSummary.apiKeyValue &&
+                        h("p", { className: "mc-form-note" }, t("credentialNone")),
+                    ),
                 ),
               modal.error && h("p", { className: "mc-form-error" }, modal.error),
             ),
