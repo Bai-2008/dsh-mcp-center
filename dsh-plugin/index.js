@@ -11,6 +11,11 @@ import { join } from "node:path";
 import { homedir } from "node:os";
 
 const ROUTE = "/dsh-mcp-center/api/credentials";
+const CATALOG_ROUTE = "/dsh-mcp-center/api/catalog";
+const CATALOG_URL =
+  process.env.DSH_MCP_CENTER_CATALOG_URL ||
+  "https://bai-2008.github.io/dsh-mcp-center/index.json";
+const CATALOG_TTL = 5 * 60 * 1000;
 const SERVER_NAME = /^[a-z0-9_-]{1,63}$/;
 const RESERVED_NAMES = new Set(["__proto__", "constructor", "prototype"]);
 const MAX_BODY = 256 * 1024;
@@ -228,15 +233,169 @@ async function handle(req, res) {
   }
 }
 
-export function apply(ctx) {
-  ctx.inject(["webServer"], (webContext) => {
-    webContext.effect(() => {
-      const dispose = webContext.webServer.register({
-        kind: "prefix",
-        path: ROUTE,
-        handler: handle,
-      });
-      return () => dispose();
-    });
+function catalogCachePath() {
+  return join(profileRoot(), "dsh-mcp-center", "catalog-cache.json");
+}
+
+async function loadCatalogCache() {
+  try {
+    const parsed = JSON.parse(await readFile(catalogCachePath(), "utf8"));
+    if (!parsed || typeof parsed !== "object" || !parsed.data) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+async function saveCatalogCache(cache) {
+  const directory = join(profileRoot(), "dsh-mcp-center");
+  await mkdir(directory, { recursive: true, mode: 0o700 });
+  const target = catalogCachePath();
+  const temporary = `${target}.${process.pid}.tmp`;
+  await writeFile(temporary, `${JSON.stringify(cache, null, 2)}\n`, {
+    encoding: "utf8",
+    mode: 0o600,
   });
+  try {
+    await rename(temporary, target);
+  } catch {
+    await rm(target, { force: true });
+    await rename(temporary, target);
+  }
+}
+
+function validCatalog(data) {
+  return (
+    data &&
+    typeof data === "object" &&
+    !Array.isArray(data) &&
+    Array.isArray(data.entries) &&
+    data.entries.length > 0 &&
+    data.site &&
+    typeof data.site.origin === "string"
+  );
+}
+
+async function fetchCatalog(force = false) {
+  const cache = await loadCatalogCache();
+  const now = Date.now();
+  if (
+    !force &&
+    cache &&
+    typeof cache.fetchedAt === "number" &&
+    now - cache.fetchedAt < CATALOG_TTL
+  ) {
+    return { data: cache.data, fetchedAt: cache.fetchedAt, cached: true, stale: false };
+  }
+
+  const headers = {
+    accept: "application/json",
+    "user-agent": "dsh-mcp-center/0.6.0",
+  };
+  if (cache?.etag) headers["if-none-match"] = cache.etag;
+  if (cache?.lastModified) headers["if-modified-since"] = cache.lastModified;
+
+  try {
+    const response = await fetch(CATALOG_URL, {
+      headers,
+      signal: AbortSignal.timeout(20_000),
+    });
+    if (response.status === 304 && cache) {
+      const refreshed = { ...cache, fetchedAt: now };
+      await saveCatalogCache(refreshed);
+      return { data: cache.data, fetchedAt: now, cached: true, stale: false };
+    }
+    if (!response.ok) throw new Error(`目录仓库返回 HTTP ${response.status}`);
+    const text = await response.text();
+    if (text.length > 8 * 1024 * 1024) throw new Error("目录数据超过 8 MiB");
+    const data = JSON.parse(text);
+    if (!validCatalog(data)) throw new Error("目录数据缺少 entries/site");
+    const saved = {
+      version: 1,
+      fetchedAt: now,
+      etag: response.headers.get("etag") || undefined,
+      lastModified: response.headers.get("last-modified") || undefined,
+      data,
+    };
+    await saveCatalogCache(saved);
+    return { data, fetchedAt: now, cached: false, stale: false };
+  } catch (error) {
+    if (cache) {
+      return {
+        data: cache.data,
+        fetchedAt: cache.fetchedAt,
+        cached: true,
+        stale: true,
+        message: error instanceof Error ? error.message : String(error),
+      };
+    }
+    throw error;
+  }
+}
+
+async function handleCatalog(req, res) {
+  if (!trustedRequest(req)) {
+    writeJson(res, 403, { ok: false, message: "forbidden" });
+    return;
+  }
+  if (req.method !== "GET") {
+    res.writeHead(405, { allow: "GET" });
+    res.end();
+    return;
+  }
+  try {
+    const url = new URL(req.url ?? "/", "http://localhost");
+    const result = await fetchCatalog(url.searchParams.get("refresh") === "1");
+    writeJson(res, 200, {
+      ok: true,
+      ...result,
+      source: CATALOG_URL,
+    });
+  } catch (error) {
+    writeJson(res, 502, {
+      ok: false,
+      message: error instanceof Error ? error.message : String(error),
+    });
+  }
+}
+
+function warnRouteFailure(ctx, error) {
+  try {
+    ctx.logger?.warn?.(
+      `dsh-mcp-center: local API unavailable: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    );
+  } catch {
+    // Logging must never take down the plugin.
+  }
+}
+
+export function apply(ctx) {
+  try {
+    ctx.inject(["webServer"], (webContext) => {
+      try {
+        webContext.effect(() => {
+          const disposeCredentials = webContext.webServer.register({
+            kind: "prefix",
+            path: ROUTE,
+            handler: handle,
+          });
+          const disposeCatalog = webContext.webServer.register({
+            kind: "prefix",
+            path: CATALOG_ROUTE,
+            handler: handleCatalog,
+          });
+          return () => {
+            disposeCatalog();
+            disposeCredentials();
+          };
+        });
+      } catch (error) {
+        warnRouteFailure(ctx, error);
+      }
+    });
+  } catch (error) {
+    warnRouteFailure(ctx, error);
+  }
 }

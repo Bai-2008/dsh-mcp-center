@@ -55,6 +55,7 @@
   "openConnector": "打开 MCP 连接器",
   "refresh": "刷新",
   "updateCatalog": "刷新目录",
+  "remoteCatalog": "在线目录",
   "updateAll": "刷新并检查",
   "updating": "正在更新…",
   "checkAll": "检查全部",

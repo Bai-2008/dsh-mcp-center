@@ -44,7 +44,18 @@ C:\Users\36184\Documents\deepseek-harness\default-workspace\dsh-mcp-center\dsh-p
 
 ## 数据更新
 
-插件包内的 `client.js` 是生成文件，数据来自仓库的 `web/src/data/index.json`。
+插件启动时会通过 Host 代理拉取线上目录：
+
+```text
+https://bai-2008.github.io/dsh-mcp-center/index.json
+```
+
+- 目录和安装配置由网站构建产物提供，**新增 MCP 不需要重新发布插件**
+- 本机缓存 5 分钟，页面上的「刷新目录」可强制拉取
+- 远端不可用时使用本地缓存，再回退到插件内置快照
+- 缓存位置：`$DSH_PROFILE_DIR/dsh-mcp-center/catalog-cache.json`
+
+插件包内的 `client.js` 仍包含一份内置快照，仅作为离线兜底。只有修改插件代码或需要更新兜底快照时才需要：
 
 ```bash
 npm run build:web

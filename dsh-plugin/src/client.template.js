@@ -68,6 +68,19 @@ window.__ModuleLoader__.load({
         font-size: 10px;
         white-space: nowrap;
       }
+      .mc-catalog-source {
+        padding: 2px 6px;
+        border: 1px solid var(--dsw-alias-border-l1);
+        border-radius: 5px;
+        color: var(--dsw-alias-label-tertiary);
+        font-size: 9px;
+        white-space: nowrap;
+      }
+      .mc-catalog-error {
+        margin: -5px 0 12px;
+        color: var(--dsw-alias-state-error-primary);
+        font-size: 10px;
+      }
       .mc-open-site {
         display: inline-flex;
         align-items: center;
@@ -880,10 +893,11 @@ window.__ModuleLoader__.load({
 
     function EntryIcon({ entry, large }) {
       const size = large ? 46 : 34;
-      if (entry.iconData) {
+      const source = entry.iconUrl || entry.iconData;
+      if (source) {
         return h("img", {
           className: "mc-icon",
-          src: entry.iconData,
+          src: source,
           alt: "",
           width: size,
           height: size,
@@ -961,6 +975,7 @@ window.__ModuleLoader__.load({
 
     const CONNECTOR_API = "/mcp-connector/api";
     const CREDENTIAL_API = "/dsh-mcp-center/api/credentials";
+    const CATALOG_API = "/dsh-mcp-center/api/catalog";
     const CONNECTOR_TIMEOUTS = {
       status: 20_000,
       catalog: 30_000,
@@ -1016,11 +1031,11 @@ window.__ModuleLoader__.load({
       }
     }
 
-    function findMarketEntryForConnection(item) {
+    function findMarketEntryForConnection(item, entries = DATA.entries) {
       return (
-        DATA.entries.find((entry) => slugServerName(entry.name) === item.serverName) ||
-        DATA.entries.find((entry) => entry.display_name === item.name) ||
-        DATA.entries.find(
+        entries.find((entry) => slugServerName(entry.name) === item.serverName) ||
+        entries.find((entry) => entry.display_name === item.name) ||
+        entries.find(
           (entry) =>
             entry.transport?.url &&
             item.url &&
@@ -1028,6 +1043,41 @@ window.__ModuleLoader__.load({
         ) ||
         null
       );
+    }
+
+    function normalizeCatalog(data) {
+      const site = data?.site ?? DATA.site;
+      const base = `${site.origin ?? DATA.site.origin}${
+        site.base ?? DATA.site.base ?? "/"
+      }`;
+      const entries = (data?.entries ?? []).map((entry) => {
+        let iconUrl = entry.iconData;
+        if (entry.icon) {
+          try {
+            iconUrl = new URL(
+              entry.icon,
+              base.endsWith("/") ? base : `${base}/`,
+            ).toString();
+          } catch {
+            iconUrl = entry.iconData;
+          }
+        }
+        return {
+          ...entry,
+          categories: Array.isArray(entry.categories) ? entry.categories : [],
+          tools: Array.isArray(entry.tools) ? entry.tools : [],
+          credentials: Array.isArray(entry.credentials) ? entry.credentials : [],
+          install: Array.isArray(entry.install) ? entry.install : [],
+          iconUrl,
+        };
+      });
+      return {
+        ...data,
+        site,
+        generated_at: data?.generated_at ?? DATA.generated_at,
+        categories: data?.categories ?? data?.facets?.categories ?? [],
+        entries,
+      };
     }
 
     function buildInstallPayload(entry, form) {
@@ -1245,6 +1295,13 @@ window.__ModuleLoader__.load({
       const [view, setView] = useState("catalog");
       const [query, setQuery] = useState("");
       const [category, setCategory] = useState(ALL);
+      const [catalog, setCatalog] = useState(DATA);
+      const [catalogState, setCatalogState] = useState({
+        loading: true,
+        source: "snapshot",
+        error: "",
+        fetchedAt: DATA.generated_at,
+      });
       const [selectedName, setSelectedName] = useState(DATA.entries[0]?.name ?? "");
       const [installId, setInstallId] = useState("");
       const [copied, copy] = useCopyState();
@@ -1265,19 +1322,19 @@ window.__ModuleLoader__.load({
 
       const categories = useMemo(
         () => [
-          { name: t("all"), value: ALL, count: DATA.entries.length },
-          ...DATA.categories.map((item) => ({
+          { name: t("all"), value: ALL, count: catalog.entries.length },
+          ...catalog.categories.map((item) => ({
             name: item.name,
             value: item.name,
             count: item.count,
           })),
         ],
-        [t],
+        [t, catalog],
       );
 
       const filtered = useMemo(() => {
         const needle = query.trim().toLowerCase();
-        return DATA.entries.filter((entry) => {
+        return catalog.entries.filter((entry) => {
           if (category !== ALL && !entry.categories.includes(category)) {
             return false;
           }
@@ -1296,7 +1353,7 @@ window.__ModuleLoader__.load({
             .toLowerCase()
             .includes(needle);
         });
-      }, [category, query]);
+      }, [category, query, catalog]);
 
       const selected =
         filtered.find((entry) => entry.name === selectedName) ??
@@ -1313,13 +1370,58 @@ window.__ModuleLoader__.load({
         null;
       const required =
         selected?.credentials.filter((credential) => credential.required) ?? [];
-      const siteUrl = `${DATA.site.origin}${DATA.site.base}`;
+      const siteUrl = `${catalog.site.origin}${catalog.site.base}`;
       const installedServerNames = useMemo(
         () => new Set(connector.items.map((item) => item.serverName).filter(Boolean)),
         [connector.items],
       );
       const isEntryInstalled = (entry) =>
         installedServerNames.has(slugServerName(entry.name));
+
+      async function loadCatalog(force = false) {
+        setCatalogState((current) => ({ ...current, loading: true, error: "" }));
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 25_000);
+        try {
+          const response = await fetch(
+            `${CATALOG_API}${force ? "?refresh=1" : ""}`,
+            {
+              headers: { accept: "application/json" },
+              credentials: "same-origin",
+              cache: "no-store",
+              signal: controller.signal,
+            },
+          );
+          const result = await response.json();
+          if (!response.ok || !result.ok || !result.data) {
+            throw new Error(result.message || `HTTP ${response.status}`);
+          }
+          const next = normalizeCatalog(result.data);
+          setCatalog(next);
+          setCatalogState({
+            loading: false,
+            source: "remote",
+            error: result.stale ? result.message || "" : "",
+            fetchedAt: result.fetchedAt ?? next.generated_at,
+          });
+          setSelectedName((current) =>
+            next.entries.some((entry) => entry.name === current)
+              ? current
+              : next.entries[0]?.name ?? "",
+          );
+        } catch (error) {
+          setCatalogState({
+            loading: false,
+            source: "snapshot",
+            error: controller.signal.aborted
+              ? "目录请求超时"
+              : `在线目录不可用：${error?.message || error}`,
+            fetchedAt: DATA.generated_at,
+          });
+        } finally {
+          clearTimeout(timer);
+        }
+      }
 
       async function refreshConnections() {
         const sequence = ++statusSequence.current;
@@ -1371,6 +1473,10 @@ window.__ModuleLoader__.load({
           });
         }
       }
+
+      useEffect(() => {
+        void loadCatalog(false);
+      }, []);
 
       useEffect(() => {
         void refreshConnections();
@@ -1437,7 +1543,7 @@ window.__ModuleLoader__.load({
           return;
         }
         const serverName = item.serverName || slugServerName(item.name || item.key || "");
-        const copyEntry = DATA.entries.find(
+        const copyEntry = catalog.entries.find(
           (entry) => slugServerName(entry.name) === serverName,
         );
         const credentialCopy = await loadCredentialCopy(serverName);
@@ -2105,7 +2211,7 @@ window.__ModuleLoader__.load({
                 ),
               ),
             ),
-          h("p", { className: "mc-foot" }, `${t("snapshot")} · ${DATA.generated_at}`),
+          h("p", { className: "mc-foot" }, `${t("snapshot")} · ${catalog.generated_at}`),
         );
       };
 
@@ -2229,7 +2335,10 @@ window.__ModuleLoader__.load({
                     items.map((item, index) => {
                       const enabled = item.enabled !== false;
                       const displayName = item.name || item.key || `#${index + 1}`;
-                      const referenceEntry = findMarketEntryForConnection(item);
+                      const referenceEntry = findMarketEntryForConnection(
+                        item,
+                        catalog.entries,
+                      );
                       const feedback = actionResults[item.key];
                       const feedbackMessage = feedback?.pending
                         ? t("checking")
@@ -2968,7 +3077,24 @@ window.__ModuleLoader__.load({
           h(
             "div",
             { className: "mc-head-side" },
-            h("span", { className: "mc-count" }, `${DATA.entries.length} ${t("entries")}`),
+            h(
+              "span",
+              { className: "mc-catalog-source" },
+              catalogState.source === "remote"
+                ? t("remoteCatalog")
+                : t("snapshot"),
+            ),
+            h("span", { className: "mc-count" }, `${catalog.entries.length} ${t("entries")}`),
+            h(
+              "button",
+              {
+                type: "button",
+                className: "mc-secondary",
+                disabled: catalogState.loading,
+                onClick: () => loadCatalog(true),
+              },
+              catalogState.loading ? t("loading") : t("updateCatalog"),
+            ),
             h(
               "a",
               { className: "mc-open-site", href: siteUrl, target: "_blank", rel: "noreferrer" },
@@ -2977,6 +3103,8 @@ window.__ModuleLoader__.load({
             ),
           ),
         ),
+        catalogState.error &&
+          h("p", { className: "mc-catalog-error" }, catalogState.error),
         h(
           "div",
           { className: "mc-view-tabs", role: "tablist" },

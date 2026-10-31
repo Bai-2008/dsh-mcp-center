@@ -55,6 +55,7 @@
   "openConnector": "Open MCP Connector",
   "refresh": "Refresh",
   "updateCatalog": "Refresh catalog",
+  "remoteCatalog": "Online catalog",
   "updateAll": "Refresh and check",
   "updating": "Updating…",
   "checkAll": "Check all",

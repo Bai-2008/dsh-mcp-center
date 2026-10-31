@@ -268,7 +268,7 @@ Claude Desktop 的远程配置会标注为桥接方案；如果客户端版本�
 - 在 **设置 → 插件** 增加「MCP 市场」Tab
 - React 原生渲染，复用宿主主题 token 和 locale
 - 搜索、分类、详情、四客户端安装 Tab、复制、必填变量、工具副作用
-- 数据来自同一份 registry，构建时生成内联快照，离线可用
+- 在线目录：插件通过 Host 代理拉取线上 `index.json`，5 分钟缓存，新增 MCP 无需重新发布插件；内置快照仅作离线兜底
 - 对接 `dsh-mcp-connector`：在插件内直接安装、卸载、检查、启用/停用、重连、重命名、注入模式、工具查看、备份恢复、更新、编辑连接
 - 安装表单直接调用连接器 `configure`；无凭据的远程 OAuth 服务回退到连接器目录 `connect`
 - 安装时输入凭据会保存插件自己的本机副本：`$DSH_PROFILE_DIR/dsh-mcp-center/credentials.json`
