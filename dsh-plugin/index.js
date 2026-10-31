@@ -1,17 +1,18 @@
 /**
- * Host half: a local credential mirror for the native MCP market.
- *
- * The MCP connector deliberately never returns plaintext headers/tokens to a
- * browser page. The market keeps its own copy only after the user submitted a
- * credential in this plugin, so the edit dialog can show what was entered.
- * The file lives under the current DSH profile and is never uploaded.
+ * Host half: native MCP lifecycle, online catalog proxy, and local credential
+ * mirror for dsh-mcp-center. MCP connections are provisioned directly through
+ * @deepseek-ai/dsh-mcp-client; no separate connector plugin is required.
  */
 import { chmod, mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { homedir } from "node:os";
+import { createMcpManager } from "./mcp-manager.js";
 
 const ROUTE = "/dsh-mcp-center/api/credentials";
 const CATALOG_ROUTE = "/dsh-mcp-center/api/catalog";
+const MCP_ROUTE = "/dsh-mcp-center/api/mcp";
+
+export const inject = ["loader", "tools"];
 const CATALOG_RAW =
   "https://raw.githubusercontent.com/Bai-2008/dsh-mcp-center/main/catalog/index.json";
 const CATALOG_SOURCES = process.env.DSH_MCP_CENTER_CATALOG_URL
@@ -389,6 +390,61 @@ async function handleCatalog(req, res) {
   }
 }
 
+async function handleMcp(req, res, manager) {
+  if (!trustedRequest(req)) {
+    writeJson(res, 403, { ok: false, message: "forbidden" });
+    return;
+  }
+  if (req.method !== "POST") {
+    res.writeHead(405, { allow: "POST" });
+    res.end();
+    return;
+  }
+  const allowed = new Set([
+    "status",
+    "toolsList",
+    "configure",
+    "reconfigureConnection",
+    "editableConnectionConfig",
+    "disconnect",
+    "renameConnection",
+    "setInjectionMode",
+    "setEnabled",
+    "reconnect",
+    "healthCheck",
+    "exportConfig",
+    "listSnapshots",
+    "createSnapshot",
+    "previewSnapshot",
+    "restoreSnapshot",
+    "catalog",
+    "refreshCatalog",
+    "connect",
+  ]);
+  try {
+    const body = await readJsonBody(req);
+    const method = String(body.method ?? "");
+    if (!allowed.has(method)) {
+      writeJson(res, 404, { ok: false, message: `unknown method: ${method}` });
+      return;
+    }
+    if (method === "connect") {
+      writeJson(res, 400, {
+        ok: false,
+        message: "该服务需要手动填写凭据或使用支持 OAuth 的客户端。",
+      });
+      return;
+    }
+    const result = await manager[method](body.params ?? {});
+    writeJson(res, 200, result);
+  } catch (error) {
+    writeJson(res, 400, {
+      ok: false,
+      message: error instanceof Error ? error.message : String(error),
+    });
+  }
+}
+
 function warnRouteFailure(ctx, error) {
   try {
     ctx.logger?.warn?.(
@@ -403,7 +459,16 @@ function warnRouteFailure(ctx, error) {
 
 export function apply(ctx) {
   try {
-    ctx.inject(["webServer"], (webContext) => {
+    ctx.inject(["webServer", "loader", "tools"], async (webContext) => {
+      let manager;
+      try {
+        manager = await createMcpManager(webContext, {
+          warn: (message) => console.warn(`[dsh-mcp-center] ${message}`),
+        });
+      } catch (error) {
+        warnRouteFailure(ctx, error);
+        return;
+      }
       try {
         webContext.effect(() => {
           const disposeCredentials = webContext.webServer.register({
@@ -416,7 +481,13 @@ export function apply(ctx) {
             path: CATALOG_ROUTE,
             handler: handleCatalog,
           });
+          const disposeMcp = webContext.webServer.register({
+            kind: "prefix",
+            path: MCP_ROUTE,
+            handler: (req, res) => handleMcp(req, res, manager),
+          });
           return () => {
+            disposeMcp();
             disposeCatalog();
             disposeCredentials();
           };

@@ -973,7 +973,7 @@ window.__ModuleLoader__.load({
       return [copied, copy];
     }
 
-    const CONNECTOR_API = "/mcp-connector/api";
+    const CONNECTOR_API = "/dsh-mcp-center/api/mcp";
     const CREDENTIAL_API = "/dsh-mcp-center/api/credentials";
     const CATALOG_API = "/dsh-mcp-center/api/catalog";
     const CONNECTOR_TIMEOUTS = {
@@ -1009,7 +1009,7 @@ window.__ModuleLoader__.load({
         .replace(/[^a-z0-9_-]+/g, "-")
         .replace(/^[^a-z0-9]+/, "")
         .replace(/[^a-z0-9]+$/, "")
-        .slice(0, 63);
+        .slice(0, 32);
       return slug || "mcp-server";
     }
 
@@ -1260,7 +1260,7 @@ window.__ModuleLoader__.load({
             message:
               response.status === 401
                 ? "登录状态已失效，请刷新页面"
-                : `MCP 连接器返回了无效响应（HTTP ${response.status}）`,
+                : `MCP 引擎返回了无效响应（HTTP ${response.status}）`,
           };
         }
         if (!response.ok && data?.ok !== false) {
@@ -1272,7 +1272,7 @@ window.__ModuleLoader__.load({
           ok: false,
           message: controller.signal.aborted
             ? "请求超时"
-            : `MCP 连接器不可用：${error?.message || error}`,
+            : `MCP 引擎不可用：${error?.message || error}`,
         };
       } finally {
         clearTimeout(timer);
@@ -3294,21 +3294,6 @@ window.__ModuleLoader__.load({
           "dsh-mcp-center: dictionaries",
         );
         const t = ctx.locale.bind(NS);
-        let layout;
-        ctx.inject(["layout"], (scoped) => {
-          layout = scoped.layout;
-        });
-        const openConnector = () => {
-          try {
-            if (layout?.selectPanel) {
-              layout.selectPanel("mcp-connector");
-              return true;
-            }
-          } catch {
-            // The connector plugin may not be installed.
-          }
-          return false;
-        };
         ctx.slots.inject("plugins.tab", () =>
           ctx.slots.register(
             {
@@ -3318,7 +3303,7 @@ window.__ModuleLoader__.load({
               label: () => t("nav"),
               locale: NS,
             },
-            (ownerProps) => h(MarketView, { ...ownerProps, t, openConnector }),
+            (ownerProps) => h(MarketView, { ...ownerProps, t }),
           ),
         );
       },

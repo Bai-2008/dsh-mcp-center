@@ -268,8 +268,8 @@ Claude Desktop 的远程配置会标注为桥接方案；如果客户端版本�
 - React 原生渲染，复用宿主主题 token 和 locale
 - 搜索、分类、详情、四客户端安装 Tab、复制、必填变量、工具副作用
 - 在线目录：插件通过 Host 代理拉取线上 `index.json`，5 分钟缓存，新增 MCP 无需重新发布插件；无内置目录快照，离线时使用本机缓存或提示目录不可用
-- 对接 `dsh-mcp-connector`：在插件内直接安装、卸载、检查、启用/停用、重连、重命名、注入模式、工具查看、备份恢复、更新、编辑连接
-- 安装表单直接调用连接器 `configure`；无凭据的远程 OAuth 服务回退到连接器目录 `connect`
+- 原生 MCP 生命周期：插件自己管理连接记录，直接创建 DSH 内置 `@deepseek-ai/dsh-mcp-client` 条目；不再依赖 `dsh-mcp-connector`，并会迁移旧连接记录
+- 安装表单直接创建原生 MCP loader 条目；当前支持 Streamable HTTP + Headers 和 stdio
 - 安装时输入凭据会保存插件自己的本机副本：`$DSH_PROFILE_DIR/dsh-mcp-center/credentials.json`
 - 插件本身不执行 MCP 工具；连接操作走连接器的同源 HTTP API
 - 60 秒 HTML 宣传片：`web/public/promo.html`，线上地址 `/promo.html`
