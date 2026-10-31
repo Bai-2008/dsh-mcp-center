@@ -1,6 +1,6 @@
 {
   "name": "dsh-mcp-center",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "private": true,
   "description": "原生 MCP 市场与连接管理器：安装、检查、管理、更新、编辑和卸载 MCP 连接。",
   "type": "module",
@@ -16,6 +16,7 @@
   "files": [
     "index.js",
     "mcp-manager.js",
+    "mcp-bridge.js",
     "client.js",
     "cordis.patch.yml",
     "locale/*.json",

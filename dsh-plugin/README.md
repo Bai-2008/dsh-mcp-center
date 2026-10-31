@@ -72,6 +72,7 @@ npm run build:plugin
 - 这是目录和连接生命周期界面，不在插件内执行第三方 MCP 工具。
 - 真正的 MCP transport、连接、工具注册和审批由 DSH 内置的 `@deepseek-ai/dsh-mcp-client` 负责。
 - 原生引擎当前支持 Streamable HTTP + Headers 和 stdio；OAuth 专用服务需要手动提供 Header 或后续扩展。
+- 对只支持 MCP 2025-06-18 的旧版 HTTP 服务（例如瑞幸）自动启用内置 stdio 协议桥，避免新协议握手失败。
 - 安装表单会把凭据写入本机连接，并在插件自己的本机副本中保存一份；不会上传到市场网站。
 - 副本文件是本地明文，安全边界等同于当前 Windows 用户；不需要时可在卸载连接或删除该文件。
 - 图标在构建时转成内联 data URI，不依赖外站热链。

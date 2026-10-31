@@ -10,12 +10,14 @@ import { randomUUID } from "node:crypto";
 import { chmod, mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const STORE_VERSION = 1;
 const MAX_SNAPSHOTS = 12;
 const SERVER_NAME = /^[a-z0-9_-]{1,32}$/;
 const HEADER_NAME = /^[!#$%&'*+.^_`|~0-9A-Za-z-]+$/;
 const ENTRY_PREFIX = "mcp-center";
+const BRIDGE_PATH = fileURLToPath(new URL("./mcp-bridge.js", import.meta.url));
 
 function dshHome() {
   return process.env.DSH_HOME || join(homedir(), ".dsh");
@@ -146,8 +148,22 @@ function normalizeRecord(input, existing) {
     }
     record.url = parsed.toString();
     record.headers = normalizeHeaders(input.headersJson ?? input.headers ?? existing?.headers ?? {});
+    const requestedProtocol = String(
+      input.protocolVersion ?? existing?.protocolVersion ?? "",
+    ).trim();
+    if (requestedProtocol) record.protocolVersion = requestedProtocol;
   }
   return record;
+}
+
+function isLegacyBridge(record) {
+  if (record.transport !== "streamable-http") return false;
+  if (record.protocolVersion === "2025-06-18") return true;
+  try {
+    return /(^|\.)lkcoffee\.com$/i.test(new URL(record.url).hostname);
+  } catch {
+    return false;
+  }
 }
 
 function legacyRecord(record) {
@@ -250,6 +266,21 @@ function entryConfig(record) {
       args: record.args ?? [],
       env: record.env ?? {},
       ...(record.cwd ? { cwd: record.cwd } : {}),
+      failOnStartupError: false,
+    };
+  }
+  if (isLegacyBridge(record)) {
+    return {
+      transport: "stdio",
+      serverName: record.serverName,
+      command: process.execPath,
+      args: [BRIDGE_PATH],
+      env: {
+        ...(process.versions?.electron ? { ELECTRON_RUN_AS_NODE: "1" } : {}),
+        MCP_BRIDGE_URL: record.url,
+        MCP_BRIDGE_HEADERS: JSON.stringify(record.headers ?? {}),
+        MCP_BRIDGE_PROTOCOL: "2025-06-18",
+      },
       failOnStartupError: false,
     };
   }
@@ -544,6 +575,7 @@ export async function createMcpManager(ctx, logger = console) {
                 type: "streamable-http",
                 url: record.url,
                 headers: record.headers ?? {},
+                ...(record.protocolVersion ? { protocolVersion: record.protocolVersion } : {}),
               },
             },
           };
@@ -565,6 +597,7 @@ export async function createMcpManager(ctx, logger = console) {
               type: "streamable-http",
               url: record.url,
               headers: Object.fromEntries(Object.keys(record.headers ?? {}).map((name) => [name, "<REDACTED>"])),
+              ...(record.protocolVersion ? { protocolVersion: record.protocolVersion } : {}),
             };
     }
     return {
@@ -643,6 +676,7 @@ export async function createMcpManager(ctx, logger = console) {
   return {
     configure,
     reconfigure,
+    reconfigureConnection: reconfigure,
     status,
     toolsList,
     setEnabled,
@@ -650,6 +684,7 @@ export async function createMcpManager(ctx, logger = console) {
     disconnect,
     healthCheck,
     rename,
+    renameConnection: rename,
     setInjectionMode,
     editableConnectionConfig,
     exportConfig,
