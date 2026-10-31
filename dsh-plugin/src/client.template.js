@@ -473,6 +473,37 @@ window.__ModuleLoader__.load({
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+      .mc-installed-status {
+        overflow: hidden;
+        margin-top: 2px;
+        color: var(--dsw-alias-label-tertiary);
+        font-size: 9.5px;
+        line-height: 1.45;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .mc-installed-status.ok { color: var(--dsw-alias-state-success-primary); }
+      .mc-installed-status.bad { color: var(--dsw-alias-state-error-primary); }
+      .mc-installed-status.pending { color: var(--dsw-alias-brand-primary); }
+      .mc-action-feedback {
+        margin: 0 0 9px;
+        padding: 7px 9px;
+        border: 1px solid var(--dsw-alias-border-l1);
+        border-radius: 6px;
+        background: var(--dsw-alias-bg-layer-1);
+        color: var(--dsw-alias-label-secondary);
+        font-size: 10px;
+        line-height: 1.5;
+      }
+      .mc-action-feedback.ok {
+        border-color: color-mix(in srgb, var(--dsw-alias-state-success-primary) 30%, transparent);
+        color: var(--dsw-alias-state-success-primary);
+      }
+      .mc-action-feedback.bad {
+        border-color: color-mix(in srgb, var(--dsw-alias-state-error-primary) 30%, transparent);
+        color: var(--dsw-alias-state-error-primary);
+      }
+      .mc-action-feedback.pending { color: var(--dsw-alias-brand-primary); }
       .mc-installed-badges { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
       .mc-row-actions { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; }
       .mc-loading { padding: 28px 16px; color: var(--dsw-alias-label-tertiary); font-size: 11.5px; text-align: center; }
@@ -608,6 +639,37 @@ window.__ModuleLoader__.load({
         font-size: 10.5px;
         line-height: 1.5;
       }
+      .mc-credential-toolbar { display: flex; justify-content: flex-start; margin-top: 8px; }
+      .mc-credential-panel {
+        margin-top: 8px;
+        padding: 9px 10px;
+        border: 1px solid var(--dsw-alias-border-l1);
+        border-radius: 7px;
+        background: var(--dsw-alias-bg-layer-1);
+      }
+      .mc-credential-note {
+        margin: 0 0 7px;
+        color: var(--dsw-alias-label-tertiary);
+        font-size: 9.5px;
+        line-height: 1.55;
+      }
+      .mc-credential-list { display: grid; gap: 4px; }
+      .mc-credential-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+        min-width: 0;
+        font-size: 9.5px;
+      }
+      .mc-credential-row > span { color: var(--dsw-alias-label-secondary); }
+      .mc-credential-row > code {
+        overflow: hidden;
+        color: var(--dsw-alias-label-primary);
+        font-family: ui-monospace, monospace;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
       .mc-modal-actions {
         display: flex;
         justify-content: flex-end;
@@ -647,12 +709,83 @@ window.__ModuleLoader__.load({
     function connectionStateLabel(t, item) {
       if (item.enabled === false) return t("disabled");
       const state = item.connectionState;
-      if (state === "connected" || state === "ready") return t("connected");
-      if (state === "recovering") return t("recovering");
-      if (state === "needs-auth" || state === "reauthorize") return t("reauthorize");
-      if (state === "error" || state === "connection-error") return t("connectionError");
-      if (state === "unknown" || state === undefined || state === null) return t("stateUnknown");
-      return t("notConnected");
+      if (state === "unknown" && item.toolsAvailable) return t("connected");
+      const labels = {
+        healthy: t("connected"),
+        connected: t("connected"),
+        ready: t("connected"),
+        degraded: t("degraded"),
+        reauth: t("reauthorize"),
+        "needs-auth": t("reauthorize"),
+        reauthorize: t("reauthorize"),
+        recovering: t("recovering"),
+        unavailable: t("connectionError"),
+        error: t("connectionError"),
+        disconnected: t("notConnected"),
+        configured: t("configured"),
+        disabled: t("disabled"),
+        unknown: t("stateUnknown"),
+      };
+      return labels[state] ?? labels[state ?? "unknown"];
+    }
+
+    function parseConnectionEditorSummary(json) {
+      try {
+        const document = JSON.parse(json);
+        const connection = Array.isArray(document?.connections)
+          ? document.connections[0]
+          : document?.mcpServers && typeof document.mcpServers === "object"
+            ? Object.values(document.mcpServers)[0]
+            : null;
+        if (!connection || typeof connection !== "object") return null;
+        const masked = "••••••";
+        const maskUrl = (raw) => {
+          if (raw === "<KEEP_EXISTING>") return { value: "", hidden: true };
+          try {
+            const url = new URL(raw);
+            for (const key of [...url.searchParams.keys()]) {
+              url.searchParams.set(key, "***");
+            }
+            if (url.username) url.username = masked;
+            if (url.password) url.password = masked;
+            return { value: url.toString(), hidden: url.search.length > 0 };
+          } catch {
+            return { value: String(raw), hidden: false };
+          }
+        };
+        const url = connection.url ? maskUrl(connection.url) : null;
+        return {
+          authMode: connection.authMode || "none",
+          url,
+          headers: Object.entries(connection.headers ?? {}).map(([name]) => ({
+            name,
+            value: masked,
+          })),
+          env: Object.entries(connection.env ?? {}).map(([name]) => ({
+            name,
+            value: masked,
+          })),
+          bearerToken: connection.bearerToken ? masked : "",
+          apiKeyHeader: connection.apiKeyHeader || "",
+          apiKeyValue: connection.apiKeyValue ? masked : "",
+        };
+      } catch {
+        return null;
+      }
+    }
+
+    function maskConnectionUrl(raw) {
+      try {
+        const url = new URL(String(raw));
+        for (const key of [...url.searchParams.keys()]) {
+          url.searchParams.set(key, "***");
+        }
+        if (url.username) url.username = "***";
+        if (url.password) url.password = "***";
+        return url.toString();
+      } catch {
+        return String(raw ?? "");
+      }
     }
 
     function initials(name) {
@@ -928,6 +1061,7 @@ window.__ModuleLoader__.load({
       const [modalBusy, setModalBusy] = useState(false);
       const [updating, setUpdating] = useState(false);
       const [busy, setBusy] = useState({});
+      const [actionResults, setActionResults] = useState({});
       const statusSequence = useRef(0);
 
       const categories = useMemo(
@@ -994,10 +1128,32 @@ window.__ModuleLoader__.load({
         const result = await callConnector("status", {}, CONNECTOR_TIMEOUTS.status);
         if (sequence !== statusSequence.current) return;
         if (result.ok) {
+          const rawItems = Array.isArray(result.detail?.items) ? result.detail.items : [];
+          const items = await Promise.all(
+            rawItems.map(async (item) => {
+              if (item.enabled === false || !item.connectorId) return item;
+              const tools = await callConnector(
+                "toolsList",
+                {
+                  connectorId: item.connectorId,
+                  connectionKey: item.key,
+                  cachedOnly: true,
+                },
+                10_000,
+              );
+              const count = Number(tools.detail?.totalTools ?? 0);
+              return {
+                ...item,
+                cachedToolCount: Number.isFinite(count) ? count : 0,
+                toolsAvailable: count > 0,
+              };
+            }),
+          );
+          if (sequence !== statusSequence.current) return;
           setConnector({
             available: true,
             loading: false,
-            items: Array.isArray(result.detail?.items) ? result.detail.items : [],
+            items,
             message: "",
           });
         } else {
@@ -1078,7 +1234,9 @@ window.__ModuleLoader__.load({
           title: `${t("editTitle")} · ${item.name || item.key}`,
           json: result.detail?.json || "",
           key: item.key,
+          itemUrl: item.url || "",
           error: "",
+          showCredentials: false,
         });
       }
 
@@ -1210,11 +1368,31 @@ window.__ModuleLoader__.load({
       async function action(method, params, timeout, successText, key) {
         if (!requireConnector()) return;
         if (key && busy[key]) return;
-        if (key) setBusy((current) => ({ ...current, [key]: true }));
+        if (key) {
+          setBusy((current) => ({ ...current, [key]: true }));
+          setActionResults((current) => ({ ...current, [key]: { pending: true } }));
+        } else {
+          setActionResults((current) => ({ ...current, __all: { pending: true } }));
+        }
         try {
           const result = await callConnector(method, params, timeout);
-          notify(result.ok ? successText : result.message || t("actionFailed"), !result.ok);
+          const message = result.ok
+            ? result.message || successText
+            : result.message || t("actionFailed");
+          if (key) {
+            setActionResults((current) => ({
+              ...current,
+              [key]: { ok: result.ok, message, at: Date.now() },
+            }));
+          } else {
+            setActionResults((current) => ({
+              ...current,
+              __all: { ok: result.ok, message, at: Date.now() },
+            }));
+          }
+          notify(message, !result.ok);
           await refreshConnections();
+          return result;
         } finally {
           if (key) {
             setBusy((current) => {
@@ -1266,6 +1444,10 @@ window.__ModuleLoader__.load({
         );
         if (!catalog.ok) {
           setUpdating(false);
+          setActionResults((current) => ({
+            ...current,
+            __all: { ok: false, message: catalog.message || t("actionFailed"), at: Date.now() },
+          }));
           notify(catalog.message || t("actionFailed"), true);
           return;
         }
@@ -1275,6 +1457,14 @@ window.__ModuleLoader__.load({
           CONNECTOR_TIMEOUTS.healthCheck,
         );
         setUpdating(false);
+        setActionResults((current) => ({
+          ...current,
+          __all: {
+            ok: health.ok,
+            message: health.ok ? t("refreshSuccess") : health.message || t("actionFailed"),
+            at: Date.now(),
+          },
+        }));
         notify(health.ok ? t("refreshSuccess") : health.message || t("actionFailed"), !health.ok);
         await refreshConnections();
       }
@@ -1497,6 +1687,7 @@ window.__ModuleLoader__.load({
       const renderInstalled = () => {
         const items = connector.items;
         const available = connector.available === true;
+        const overallFeedback = actionResults.__all;
         return h(
           "div",
           null,
@@ -1554,6 +1745,20 @@ window.__ModuleLoader__.load({
               ),
             ),
           ),
+          overallFeedback &&
+            h(
+              "div",
+              {
+                className: `mc-action-feedback ${
+                  overallFeedback.pending
+                    ? "pending"
+                    : overallFeedback.ok
+                      ? "ok"
+                      : "bad"
+                }`,
+              },
+              overallFeedback.pending ? t("checking") : overallFeedback.message,
+            ),
           connector.available === false
             ? h(
                 "div",
@@ -1589,6 +1794,23 @@ window.__ModuleLoader__.load({
                     items.map((item, index) => {
                       const enabled = item.enabled !== false;
                       const displayName = item.name || item.key || `#${index + 1}`;
+                      const feedback = actionResults[item.key];
+                      const feedbackMessage = feedback?.pending
+                        ? t("checking")
+                        : feedback?.message ||
+                          (item.toolsAvailable
+                            ? `${t("toolsFound")} ${item.cachedToolCount} ${t("tools")}`
+                            : item.diagnostic?.message ||
+                              item.healthMessage ||
+                              item.lastError ||
+                              t("stateHint"));
+                      const feedbackTone = feedback?.pending
+                        ? "pending"
+                        : feedback
+                          ? feedback.ok
+                            ? "ok"
+                            : "bad"
+                          : "muted";
                       return h(
                         "article",
                         { className: "mc-installed-row", key: item.key || `${displayName}:${index}` },
@@ -1602,6 +1824,14 @@ window.__ModuleLoader__.load({
                             h("span", null, displayName),
                           ),
                           h("div", { className: "mc-installed-key" }, item.key || ""),
+                          h(
+                            "div",
+                            {
+                              className: `mc-installed-status ${feedbackTone}`,
+                              title: feedbackMessage,
+                            },
+                            feedbackMessage,
+                          ),
                         ),
                         h(
                           "div",
@@ -1687,6 +1917,8 @@ window.__ModuleLoader__.load({
         if (!modal) return null;
         const isInstall = modal.kind === "install";
         const isConfirm = modal.kind === "confirm";
+        const credentialSummary =
+          modal.kind === "edit" ? parseConnectionEditorSummary(modal.json ?? "") : null;
         const updateValue = (key, value) =>
           setModal((current) =>
             current
@@ -1843,6 +2075,103 @@ window.__ModuleLoader__.load({
                       current ? { ...current, json: event.target.value } : current,
                     ),
                 }),
+              !isInstall &&
+                !isConfirm &&
+                h(
+                  "div",
+                  { className: "mc-credential-toolbar" },
+                  h(
+                    "button",
+                    {
+                      type: "button",
+                      className: "mc-secondary",
+                      onClick: () =>
+                        setModal((current) =>
+                          current
+                            ? { ...current, showCredentials: !current.showCredentials }
+                            : current,
+                        ),
+                    },
+                    modal.showCredentials
+                      ? t("hideCredentialDetails")
+                      : t("credentialDetails"),
+                  ),
+                ),
+              modal.kind === "edit" &&
+                modal.showCredentials &&
+                h(
+                  "div",
+                  { className: "mc-credential-panel" },
+                  h("p", { className: "mc-credential-note" }, t("credentialMasked")),
+                  credentialSummary
+                    ? h(
+                        "div",
+                        { className: "mc-credential-list" },
+                        h(
+                          "div",
+                          { className: "mc-credential-row", key: "auth-mode" },
+                          h("span", null, t("authMode")),
+                          h("code", null, credentialSummary.authMode),
+                        ),
+                        credentialSummary.url &&
+                          h(
+                            "div",
+                            { className: "mc-credential-row", key: "url" },
+                            h("span", null, "URL"),
+                            h(
+                              "code",
+                              { title: credentialSummary.url.value },
+                              credentialSummary.url.hidden
+                                ? credentialSummary.url.value ||
+                                    (modal.itemUrl
+                                      ? maskConnectionUrl(modal.itemUrl)
+                                      : t("credentialUrlHidden"))
+                                : credentialSummary.url.value,
+                            ),
+                          ),
+                        credentialSummary.headers.map((header) =>
+                          h(
+                            "div",
+                            { className: "mc-credential-row", key: `header:${header.name}` },
+                            h("span", null, `${t("headerLabel")} · ${header.name}`),
+                            h("code", null, header.value),
+                          ),
+                        ),
+                        credentialSummary.env.map((entry) =>
+                          h(
+                            "div",
+                            { className: "mc-credential-row", key: `env:${entry.name}` },
+                            h("span", null, `${t("envLabel")} · ${entry.name}`),
+                            h("code", null, entry.value),
+                          ),
+                        ),
+                        credentialSummary.bearerToken &&
+                          h(
+                            "div",
+                            { className: "mc-credential-row", key: "bearer" },
+                            h("span", null, t("bearerLabel")),
+                            h("code", null, credentialSummary.bearerToken),
+                          ),
+                        credentialSummary.apiKeyValue &&
+                          h(
+                            "div",
+                            { className: "mc-credential-row", key: "api-key" },
+                            h(
+                              "span",
+                              null,
+                              `${t("apiKeyLabel")}${credentialSummary.apiKeyHeader ? ` · ${credentialSummary.apiKeyHeader}` : ""}`,
+                            ),
+                            h("code", null, credentialSummary.apiKeyValue),
+                          ),
+                        !credentialSummary.url &&
+                          credentialSummary.headers.length === 0 &&
+                          credentialSummary.env.length === 0 &&
+                          !credentialSummary.bearerToken &&
+                          !credentialSummary.apiKeyValue &&
+                          h("p", { className: "mc-form-note" }, t("credentialNone")),
+                      )
+                    : h("p", { className: "mc-form-note" }, t("credentialNone")),
+                ),
               modal.error && h("p", { className: "mc-form-error" }, modal.error),
             ),
             h(
