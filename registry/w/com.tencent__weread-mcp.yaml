@@ -1,0 +1,39 @@
+$schema: ../../schema/registry.schema.json
+name: com.tencent/weread-mcp
+display_name: 微信读书
+description: 社区维护的微信读书 MCP，支持书架、书籍搜索、笔记划线、热门书评和阅读进度。
+description_en: Community WeRead MCP for bookshelf, search, highlights, reviews
+  and reading progress.
+version: 1.0.0
+homepage: https://github.com/freestylefly/mcp-server-weread
+repository: https://github.com/freestylefly/mcp-server-weread
+vendor: 微信读书社区项目
+transport:
+  type: stdio
+  command: npx
+  args:
+    - -y
+    - mcp-server-weread
+  env:
+    - name: WEREAD_COOKIE
+      description: 微信读书网页版 Cookie
+      obtain_at: https://weread.qq.com/
+      required: true
+      secret: true
+categories:
+  - 办公
+tags:
+  - 阅读
+  - 笔记
+  - 书架
+  - 书评
+official: false
+license: MIT
+tools: []
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+last_checked: 2026-10-31
+verified: false

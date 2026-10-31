@@ -1,0 +1,35 @@
+$schema: ../../schema/registry.schema.json
+name: com.tencent/docs-mcp
+display_name: 腾讯文档
+description: 腾讯文档官方 MCP，支持创建和编辑文档、表格、幻灯片、思维导图、流程图及智能表格。
+description_en: Official Tencent Docs MCP for documents, sheets, slides, mind
+  maps and smart tables.
+version: 1.0.0
+homepage: https://docs.qq.com/open/document/saas/mcp.html
+vendor: 腾讯文档
+transport:
+  type: streamable_http
+  url: https://docs.qq.com/openapi/mcp
+  headers:
+    - name: Authorization
+      description: 腾讯文档个人 Token（直接填写 Token，不要加 Bearer 前缀）
+      obtain_at: https://docs.qq.com/open/auth/mcp.html
+      required: true
+      secret: true
+categories:
+  - 办公
+tags:
+  - 文档
+  - 表格
+  - 幻灯片
+  - 协作
+official: true
+license: Proprietary
+tools: []
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+last_checked: 2026-10-31
+verified: false

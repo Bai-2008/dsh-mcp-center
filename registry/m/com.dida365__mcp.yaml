@@ -1,0 +1,34 @@
+$schema: ../../schema/registry.schema.json
+name: com.dida365/mcp
+display_name: 滴答清单
+description: 滴答清单官方 MCP，支持任务、清单、习惯、专注记录、日历和纪念日管理。
+description_en: Official Dida365 MCP for tasks, projects, habits, focus records and calendars.
+version: 1.0.0
+homepage: https://help.dida365.com/articles/7438132116019216384
+vendor: 滴答清单
+transport:
+  type: streamable_http
+  url: https://mcp.dida365.com
+  headers:
+    - name: Authorization
+      description: Bearer <滴答清单 API 口令>
+      obtain_at: https://help.dida365.com/articles/7438132116019216384
+      required: true
+      secret: true
+categories:
+  - 办公
+tags:
+  - 任务
+  - 清单
+  - 日程
+  - 习惯
+official: true
+license: Proprietary
+tools: []
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+last_checked: 2026-10-31
+verified: false

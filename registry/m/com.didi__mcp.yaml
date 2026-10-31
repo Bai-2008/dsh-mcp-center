@@ -1,0 +1,36 @@
+$schema: ../../schema/registry.schema.json
+name: com.didi/mcp
+display_name: 滴滴出行
+description: 滴滴官方 MCP，提供打车估价、下单、行程状态、取消订单和地图相关能力。
+description_en: Official DiDi MCP for fare estimates, ride booking, trip status
+  and cancellation.
+version: 1.0.0
+homepage: https://mcp.didichuxing.com/
+vendor: 滴滴出行
+transport:
+  type: streamable_http
+  url: https://mcp.didichuxing.com/mcp-servers?key={key}
+  headers: []
+  variables:
+    key:
+      description: 滴滴 MCP Key
+      obtain_at: https://mcp.didichuxing.com/claw
+      required: true
+      secret: true
+categories:
+  - 出行
+tags:
+  - 打车
+  - 出行
+  - 行程
+  - 地图
+official: true
+license: Proprietary
+tools: []
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+last_checked: 2026-10-31
+verified: false

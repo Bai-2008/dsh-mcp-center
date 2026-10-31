@@ -1,0 +1,36 @@
+$schema: ../../schema/registry.schema.json
+name: com.variflight/aviation
+display_name: 飞常准
+description: 飞常准官方航空 MCP，提供航班搜索、航班动态、中转方案、机舱舒适度和机场天气。
+description_en: Official VariFlight MCP for flight search, status, transfers,
+  comfort and airport weather.
+version: 1.1.0
+homepage: https://ai.variflight.com/docs/aviation
+repository: https://github.com/variflight/variflight-mcp
+vendor: 飞常准
+transport:
+  type: streamable_http
+  url: https://ai.variflight.com/servers/aviation/mcp
+  headers:
+    - name: X-API-Key
+      description: 飞常准 AI 开放平台 API Key
+      obtain_at: https://ai.variflight.com/
+      required: true
+      secret: true
+categories:
+  - 出行
+tags:
+  - 航班
+  - 机票
+  - 机场
+  - 天气
+official: true
+license: ISC
+tools: []
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+last_checked: 2026-10-31
+verified: false

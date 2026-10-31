@@ -1,0 +1,32 @@
+"$schema": "../../schema/registry.schema.json"
+name: com.weibo/mcp
+display_name: 微博
+description: 社区维护的微博 MCP，支持用户、微博、热搜、评论、话题和关注关系查询。
+description_en: Community Weibo MCP for users, posts, trending topics, comments and social graphs.
+version: 1.3.2
+homepage: https://github.com/qinyuanpei/mcp-server-weibo
+repository: https://github.com/qinyuanpei/mcp-server-weibo
+vendor: 微博社区项目
+transport:
+  type: stdio
+  command: uvx
+  args:
+    - "--from"
+    - "mcp-server-weibo"
+    - "mcp-server-weibo"
+tools: []
+categories:
+  - 其他
+tags:
+  - 微博
+  - 热搜
+  - 社交
+official: false
+verified: false
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+license: MIT
+last_checked: 2026-10-31

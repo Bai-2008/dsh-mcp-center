@@ -1079,8 +1079,16 @@ window.__ModuleLoader__.load({
         if (!credential) continue;
         let value = get(credential);
         if (!value) continue;
-        if (/^authorization$/i.test(header.name) && !/^Bearer\s/i.test(value)) {
+        if (
+          /^authorization$/i.test(header.name) &&
+          (/^Bearer\s/i.test(credential.placeholder || "") ||
+            /^Bearer\b/i.test(credential.description || "")) &&
+          !/^Bearer\s/i.test(value)
+        ) {
           value = `Bearer ${value}`;
+        }
+        if (/^WyHeader$/i.test(header.name) && !/^mcp_token=/i.test(value)) {
+          value = `mcp_token=${value}`;
         }
         headers[header.name] = value;
       }

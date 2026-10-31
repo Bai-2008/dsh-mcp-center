@@ -1,0 +1,43 @@
+$schema: ../../schema/registry.schema.json
+name: com.yuque/mcp
+display_name: 语雀
+description: 语雀官方 MCP，支持搜索知识库、读取和创建文档、维护目录及小记。
+description_en: Official Yuque MCP for searching knowledge bases and reading or
+  writing docs and notes.
+version: 1.0.0
+homepage: https://www.yuque.com/
+repository: https://github.com/yuque/yuque-mcp-server
+vendor: 语雀
+transport:
+  type: stdio
+  command: npx
+  args:
+    - -y
+    - yuque-mcp
+  env:
+    - name: YUQUE_TOKEN
+      description: 语雀个人或团队 API Token
+      obtain_at: https://www.yuque.com/settings/tokens
+      required: true
+      secret: true
+    - name: YUQUE_HOST
+      description: 团队空间或私有部署的语雀地址（可选）
+      required: false
+      secret: true
+categories:
+  - 办公
+tags:
+  - 知识库
+  - 文档
+  - 笔记
+  - 搜索
+official: true
+license: MIT
+tools: []
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+last_checked: 2026-10-31
+verified: false

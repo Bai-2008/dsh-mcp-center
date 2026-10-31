@@ -1,0 +1,34 @@
+$schema: ../../schema/registry.schema.json
+name: com.tuniu/travel
+display_name: 途牛旅游
+description: 途牛官方酒店 MCP，提供酒店搜索、详情、房型与预订相关能力；机票和火车票使用途牛其他 MCP 端点。
+description_en: Official Tuniu hotel MCP for hotel search, details, rooms and booking.
+version: 1.0.0
+homepage: https://openapi.tuniu.cn/
+vendor: 途牛旅游
+transport:
+  type: streamable_http
+  url: https://openapi.tuniu.cn/mcp/hotel
+  headers:
+    - name: apiKey
+      description: 途牛开放平台 API Key
+      obtain_at: https://openapi.tuniu.cn/
+      required: true
+      secret: true
+categories:
+  - 出行
+tags:
+  - 酒店
+  - 机票
+  - 旅游
+  - 预订
+official: true
+license: Proprietary
+tools: []
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+last_checked: 2026-10-31
+verified: false

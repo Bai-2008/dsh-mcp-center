@@ -1,0 +1,35 @@
+$schema: ../../schema/registry.schema.json
+name: com.tencent/map-mcp
+display_name: 腾讯地图
+description: 腾讯位置服务官方 MCP，提供地址解析、POI 搜索、路线规划、天气和行政区划查询。
+description_en: Official Tencent Location Service MCP for geocoding, POI, routing and weather.
+version: 1.0.0
+homepage: https://lbs.qq.com/
+vendor: 腾讯位置服务
+transport:
+  type: streamable_http
+  url: https://mcp.map.qq.com/mcp?key={key}
+  headers: []
+  variables:
+    key:
+      description: 腾讯位置服务 WebService API Key
+      obtain_at: https://lbs.qq.com/dev/console/application/mine
+      required: true
+      secret: true
+categories:
+  - 出行
+tags:
+  - 地图
+  - POI
+  - 路线规划
+  - 位置服务
+official: true
+license: Proprietary
+tools: []
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+last_checked: 2026-10-31
+verified: false

@@ -1,0 +1,35 @@
+$schema: ../../schema/registry.schema.json
+name: com.tencent/weiyun-mcp
+display_name: 腾讯微云
+description: 腾讯微云官方 MCP，支持网盘文件列表、上传下载、重命名、移动、删除和分享链接。
+description_en: Official Tencent Weiyun MCP for file listing, upload, download,
+  rename, move and sharing.
+version: 1.0.0
+homepage: https://www.weiyun.com/
+vendor: 腾讯微云
+transport:
+  type: streamable_http
+  url: https://www.weiyun.com/api/v3/mcpserver
+  headers:
+    - name: WyHeader
+      description: 腾讯微云个人 MCP Token（直接填 Token，插件自动拼接 mcp_token=）
+      obtain_at: https://www.weiyun.com/
+      required: true
+      secret: true
+categories:
+  - 办公
+tags:
+  - 网盘
+  - 文件
+  - 分享
+  - 上传
+official: true
+license: Proprietary
+tools: []
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+last_checked: 2026-10-31
+verified: false

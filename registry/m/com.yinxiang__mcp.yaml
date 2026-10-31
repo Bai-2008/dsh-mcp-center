@@ -1,0 +1,37 @@
+"$schema": "../../schema/registry.schema.json"
+name: com.yinxiang/mcp
+display_name: 印象笔记
+description: 社区维护的印象笔记 MCP，支持连接测试和把 AI 生成的 Markdown 笔记保存到印象笔记。
+description_en: Community Yinxiang MCP for saving Markdown notes to Evernote China.
+version: 1.0.0
+homepage: https://www.yinxiang.com/
+repository: https://github.com/yinxiang-team/YXBJ-MCP
+vendor: 印象笔记社区项目
+transport:
+  type: stdio
+  command: npx
+  args:
+    - "-y"
+    - "yxbj-mcp"
+  env:
+    - name: YINXIANG_AUTH_TOKEN
+      description: 印象笔记授权 Token
+      obtain_at: https://www.yinxiang.com/
+      required: true
+      secret: true
+tools: []
+categories:
+  - 办公
+tags:
+  - 笔记
+  - Markdown
+  - 知识管理
+official: false
+verified: false
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+license: ISC
+last_checked: 2026-10-31

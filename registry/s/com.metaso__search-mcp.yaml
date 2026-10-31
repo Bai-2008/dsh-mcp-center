@@ -1,0 +1,34 @@
+$schema: ../../schema/registry.schema.json
+name: com.metaso/search-mcp
+display_name: 秘塔AI搜索
+description: 秘塔官方搜索 MCP，提供多源网页搜索、网页阅读和基于搜索的 RAG 问答。
+description_en: Official Metaso MCP for multi-source search, page reading and RAG answers.
+version: 1.0.0
+homepage: https://metaso.cn/
+vendor: 秘塔AI搜索
+transport:
+  type: streamable_http
+  url: https://metaso.cn/api/mcp
+  headers:
+    - name: Authorization
+      description: Bearer <秘塔 API Key>
+      obtain_at: https://metaso.cn/
+      required: true
+      secret: true
+categories:
+  - 搜索
+tags:
+  - 搜索
+  - 网页
+  - 问答
+  - RAG
+official: true
+license: Proprietary
+tools: []
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+last_checked: 2026-10-31
+verified: false

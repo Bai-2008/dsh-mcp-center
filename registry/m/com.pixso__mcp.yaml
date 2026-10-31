@@ -1,0 +1,35 @@
+$schema: ../../schema/registry.schema.json
+name: com.pixso/mcp
+display_name: Pixso
+description: Pixso 官方 MCP，支持读取设计稿图层、组件、变体、设计变量和样式并转换为代码。
+description_en: Official Pixso MCP for reading design layers, components,
+  variables and styles into code.
+version: 1.0.0
+homepage: https://pixso.cn/
+vendor: Pixso
+transport:
+  type: streamable_http
+  url: https://pixso.cn/mcp
+  headers:
+    - name: Token
+      description: Pixso 个人访问 Token
+      obtain_at: https://pixso.cn/
+      required: true
+      secret: true
+categories:
+  - 开发工具
+tags:
+  - 设计
+  - 原型
+  - 前端
+  - 设计变量
+official: true
+license: Proprietary
+tools: []
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+last_checked: 2026-10-31
+verified: false

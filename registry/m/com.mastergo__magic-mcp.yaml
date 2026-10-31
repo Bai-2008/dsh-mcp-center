@@ -1,0 +1,38 @@
+$schema: ../../schema/registry.schema.json
+name: com.mastergo/magic-mcp
+display_name: MasterGo
+description: MasterGo 官方设计 MCP，读取设计 DSL、图层、组件和样式并辅助设计转代码；需要团队版账号。
+description_en: Official MasterGo MCP for design DSL, layers, components and styles; Team plan required.
+version: 0.2.12
+homepage: https://mastergo.com/
+repository: https://github.com/mastergo-design/mastergo-magic-mcp
+vendor: MasterGo
+transport:
+  type: stdio
+  command: npx
+  args:
+    - -y
+    - "@mastergo/magic-mcp"
+  env:
+    - name: MG_MCP_TOKEN
+      description: MasterGo 个人访问 Token
+      obtain_at: https://mastergo.com/
+      required: true
+      secret: true
+categories:
+  - 开发工具
+tags:
+  - 设计
+  - 原型
+  - 前端
+  - 设计稿
+official: true
+license: ISC
+tools: []
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+last_checked: 2026-10-31
+verified: false

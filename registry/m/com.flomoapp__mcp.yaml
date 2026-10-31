@@ -1,0 +1,37 @@
+"$schema": "../../schema/registry.schema.json"
+name: com.flomoapp/mcp
+display_name: flomo 浮墨
+description: 社区维护的 flomo MCP，通过个人 API 地址把 AI 生成的想法、笔记直接写入 flomo。
+description_en: Community flomo MCP for writing notes and ideas through a personal API URL.
+version: 1.0.0
+homepage: https://flomoapp.com/
+repository: https://github.com/chatmcp/mcp-server-flomo
+vendor: flomo 社区项目
+transport:
+  type: stdio
+  command: npx
+  args:
+    - "-y"
+    - "@chatmcp/mcp-server-flomo"
+  env:
+    - name: FLOMO_API_URL
+      description: flomo 个人 API 地址（webhook）
+      obtain_at: https://flomoapp.com/mine/?m=api
+      required: true
+      secret: true
+tools: []
+categories:
+  - 办公
+tags:
+  - 笔记
+  - 想法
+  - 记录
+official: false
+verified: false
+clients:
+  - dsh
+  - claude-desktop
+  - cursor
+  - cline
+license: MIT
+last_checked: 2026-10-31
