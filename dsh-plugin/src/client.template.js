@@ -504,6 +504,40 @@ window.__ModuleLoader__.load({
         color: var(--dsw-alias-state-error-primary);
       }
       .mc-action-feedback.pending { color: var(--dsw-alias-brand-primary); }
+      .mc-tool-toggle {
+        margin-top: 3px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: var(--dsw-alias-link);
+        font-size: 9px;
+        cursor: pointer;
+      }
+      .mc-tool-toggle:hover { text-decoration: underline; }
+      .mc-installed-tools {
+        flex-basis: 100%;
+        max-height: 220px;
+        overflow: auto;
+        margin-top: 2px;
+        padding: 7px 9px;
+        border-top: 1px solid var(--dsw-alias-border-l1);
+      }
+      .mc-installed-tool {
+        display: grid;
+        grid-template-columns: minmax(140px, 210px) minmax(0, 1fr);
+        gap: 8px;
+        padding: 3px 0;
+        color: var(--dsw-alias-label-secondary);
+        font-size: 9.5px;
+        line-height: 1.45;
+      }
+      .mc-installed-tool code {
+        overflow: hidden;
+        color: var(--dsw-alias-label-primary);
+        font-family: ui-monospace, monospace;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
       .mc-installed-badges { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
       .mc-row-actions { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; }
       .mc-loading { padding: 28px 16px; color: var(--dsw-alias-label-tertiary); font-size: 11.5px; text-align: center; }
@@ -685,6 +719,34 @@ window.__ModuleLoader__.load({
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+      .mc-backup-actions {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
+      }
+      .mc-backup .mc-textarea { min-height: 130px; }
+      .mc-backup .mc-section-title { margin: 14px 0 6px; }
+      .mc-snapshot-list { display: grid; gap: 5px; }
+      .mc-snapshot-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 7px 8px;
+        border: 1px solid var(--dsw-alias-border-l1);
+        border-radius: 6px;
+      }
+      .mc-snapshot-copy { min-width: 0; display: grid; gap: 2px; }
+      .mc-snapshot-copy strong {
+        overflow: hidden;
+        color: var(--dsw-alias-label-primary);
+        font-size: 10px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .mc-snapshot-copy span { color: var(--dsw-alias-label-tertiary); font-size: 9px; }
       .mc-modal-actions {
         display: flex;
         justify-content: flex-end;
@@ -912,6 +974,13 @@ window.__ModuleLoader__.load({
       refreshCatalog: 90_000,
       connect: 310_000,
       editableConnectionConfig: 20_000,
+      renameConnection: 20_000,
+      setInjectionMode: 30_000,
+      listSnapshots: 20_000,
+      createSnapshot: 30_000,
+      previewSnapshot: 20_000,
+      restoreSnapshot: 145_000,
+      exportConfig: 20_000,
     };
 
     function credentialFieldKey(credential) {
@@ -1160,6 +1229,7 @@ window.__ModuleLoader__.load({
       const [updating, setUpdating] = useState(false);
       const [busy, setBusy] = useState({});
       const [actionResults, setActionResults] = useState({});
+      const [expandedTools, setExpandedTools] = useState({});
       const statusSequence = useRef(0);
 
       const categories = useMemo(
@@ -1240,10 +1310,17 @@ window.__ModuleLoader__.load({
                 10_000,
               );
               const count = Number(tools.detail?.totalTools ?? 0);
+              const cachedTools = (tools.detail?.servers ?? []).flatMap((server) =>
+                (server.tools ?? []).map((tool) => ({
+                  name: tool.name,
+                  description: tool.description || "",
+                })),
+              );
               return {
                 ...item,
-                cachedToolCount: Number.isFinite(count) ? count : 0,
-                toolsAvailable: count > 0,
+                cachedToolCount: Number.isFinite(count) ? count : cachedTools.length,
+                cachedTools,
+                toolsAvailable: count > 0 || cachedTools.length > 0,
               };
             }),
           );
@@ -1387,6 +1464,150 @@ window.__ModuleLoader__.load({
         } finally {
           setModalBusy(false);
         }
+      }
+
+      function openRename(item) {
+        setModal({
+          kind: "rename",
+          title: `${t("renameTitle")} · ${item.name || item.key}`,
+          key: item.key,
+          name: item.name || "",
+          error: "",
+        });
+      }
+
+      async function submitRename() {
+        if (!modal?.name?.trim()) {
+          setModalError(t("fillRequired"));
+          return;
+        }
+        setModalBusy(true);
+        try {
+          const result = await callConnector(
+            "renameConnection",
+            { key: modal.key, name: modal.name.trim() },
+            CONNECTOR_TIMEOUTS.renameConnection,
+          );
+          if (!result.ok) {
+            setModalError(result.message || t("actionFailed"));
+            return;
+          }
+          setModal(null);
+          notify(result.message || t("rename"));
+          await refreshConnections();
+        } finally {
+          setModalBusy(false);
+        }
+      }
+
+      async function changeInjection(item) {
+        const mode = item.injectionMode === "session" ? "always" : "session";
+        await action(
+          "setInjectionMode",
+          { key: item.key, mode },
+          CONNECTOR_TIMEOUTS.setInjectionMode,
+          t("injectionChanged"),
+          item.key,
+        );
+      }
+
+      async function openBackup() {
+        if (!requireConnector()) return;
+        setModal({
+          kind: "backup",
+          title: t("backupTitle"),
+          loading: true,
+          exported: "",
+          snapshots: [],
+          error: "",
+        });
+        const [exported, snapshots] = await Promise.all([
+          callConnector("exportConfig", {}, CONNECTOR_TIMEOUTS.exportConfig),
+          callConnector("listSnapshots", {}, CONNECTOR_TIMEOUTS.listSnapshots),
+        ]);
+        setModal((current) =>
+          current
+            ? {
+                ...current,
+                loading: false,
+                exported: exported.ok ? exported.detail?.json || "" : "",
+                snapshots: snapshots.ok ? snapshots.detail?.items ?? [] : [],
+                error:
+                  !exported.ok || !snapshots.ok
+                    ? exported.message || snapshots.message || t("actionFailed")
+                    : "",
+              }
+            : current,
+        );
+      }
+
+      async function createBackup() {
+        setModalBusy(true);
+        try {
+          const result = await callConnector(
+            "createSnapshot",
+            { label: "MCP Center" },
+            CONNECTOR_TIMEOUTS.createSnapshot,
+          );
+          if (!result.ok) {
+            setModalError(result.message || t("actionFailed"));
+            return;
+          }
+          notify(result.message || t("backupCreated"));
+          const snapshots = await callConnector(
+            "listSnapshots",
+            {},
+            CONNECTOR_TIMEOUTS.listSnapshots,
+          );
+          setModal((current) =>
+            current && snapshots.ok
+              ? { ...current, snapshots: snapshots.detail?.items ?? [] }
+              : current,
+          );
+        } finally {
+          setModalBusy(false);
+        }
+      }
+
+      async function restoreBackup(snapshotId) {
+        if (!window.confirm(t("restoreConfirm"))) return;
+        setModalBusy(true);
+        try {
+          const preview = await callConnector(
+            "previewSnapshot",
+            { snapshotId },
+            CONNECTOR_TIMEOUTS.previewSnapshot,
+          );
+          if (!preview.ok || preview.detail?.restorable === false) {
+            setModalError(preview.message || t("notRestorable"));
+            return;
+          }
+          const result = await callConnector(
+            "restoreSnapshot",
+            { snapshotId },
+            CONNECTOR_TIMEOUTS.restoreSnapshot,
+          );
+          if (!result.ok) {
+            setModalError(result.message || t("actionFailed"));
+            return;
+          }
+          setModal(null);
+          notify(result.message || t("refreshSuccess"));
+          await refreshConnections();
+        } finally {
+          setModalBusy(false);
+        }
+      }
+
+      function downloadBackup() {
+        if (!modal?.exported) return;
+        const blob = new Blob([modal.exported], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = "dsh-mcp-connections.redacted.json";
+        anchor.click();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
       }
 
       async function installFromCatalog(entry) {
@@ -1537,6 +1758,7 @@ window.__ModuleLoader__.load({
         if (modal.kind === "install") return submitInstall();
         if (modal.kind === "edit") return submitEdit();
         if (modal.kind === "confirm") return submitConfirm();
+        if (modal.kind === "rename") return submitRename();
       }
 
       async function action(method, params, timeout, successText, key) {
@@ -1917,6 +2139,16 @@ window.__ModuleLoader__.load({
                 },
                 t("checkAll"),
               ),
+              h(
+                "button",
+                {
+                  type: "button",
+                  className: "mc-secondary",
+                  onClick: openBackup,
+                  disabled: !available,
+                },
+                t("backupTitle"),
+              ),
             ),
           ),
           overallFeedback &&
@@ -2006,6 +2238,23 @@ window.__ModuleLoader__.load({
                             },
                             feedbackMessage,
                           ),
+                          item.cachedToolCount > 0 &&
+                            h(
+                              "button",
+                              {
+                                type: "button",
+                                className: "mc-tool-toggle",
+                                onClick: () =>
+                                  setExpandedTools((current) => ({
+                                    ...current,
+                                    [item.key]: !current[item.key],
+                                  })),
+                              },
+                              expandedTools[item.key]
+                                ? t("hideTools")
+                                : t("viewTools"),
+                              ` (${item.cachedToolCount})`,
+                            ),
                         ),
                         h(
                           "div",
@@ -2033,6 +2282,19 @@ window.__ModuleLoader__.load({
                               onClick: () => toggleConnection(item),
                             },
                             enabled ? t("disable") : t("enable"),
+                          ),
+                          h(
+                            "button",
+                            {
+                              type: "button",
+                              className: "mc-secondary",
+                              disabled: Boolean(busy[item.key]),
+                              title: t("injectionChanged"),
+                              onClick: () => changeInjection(item),
+                            },
+                            item.injectionMode === "session"
+                              ? t("sessionMode")
+                              : t("alwaysMode"),
                           ),
                           h(
                             "button",
@@ -2074,6 +2336,17 @@ window.__ModuleLoader__.load({
                             "button",
                             {
                               type: "button",
+                              className: "mc-secondary",
+                              disabled:
+                                item.canRename === false || Boolean(busy[item.key]),
+                              onClick: () => openRename(item),
+                            },
+                            t("rename"),
+                          ),
+                          h(
+                            "button",
+                            {
+                              type: "button",
                               className: "mc-secondary danger",
                               disabled: Boolean(busy[item.key]),
                               onClick: () => openUninstall(item),
@@ -2081,6 +2354,21 @@ window.__ModuleLoader__.load({
                             t("uninstall"),
                           ),
                         ),
+                        expandedTools[item.key] &&
+                          h(
+                            "div",
+                            { className: "mc-installed-tools" },
+                            (item.cachedTools ?? []).length === 0
+                              ? h("p", { className: "mc-form-note" }, t("noTools"))
+                              : (item.cachedTools ?? []).slice(0, 80).map((tool) =>
+                                  h(
+                                    "div",
+                                    { className: "mc-installed-tool", key: tool.name },
+                                    h("code", null, tool.name),
+                                    h("span", null, tool.description || ""),
+                                  ),
+                                ),
+                          ),
                       );
                     }),
                   ),
@@ -2091,6 +2379,8 @@ window.__ModuleLoader__.load({
         if (!modal) return null;
         const isInstall = modal.kind === "install";
         const isConfirm = modal.kind === "confirm";
+        const isRename = modal.kind === "rename";
+        const isBackup = modal.kind === "backup";
         const credentialSummary =
           modal.kind === "edit" ? parseConnectionEditorSummary(modal.json ?? "") : null;
         const updateValue = (key, value) =>
@@ -2126,12 +2416,106 @@ window.__ModuleLoader__.load({
                   ? t("installNativeHint")
                   : isConfirm
                     ? modal.message
-                    : t("editHint"),
+                    : isBackup
+                      ? t("backupNote")
+                      : isRename
+                        ? t("renameHint")
+                        : t("editHint"),
               ),
             ),
             h(
               "div",
               { className: "mc-modal-body" },
+              isBackup &&
+                h(
+                  "div",
+                  { className: "mc-backup" },
+                  modal.loading
+                    ? h("p", { className: "mc-loading" }, t("loading"))
+                    : h(
+                        "div",
+                        null,
+                        h(
+                          "div",
+                          { className: "mc-backup-actions" },
+                          h(
+                            "button",
+                            {
+                              type: "button",
+                              className: "mc-secondary",
+                              onClick: () => copy(modal.exported || "", "backup", t),
+                            },
+                            copied === "backup" ? t("backupCopied") : t("copy"),
+                          ),
+                          h(
+                            "button",
+                            {
+                              type: "button",
+                              className: "mc-secondary",
+                              onClick: downloadBackup,
+                            },
+                            t("download"),
+                          ),
+                          h(
+                            "button",
+                            {
+                              type: "button",
+                              className: "mc-secondary",
+                              disabled: modalBusy,
+                              onClick: createBackup,
+                            },
+                            modalBusy ? t("saving") : t("createSnapshot"),
+                          ),
+                        ),
+                        h("textarea", {
+                          className: "mc-textarea",
+                          readOnly: true,
+                          spellCheck: false,
+                          value: modal.exported || "",
+                        }),
+                        h("h4", { className: "mc-section-title" }, t("backupTitle")),
+                        (modal.snapshots ?? []).length === 0
+                          ? h("p", { className: "mc-form-note" }, t("noSnapshots"))
+                          : h(
+                              "div",
+                              { className: "mc-snapshot-list" },
+                              (modal.snapshots ?? []).map((snapshot) =>
+                                h(
+                                  "div",
+                                  { className: "mc-snapshot-row", key: snapshot.id },
+                                  h(
+                                    "div",
+                                    { className: "mc-snapshot-copy" },
+                                    h(
+                                      "strong",
+                                      null,
+                                      `${snapshot.reason || t("snapshotReason")} · ${new Date(snapshot.createdAt).toLocaleString()}`,
+                                    ),
+                                    h(
+                                      "span",
+                                      null,
+                                      `${snapshot.existingCount ?? 0} 条连接${
+                                        snapshot.absentCount
+                                          ? ` · 可移除 ${snapshot.absentCount} 条`
+                                          : ""
+                                      }${snapshot.restorable ? "" : ` · ${t("notRestorable")}`}`,
+                                    ),
+                                  ),
+                                  h(
+                                    "button",
+                                    {
+                                      type: "button",
+                                      className: "mc-secondary",
+                                      disabled: modalBusy || snapshot.restorable === false,
+                                      onClick: () => restoreBackup(snapshot.id),
+                                    },
+                                    modalBusy ? t("restoring") : t("restoreSnapshot"),
+                                  ),
+                                ),
+                              ),
+                            ),
+                      ),
+                ),
               isInstall &&
                 h(
                   "div",
@@ -2238,8 +2622,30 @@ window.__ModuleLoader__.load({
                     modal.entry?.transport?.type !== "stdio" &&
                     h("p", { className: "mc-form-note" }, t("noRequired")),
                 ),
+              isRename &&
+                h(
+                  "label",
+                  { className: "mc-field" },
+                  h(
+                    "span",
+                    { className: "mc-field-head" },
+                    h("span", null, t("renameTitle")),
+                  ),
+                  h("input", {
+                    className: "mc-input",
+                    type: "text",
+                    autoComplete: "off",
+                    spellCheck: false,
+                    value: modal.name ?? "",
+                    onChange: (event) =>
+                      setModal((current) =>
+                        current ? { ...current, name: event.target.value } : current,
+                      ),
+                  }),
+                ),
               !isInstall &&
                 !isConfirm &&
+                !isRename &&
                 h("textarea", {
                   className: "mc-textarea",
                   value: modal.json ?? "",
@@ -2249,8 +2655,7 @@ window.__ModuleLoader__.load({
                       current ? { ...current, json: event.target.value } : current,
                     ),
                 }),
-              !isInstall &&
-                !isConfirm &&
+              modal.kind === "edit" &&
                 h(
                   "div",
                   { className: "mc-credential-toolbar" },
@@ -2459,36 +2864,52 @@ window.__ModuleLoader__.load({
             h(
               "div",
               { className: "mc-modal-actions" },
-              h(
-                "button",
-                {
-                  type: "button",
-                  className: "mc-secondary",
-                  disabled: modalBusy,
-                  onClick: () => setModal(null),
-                },
-                t("cancel"),
-              ),
-              h(
-                "button",
-                {
-                  type: "button",
-                  className: isConfirm ? "mc-secondary danger" : "mc-primary",
-                  disabled: modalBusy,
-                  onClick: submitModal,
-                },
-                modalBusy
-                  ? isInstall
-                    ? t("installing")
-                    : isConfirm
-                      ? t("uninstalling")
-                      : t("saving")
-                  : isInstall
-                    ? t("installNow")
-                    : isConfirm
-                      ? t("uninstall")
-                      : t("save"),
-              ),
+              isBackup
+                ? h(
+                    "button",
+                    {
+                      type: "button",
+                      className: "mc-primary",
+                      onClick: () => setModal(null),
+                    },
+                    t("close"),
+                  )
+                : [
+                    h(
+                      "button",
+                      {
+                        type: "button",
+                        className: "mc-secondary",
+                        disabled: modalBusy,
+                        onClick: () => setModal(null),
+                      },
+                      t("cancel"),
+                    ),
+                    h(
+                      "button",
+                      {
+                        type: "button",
+                        className: isConfirm ? "mc-secondary danger" : "mc-primary",
+                        disabled: modalBusy,
+                        onClick: submitModal,
+                      },
+                      modalBusy
+                        ? isInstall
+                          ? t("installing")
+                          : isConfirm
+                            ? t("uninstalling")
+                            : isRename
+                              ? t("renaming")
+                              : t("saving")
+                        : isInstall
+                          ? t("installNow")
+                          : isConfirm
+                            ? t("uninstall")
+                            : isRename
+                              ? t("rename")
+                              : t("save"),
+                    ),
+                  ],
             ),
           ),
         );
