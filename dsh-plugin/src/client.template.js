@@ -18,8 +18,8 @@ window.__ModuleLoader__.load({
         margin: 0 auto;
         padding: 20px 24px 48px;
         color: var(--dsw-alias-label-primary);
-        font-size: 14px;
-        line-height: 1.6;
+        font-size: 15px;
+        line-height: 1.65;
         text-align: left;
       }
       .mc-root *, .mc-root *::before, .mc-root *::after { box-sizing: border-box; }
@@ -44,7 +44,7 @@ window.__ModuleLoader__.load({
       }
       .mc-title {
         margin: 0;
-        font-size: 24px;
+        font-size: 26px;
         line-height: 1.2;
         letter-spacing: -.03em;
       }
@@ -155,22 +155,25 @@ window.__ModuleLoader__.load({
       .mc-cat-count { color: var(--dsw-alias-label-tertiary); font-family: ui-monospace, monospace; font-size: 9px; }
       .mc-body {
         display: grid;
-        grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
-        gap: 14px;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
         align-items: start;
       }
       .mc-list {
         display: grid;
-        gap: 7px;
-        max-height: 660px;
-        overflow: auto;
-        padding-right: 3px;
-        scrollbar-width: thin;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        align-content: start;
+        max-height: none;
+        overflow: visible;
+        padding-right: 0;
       }
       .mc-card {
-        display: block;
+        display: flex;
+        flex-direction: column;
         width: 100%;
-        padding: 12px;
+        min-height: 174px;
+        padding: 14px;
         border: 1px solid var(--dsw-alias-border-l1);
         border-radius: var(--mc-radius);
         background: var(--dsw-alias-bg-layer-1);
@@ -201,19 +204,19 @@ window.__ModuleLoader__.load({
       .mc-card-title {
         display: block;
         overflow: hidden;
-        font-size: 13px;
+        font-size: 14.5px;
         font-weight: 650;
-        line-height: 1.35;
+        line-height: 1.4;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
       .mc-card-desc {
         display: -webkit-box;
         overflow: hidden;
-        margin: 2px 0 0;
+        margin: 3px 0 0;
         color: var(--dsw-alias-label-secondary);
-        font-size: 11px;
-        line-height: 1.5;
+        font-size: 12.5px;
+        line-height: 1.55;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
       }
@@ -222,22 +225,23 @@ window.__ModuleLoader__.load({
         align-items: center;
         gap: 5px;
         overflow: hidden;
-        margin-top: 7px;
+        margin-top: 8px;
         color: var(--dsw-alias-label-tertiary);
         font-family: ui-monospace, monospace;
-        font-size: 9px;
+        font-size: 10.5px;
         white-space: nowrap;
       }
       .mc-card-meta span { overflow: hidden; text-overflow: ellipsis; }
-      .mc-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 3px; }
+      .mc-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+      .mc-card > .mc-badges { margin-top: auto; padding-top: 9px; }
       .mc-badge {
         display: inline-flex;
         align-items: center;
-        min-height: 18px;
-        padding: 0 5px;
+        min-height: 20px;
+        padding: 0 6px;
         border: 1px solid transparent;
         border-radius: 5px;
-        font-size: 9.5px;
+        font-size: 10.5px;
         font-weight: 600;
         line-height: 1.3;
         white-space: nowrap;
@@ -255,18 +259,40 @@ window.__ModuleLoader__.load({
       .mc-badge-transport { border-color: var(--dsw-alias-border-l1); color: var(--dsw-alias-label-tertiary); font-family: ui-monospace, monospace; font-weight: 500; }
       .mc-badge-broken { border-color: color-mix(in srgb, var(--dsw-alias-state-error-primary) 40%, transparent); background: color-mix(in srgb, var(--dsw-alias-state-error-primary) 10%, transparent); color: var(--dsw-alias-state-error-primary); }
       .mc-detail {
+        position: relative;
+        width: 100%;
         min-width: 0;
-        padding: 18px;
+        padding: 22px;
+        padding-right: 58px;
         border: 1px solid var(--dsw-alias-border-l1);
         border-radius: var(--mc-radius);
         background: var(--dsw-alias-bg-layer-1);
       }
-      .mc-detail-head { display: flex; align-items: flex-start; gap: 12px; }
-      .mc-detail-head .mc-icon { width: 46px; height: 46px; border-radius: 10px; font-size: 19px; }
-      .mc-detail-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
-      .mc-detail-title { margin: 0; font-size: 20px; line-height: 1.25; letter-spacing: -.02em; }
-      .mc-detail-desc { max-width: 720px; margin: 7px 0 0; color: var(--dsw-alias-label-secondary); font-size: 12.5px; line-height: 1.65; }
-      .mc-links { display: flex; flex-wrap: wrap; gap: 10px; margin: 9px 0 0; font-size: 11px; }
+      .mc-detail-close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: 1px solid var(--dsw-alias-border-l1);
+        border-radius: 8px;
+        background: var(--dsw-alias-bg-base);
+        color: var(--dsw-alias-label-secondary);
+        font-size: 22px;
+        line-height: 1;
+        cursor: pointer;
+      }
+      .mc-detail-close:hover { color: var(--dsw-alias-label-primary); border-color: var(--dsw-alias-border-l2); background: var(--dsw-alias-interactive-bg-hover); }
+      .mc-detail-head { display: flex; align-items: flex-start; gap: 13px; }
+      .mc-detail-head .mc-icon { width: 50px; height: 50px; border-radius: 10px; font-size: 20px; }
+      .mc-detail-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; }
+      .mc-detail-title-row .mc-badges { margin-top: 0; padding-top: 0; }
+      .mc-detail-title { margin: 0; font-size: 22px; line-height: 1.3; letter-spacing: -.02em; }
+      .mc-detail-desc { max-width: 820px; margin: 8px 0 0; color: var(--dsw-alias-label-secondary); font-size: 14px; line-height: 1.7; }
+      .mc-links { display: flex; flex-wrap: wrap; gap: 11px; margin: 10px 0 0; font-size: 12.5px; }
       .mc-broken {
         margin: 0 0 12px;
         padding: 9px 10px;
@@ -278,17 +304,17 @@ window.__ModuleLoader__.load({
       }
       .mc-section { margin-top: 18px; }
       .mc-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 7px; }
-      .mc-section-title { margin: 0; font-size: 12px; font-weight: 650; }
-      .mc-section-note { color: var(--dsw-alias-label-tertiary); font-size: 10px; }
+      .mc-section-title { margin: 0; font-size: 13.5px; font-weight: 650; }
+      .mc-section-note { color: var(--dsw-alias-label-tertiary); font-size: 11.5px; }
       .mc-tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
       .mc-tab {
-        min-height: 28px;
-        padding: 0 8px;
+        min-height: 30px;
+        padding: 0 9px;
         border: 1px solid var(--dsw-alias-border-l1);
         border-radius: 6px;
         background: transparent;
         color: var(--dsw-alias-label-secondary);
-        font-size: 10.5px;
+        font-size: 11.5px;
         cursor: pointer;
       }
       .mc-tab:hover { color: var(--dsw-alias-label-primary); }
@@ -328,7 +354,7 @@ window.__ModuleLoader__.load({
         overflow: auto;
         color: var(--dsw-alias-label-primary);
         font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-        font-size: 10.5px;
+        font-size: 12px;
         line-height: 1.7;
         tab-size: 2;
       }
@@ -339,7 +365,7 @@ window.__ModuleLoader__.load({
         background: color-mix(in srgb, var(--dsw-alias-brand-primary) 18%, transparent);
         color: var(--dsw-alias-brand-primary);
       }
-      .mc-hint { margin: 6px 0 0; color: var(--dsw-alias-label-tertiary); font-size: 10px; }
+      .mc-hint { margin: 6px 0 0; color: var(--dsw-alias-label-tertiary); font-size: 11.5px; }
       .mc-callout {
         margin-top: 9px;
         padding: 10px;
@@ -370,8 +396,8 @@ window.__ModuleLoader__.load({
       .mc-tool-warn { color: var(--dsw-static-amber-500); cursor: help; }
       .mc-tool-desc { margin: 2px 0 0; color: var(--dsw-alias-label-secondary); font-size: 10.5px; }
       .mc-empty { padding: 32px 16px; color: var(--dsw-alias-label-tertiary); text-align: center; }
-      .mc-empty strong { display: block; color: var(--dsw-alias-label-primary); font-size: 14px; }
-      .mc-empty p { margin: 4px 0 0; font-size: 11.5px; }
+      .mc-empty strong { display: block; color: var(--dsw-alias-label-primary); font-size: 16px; }
+      .mc-empty p { margin: 4px 0 0; font-size: 13px; }
       .mc-foot { margin-top: 12px; color: var(--dsw-alias-label-tertiary); font-size: 9.5px; }
       .mc-foot code { font-family: ui-monospace, monospace; }
       .mc-view-tabs {
@@ -392,7 +418,7 @@ window.__ModuleLoader__.load({
         border-radius: 6px;
         background: transparent;
         color: var(--dsw-alias-label-secondary);
-        font-size: 11.5px;
+        font-size: 12.5px;
         cursor: pointer;
       }
       .mc-view-tab:hover { color: var(--dsw-alias-label-primary); background: var(--dsw-alias-interactive-bg-hover); }
@@ -426,7 +452,7 @@ window.__ModuleLoader__.load({
         background: var(--dsw-alias-brand-primary);
         color: #fff;
         color: var(--dsw-static-neutral-00);
-        font-size: 11px;
+        font-size: 12.5px;
         font-weight: 650;
         cursor: pointer;
       }
@@ -447,7 +473,7 @@ window.__ModuleLoader__.load({
         border-radius: 6px;
         background: transparent;
         color: var(--dsw-alias-label-secondary);
-        font-size: 10px;
+        font-size: 11.5px;
         cursor: pointer;
       }
       .mc-secondary:hover { border-color: var(--dsw-alias-border-l2); color: var(--dsw-alias-label-primary); }
@@ -774,6 +800,11 @@ window.__ModuleLoader__.load({
         .mc-body { grid-template-columns: 1fr; }
         .mc-list { max-height: none; grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .mc-info { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      }
+      @media (max-width: 640px) {
+        .mc-list { grid-template-columns: 1fr; }
+        .mc-detail { padding: 16px; padding-top: 48px; }
+        .mc-detail-head { flex-wrap: wrap; }
       }
       @media (max-width: 700px) {
         .mc-installed-row { align-items: flex-start; }
@@ -1303,7 +1334,7 @@ window.__ModuleLoader__.load({
         error: "",
         fetchedAt: "",
       });
-      const [selectedName, setSelectedName] = useState(DATA.entries[0]?.name ?? "");
+      const [selectedName, setSelectedName] = useState("");
       const [installId, setInstallId] = useState("");
       const [copied, copy] = useCopyState();
       const [toast, notify] = useToast();
@@ -1356,14 +1387,15 @@ window.__ModuleLoader__.load({
         });
       }, [category, query, catalog]);
 
-      const selected =
-        filtered.find((entry) => entry.name === selectedName) ??
-        filtered[0] ??
-        null;
+      const selected = selectedName
+        ? filtered.find((entry) => entry.name === selectedName) ?? null
+        : null;
 
       useEffect(() => {
-        if (selected) setSelectedName(selected.name);
-      }, [selected?.name]);
+        if (selectedName && !filtered.some((entry) => entry.name === selectedName)) {
+          setSelectedName("");
+        }
+      }, [filtered, selectedName]);
 
       const install =
         selected?.install.find((item) => item.id === installId) ??
@@ -1407,9 +1439,9 @@ window.__ModuleLoader__.load({
             fetchedAt: result.fetchedAt ?? next.generated_at,
           });
           setSelectedName((current) =>
-            next.entries.some((entry) => entry.name === current)
+            current && next.entries.some((entry) => entry.name === current)
               ? current
-              : next.entries[0]?.name ?? "",
+              : "",
           );
         } catch (error) {
           setCatalogState({
@@ -1813,6 +1845,7 @@ window.__ModuleLoader__.load({
               fields,
             )).ok;
           setModal(null);
+          setSelectedName("");
           setView("installed");
           notify(
             `${result.message || t("installSuccess")}${
@@ -2005,6 +2038,11 @@ window.__ModuleLoader__.load({
         await refreshConnections();
       }
 
+      const closeDetail = () => {
+        setInstallId("");
+        setSelectedName("");
+      };
+
       const renderDetail = () => {
         if (!selected) {
           if (catalog.entries.length > 0) {
@@ -2037,6 +2075,17 @@ window.__ModuleLoader__.load({
         return h(
           "section",
           { className: "mc-detail", "aria-label": selected.display_name },
+          h(
+            "button",
+            {
+              type: "button",
+              className: "mc-detail-close",
+              onClick: closeDetail,
+              "aria-label": t("closeDetail"),
+              title: t("closeDetail"),
+            },
+            "×",
+          ),
           selected.possibly_broken &&
             h("p", { className: "mc-broken" }, t("broken")),
           h(
@@ -3202,11 +3251,13 @@ window.__ModuleLoader__.load({
         ),
         h(
           "div",
-          { className: "mc-body" },
-          h(
-            "div",
-            { className: "mc-list" },
-            filtered.length === 0
+          { className: selected ? "mc-body mc-body-detail" : "mc-body" },
+          selected
+            ? renderDetail()
+            : h(
+                "div",
+                { className: "mc-list" },
+                filtered.length === 0
               ? catalog.entries.length === 0
                 ? h(
                     "div",
@@ -3262,7 +3313,7 @@ window.__ModuleLoader__.load({
                     ),
                     h(
                       "div",
-                      { className: "mc-badges", style: { marginTop: 7 } },
+                      { className: "mc-badges" },
                       entry.official && h(Badge, { tone: "official" }, t("official")),
                       entry.verified && h(Badge, { tone: "verified" }, t("verified")),
                       h(Badge, { tone: "transport" }, transportLabel(t, entry.transport?.type)),
@@ -3271,10 +3322,9 @@ window.__ModuleLoader__.load({
                     ),
                   ),
                 ),
-          ),
-              renderDetail(),
-            ),
-          ),
+              ),
+        ),
+        ),
         view === "installed" && renderInstalled(),
         renderModal(),
         toast &&

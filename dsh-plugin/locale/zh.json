@@ -47,6 +47,7 @@
   "noInstall": "暂无安装配置。",
   "countSuffix": "个",
   "marketTab": "目录",
+  "closeDetail": "关闭详情",
   "installedTab": "已安装",
   "installedEmpty": "还没有已安装的 MCP 连接。",
   "connectorUnavailable": "MCP 引擎未就绪",

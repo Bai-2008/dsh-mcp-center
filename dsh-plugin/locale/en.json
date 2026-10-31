@@ -47,6 +47,7 @@
   "noInstall": "No install config yet.",
   "countSuffix": "",
   "marketTab": "Catalog",
+  "closeDetail": "Close details",
   "installedTab": "Installed",
   "installedEmpty": "No MCP connections installed yet.",
   "connectorUnavailable": "MCP engine not ready",

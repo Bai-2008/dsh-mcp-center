@@ -6,7 +6,7 @@ window.__ModuleLoader__.load({
     const h = React.createElement;
     const NS = "dsh-mcp-center";
     const DATA = {"generated_at":"","count":0,"site":{"origin":"https://bai-2008.github.io","base":"/dsh-mcp-center/","repo_url":"https://github.com/Bai-2008/dsh-mcp-center"},"categories":[],"entries":[]};
-    const DICTS = {"zh":{"meta":{"title":"MCP 市场","description":"在 DSH 内浏览 MCP 市场，安装、检查、管理、更新、编辑和卸载 MCP 连接。"},"nav":"MCP 市场","title":"MCP 市场","subtitle":"在 DSH 内安装、检查和管理 MCP 连接。","search":"搜索名称、描述、分类或工具…","all":"全部","entries":"个服务","empty":"没有找到匹配的服务","emptyHint":"换个关键词或分类试试。","emptyDetail":"从左侧选择一个服务查看详情。","official":"官方","verified":"已验证","transportStdio":"stdio","transportRemote":"远程","transportSse":"SSE","installTitle":"安装配置","configHint":"复制后替换 <YOUR_...> 占位符；凭据只保存在本机。","copy":"复制","copied":"已复制","copyFailed":"复制失败","requiredTitle":"必填变量","noRequired":"此条目没有必填环境变量或 Header。","apply":"去申请","docs":"查看文档","homepage":"主页","repository":"源码仓库","online":"在线详情","onlineMarket":"打开线上市场","about":"信息","transport":"传输","license":"许可证","lastChecked":"最近校验","tools":"工具","toolsFound":"已发现","toolList":"工具列表","noTools":"工具清单尚未同步。","sideEffect":"可能产生副作用","sourceOfficial":"官方出品","sourceCommunity":"社区项目","broken":"同步检查连续失败，请先确认服务可用性。","snapshot":"内置数据快照","generated":"构建于","noInstall":"暂无安装配置。","countSuffix":"个","marketTab":"目录","installedTab":"已安装","installedEmpty":"还没有已安装的 MCP 连接。","connectorUnavailable":"MCP 引擎未就绪","connectorHint":"插件已内置 MCP 连接引擎。点「刷新」重试；若仍为空，检查 dsh-mcp-center 是否启用。","backendMissing":"MCP 引擎未就绪，请重启 DSH 或检查 dsh-mcp-center 是否启用。","openConnector":"重试","refresh":"刷新","updateCatalog":"刷新目录","remoteCatalog":"在线目录","catalogLoading":"目录加载中","catalogOffline":"目录离线","catalogUnavailable":"目录暂时不可用","catalogUnavailableHint":"检查网络后点「刷新目录」重试。","catalogGenerated":"目录生成时间","updateAll":"刷新并检查","updating":"正在更新…","checkAll":"检查全部","check":"检查","reconnect":"重连","edit":"编辑","rename":"重命名","renameTitle":"重命名连接","renameHint":"只改显示名，不改 serverName、工具前缀或连接身份。","renaming":"正在重命名…","uninstall":"卸载","alwaysMode":"始终注入","sessionMode":"按会话启用","injectionChanged":"注入方式已更新","viewTools":"查看工具","hideTools":"收起工具","backupTitle":"配置备份","backupNote":"导出为脱敏 JSON；Token、Header、环境变量、路径和 OAuth Grant 不会导出。","createSnapshot":"立即创建快照","restoreSnapshot":"恢复","restoring":"正在恢复…","backupCreated":"快照已创建","backupCopied":"已复制脱敏配置","backupCopyFailed":"复制失败","noSnapshots":"还没有本机配置快照。","restoreConfirm":"确定恢复这个配置快照？恢复过程中任一连接失败会整体回滚。","snapshotReason":"原因","restorable":"可恢复","notRestorable":"OAuth 需重新授权","download":"下载","close":"关闭","enable":"启用","disable":"停用","enabled":"已启用","disabled":"已停用","connected":"已连接","notConnected":"未连接","degraded":"部分异常","configured":"已配置","stateUnknown":"状态未知","stateHint":"点「检查」获取实时状态","recovering":"自动重试中","reauthorize":"需重新授权","connectionError":"连接异常","loading":"加载中…","installToConnector":"安装到本机","installNow":"安装","reinstall":"重新安装","installing":"正在安装…","installNativeHint":"填写凭据后，会直接创建并校验本机 MCP 连接。","installHint":"下面是从本站生成的 DSH 配置。请替换 <YOUR_...>，确认后导入。","fillRequired":"请填写必填项","installInvalid":"安装信息不完整","optional":"可选","argsLabel":"启动参数（每行一个）","argsHint":"包含 /path/to/... 的参数请改成实际路径。","cwdLabel":"工作目录（可选）","uninstalling":"正在卸载…","import":"导入并安装","importing":"正在导入…","cancel":"取消","save":"保存并重连","saving":"正在保存…","editTitle":"编辑连接","editHint":"修改标准化 JSON 后保存；敏感值可用 <KEEP_EXISTING> 保留。","confirmUninstall":"确定卸载这个连接？","done":"完成","actionFailed":"操作失败","installJsonInvalid":"JSON 不合法","installSuccess":"MCP 连接已安装","editSuccess":"连接已更新","uninstallSuccess":"连接已卸载","checkSuccess":"连接检查完成","reconnectSuccess":"连接已重连","enableSuccess":"连接状态已更新","refreshSuccess":"已刷新","editLoadFailed":"无法读取连接配置","checking":"正在检查…","connectionKey":"连接","placeholderRemaining":"请先把配置里的 <YOUR_...> 全部替换，或删掉不需要的可选项。","credentialDetails":"查看 Key/Token 详情","hideCredentialDetails":"收起凭据详情","credentialMasked":"连接器不会把明文 Token/Key 返回前端，这里只显示保存位置和掩码；需要替换时直接改下方 JSON。","credentialNone":"没有可识别的凭据字段。","credentialUrlHidden":"URL 含密钥，已隐藏","authMode":"鉴权方式","headerLabel":"Header","envLabel":"环境变量","bearerLabel":"Bearer Token","apiKeyLabel":"API Key","credentialCopyNote":"以下是本插件保存的凭据副本，仅保存在本机。","credentialCopyMissing":"这条连接没有本插件保存的副本（可能安装于该功能之前）。在下面补录一次即可。","credentialCopyFormHint":"仅保存插件自己的副本，不会修改当前连接。","saveCredentialCopy":"保存凭据副本","showPlaintext":"显示明文","hidePlaintext":"隐藏明文","credentialCopySaved":"凭据副本已保存","credentialCopyEmpty":"请先填写至少一项凭据","credentialCopyFailed":"凭据副本保存失败"},"en":{"meta":{"title":"MCP Market","description":"Browse the MCP market inside DSH and install, check, manage, update, edit or remove MCP connections."},"nav":"MCP Market","title":"MCP Market","subtitle":"Install, check and manage MCP connections inside DSH.","search":"Search name, description, category or tool…","all":"All","entries":"servers","empty":"No matching servers","emptyHint":"Try a shorter keyword or another category.","emptyDetail":"Select a server on the left to see details.","official":"Official","verified":"Verified","transportStdio":"stdio","transportRemote":"Remote","transportSse":"SSE","installTitle":"Install config","configHint":"Replace <YOUR_...> placeholders after copying. Credentials stay local.","copy":"Copy","copied":"Copied","copyFailed":"Copy failed","requiredTitle":"Required variables","noRequired":"This server has no required environment variables or headers.","apply":"Get credential","docs":"Docs","homepage":"Homepage","repository":"Repository","online":"Online detail","onlineMarket":"Open web market","about":"Details","transport":"Transport","license":"License","lastChecked":"Last checked","tools":"tools","toolsFound":"Found","toolList":"Tools","noTools":"The tool list has not been synced yet.","sideEffect":"May have side effects","sourceOfficial":"Official","sourceCommunity":"Community","broken":"Remote checks have failed repeatedly. Verify the service before use.","snapshot":"Bundled data snapshot","generated":"Built","noInstall":"No install config yet.","countSuffix":"","marketTab":"Catalog","installedTab":"Installed","installedEmpty":"No MCP connections installed yet.","connectorUnavailable":"MCP engine not ready","connectorHint":"The MCP engine is built into this plugin. Refresh; if it stays empty, check that dsh-mcp-center is enabled.","backendMissing":"MCP engine not ready. Restart DSH or check that dsh-mcp-center is enabled.","openConnector":"Retry","refresh":"Refresh","updateCatalog":"Refresh catalog","remoteCatalog":"Online catalog","catalogLoading":"Loading catalog","catalogOffline":"Catalog offline","catalogUnavailable":"Catalog unavailable","catalogUnavailableHint":"Check your network, then refresh the catalog.","catalogGenerated":"Catalog generated","updateAll":"Refresh and check","updating":"Updating…","checkAll":"Check all","check":"Check","reconnect":"Reconnect","edit":"Edit","rename":"Rename","renameTitle":"Rename connection","renameHint":"Changes only the display name, not serverName, tool prefixes or connection identity.","renaming":"Renaming…","uninstall":"Uninstall","alwaysMode":"Always inject","sessionMode":"Session only","injectionChanged":"Injection mode updated","viewTools":"View tools","hideTools":"Hide tools","backupTitle":"Config backup","backupNote":"Exports redacted JSON; tokens, headers, environment, paths and OAuth grants are not exported.","createSnapshot":"Create snapshot","restoreSnapshot":"Restore","restoring":"Restoring…","backupCreated":"Snapshot created","backupCopied":"Redacted config copied","backupCopyFailed":"Copy failed","noSnapshots":"No local snapshots yet.","restoreConfirm":"Restore this snapshot? A failed connection rolls the whole restore back.","snapshotReason":"Reason","restorable":"Restorable","notRestorable":"OAuth reauthorization required","download":"Download","close":"Close","enable":"Enable","disable":"Disable","enabled":"Enabled","disabled":"Disabled","connected":"Connected","notConnected":"Not connected","degraded":"Partly degraded","configured":"Configured","stateUnknown":"Status unknown","stateHint":"Click Check to get the live status","recovering":"Retrying","reauthorize":"Reauthorization needed","connectionError":"Connection error","loading":"Loading…","installToConnector":"Install locally","installNow":"Install","reinstall":"Reinstall","installing":"Installing…","installNativeHint":"Enter credentials to create and validate a local MCP connection.","installHint":"This DSH config was generated by the market. Replace <YOUR_...>, then import it.","fillRequired":"Fill in the required fields","installInvalid":"The install details are incomplete","optional":"optional","argsLabel":"Launch arguments (one per line)","argsHint":"Replace any /path/to/... argument with a real path.","cwdLabel":"Working directory (optional)","uninstalling":"Removing…","import":"Import and install","importing":"Importing…","cancel":"Cancel","save":"Save & reconnect","saving":"Saving…","editTitle":"Edit connection","editHint":"Edit the normalized JSON and save. Sensitive values can stay as <KEEP_EXISTING>.","confirmUninstall":"Uninstall this connection?","done":"Done","actionFailed":"Action failed","installJsonInvalid":"Invalid JSON","installSuccess":"MCP connection installed","editSuccess":"Connection updated","uninstallSuccess":"Connection removed","checkSuccess":"Connection check completed","reconnectSuccess":"Connection reconnected","enableSuccess":"Connection state updated","refreshSuccess":"Refreshed","editLoadFailed":"Could not read the connection config","checking":"Checking…","connectionKey":"Connection","placeholderRemaining":"Replace every <YOUR_...> placeholder first, or delete optional entries you do not need.","credentialDetails":"View Key/Token details","hideCredentialDetails":"Hide credential details","credentialMasked":"The connector never returns plaintext tokens or keys to the page. This shows where they are stored and a mask; edit the JSON below to replace them.","credentialNone":"No recognizable credential fields.","credentialUrlHidden":"URL contains a secret, hidden","authMode":"Auth mode","headerLabel":"Header","envLabel":"Environment","bearerLabel":"Bearer Token","apiKeyLabel":"API Key","credentialCopyNote":"This copy is stored by the market plugin on this machine only.","credentialCopyMissing":"This connection has no market copy yet (it may predate this feature). Enter it once below.","credentialCopyFormHint":"This only saves the plugin's copy; it does not change the live connection.","saveCredentialCopy":"Save credential copy","showPlaintext":"Show plaintext","hidePlaintext":"Hide plaintext","credentialCopySaved":"Credential copy saved","credentialCopyEmpty":"Enter at least one credential first","credentialCopyFailed":"Could not save the credential copy"}};
+    const DICTS = {"zh":{"meta":{"title":"MCP 市场","description":"在 DSH 内浏览 MCP 市场，安装、检查、管理、更新、编辑和卸载 MCP 连接。"},"nav":"MCP 市场","title":"MCP 市场","subtitle":"在 DSH 内安装、检查和管理 MCP 连接。","search":"搜索名称、描述、分类或工具…","all":"全部","entries":"个服务","empty":"没有找到匹配的服务","emptyHint":"换个关键词或分类试试。","emptyDetail":"从左侧选择一个服务查看详情。","official":"官方","verified":"已验证","transportStdio":"stdio","transportRemote":"远程","transportSse":"SSE","installTitle":"安装配置","configHint":"复制后替换 <YOUR_...> 占位符；凭据只保存在本机。","copy":"复制","copied":"已复制","copyFailed":"复制失败","requiredTitle":"必填变量","noRequired":"此条目没有必填环境变量或 Header。","apply":"去申请","docs":"查看文档","homepage":"主页","repository":"源码仓库","online":"在线详情","onlineMarket":"打开线上市场","about":"信息","transport":"传输","license":"许可证","lastChecked":"最近校验","tools":"工具","toolsFound":"已发现","toolList":"工具列表","noTools":"工具清单尚未同步。","sideEffect":"可能产生副作用","sourceOfficial":"官方出品","sourceCommunity":"社区项目","broken":"同步检查连续失败，请先确认服务可用性。","snapshot":"内置数据快照","generated":"构建于","noInstall":"暂无安装配置。","countSuffix":"个","marketTab":"目录","closeDetail":"关闭详情","installedTab":"已安装","installedEmpty":"还没有已安装的 MCP 连接。","connectorUnavailable":"MCP 引擎未就绪","connectorHint":"插件已内置 MCP 连接引擎。点「刷新」重试；若仍为空，检查 dsh-mcp-center 是否启用。","backendMissing":"MCP 引擎未就绪，请重启 DSH 或检查 dsh-mcp-center 是否启用。","openConnector":"重试","refresh":"刷新","updateCatalog":"刷新目录","remoteCatalog":"在线目录","catalogLoading":"目录加载中","catalogOffline":"目录离线","catalogUnavailable":"目录暂时不可用","catalogUnavailableHint":"检查网络后点「刷新目录」重试。","catalogGenerated":"目录生成时间","updateAll":"刷新并检查","updating":"正在更新…","checkAll":"检查全部","check":"检查","reconnect":"重连","edit":"编辑","rename":"重命名","renameTitle":"重命名连接","renameHint":"只改显示名，不改 serverName、工具前缀或连接身份。","renaming":"正在重命名…","uninstall":"卸载","alwaysMode":"始终注入","sessionMode":"按会话启用","injectionChanged":"注入方式已更新","viewTools":"查看工具","hideTools":"收起工具","backupTitle":"配置备份","backupNote":"导出为脱敏 JSON；Token、Header、环境变量、路径和 OAuth Grant 不会导出。","createSnapshot":"立即创建快照","restoreSnapshot":"恢复","restoring":"正在恢复…","backupCreated":"快照已创建","backupCopied":"已复制脱敏配置","backupCopyFailed":"复制失败","noSnapshots":"还没有本机配置快照。","restoreConfirm":"确定恢复这个配置快照？恢复过程中任一连接失败会整体回滚。","snapshotReason":"原因","restorable":"可恢复","notRestorable":"OAuth 需重新授权","download":"下载","close":"关闭","enable":"启用","disable":"停用","enabled":"已启用","disabled":"已停用","connected":"已连接","notConnected":"未连接","degraded":"部分异常","configured":"已配置","stateUnknown":"状态未知","stateHint":"点「检查」获取实时状态","recovering":"自动重试中","reauthorize":"需重新授权","connectionError":"连接异常","loading":"加载中…","installToConnector":"安装到本机","installNow":"安装","reinstall":"重新安装","installing":"正在安装…","installNativeHint":"填写凭据后，会直接创建并校验本机 MCP 连接。","installHint":"下面是从本站生成的 DSH 配置。请替换 <YOUR_...>，确认后导入。","fillRequired":"请填写必填项","installInvalid":"安装信息不完整","optional":"可选","argsLabel":"启动参数（每行一个）","argsHint":"包含 /path/to/... 的参数请改成实际路径。","cwdLabel":"工作目录（可选）","uninstalling":"正在卸载…","import":"导入并安装","importing":"正在导入…","cancel":"取消","save":"保存并重连","saving":"正在保存…","editTitle":"编辑连接","editHint":"修改标准化 JSON 后保存；敏感值可用 <KEEP_EXISTING> 保留。","confirmUninstall":"确定卸载这个连接？","done":"完成","actionFailed":"操作失败","installJsonInvalid":"JSON 不合法","installSuccess":"MCP 连接已安装","editSuccess":"连接已更新","uninstallSuccess":"连接已卸载","checkSuccess":"连接检查完成","reconnectSuccess":"连接已重连","enableSuccess":"连接状态已更新","refreshSuccess":"已刷新","editLoadFailed":"无法读取连接配置","checking":"正在检查…","connectionKey":"连接","placeholderRemaining":"请先把配置里的 <YOUR_...> 全部替换，或删掉不需要的可选项。","credentialDetails":"查看 Key/Token 详情","hideCredentialDetails":"收起凭据详情","credentialMasked":"连接器不会把明文 Token/Key 返回前端，这里只显示保存位置和掩码；需要替换时直接改下方 JSON。","credentialNone":"没有可识别的凭据字段。","credentialUrlHidden":"URL 含密钥，已隐藏","authMode":"鉴权方式","headerLabel":"Header","envLabel":"环境变量","bearerLabel":"Bearer Token","apiKeyLabel":"API Key","credentialCopyNote":"以下是本插件保存的凭据副本，仅保存在本机。","credentialCopyMissing":"这条连接没有本插件保存的副本（可能安装于该功能之前）。在下面补录一次即可。","credentialCopyFormHint":"仅保存插件自己的副本，不会修改当前连接。","saveCredentialCopy":"保存凭据副本","showPlaintext":"显示明文","hidePlaintext":"隐藏明文","credentialCopySaved":"凭据副本已保存","credentialCopyEmpty":"请先填写至少一项凭据","credentialCopyFailed":"凭据副本保存失败"},"en":{"meta":{"title":"MCP Market","description":"Browse the MCP market inside DSH and install, check, manage, update, edit or remove MCP connections."},"nav":"MCP Market","title":"MCP Market","subtitle":"Install, check and manage MCP connections inside DSH.","search":"Search name, description, category or tool…","all":"All","entries":"servers","empty":"No matching servers","emptyHint":"Try a shorter keyword or another category.","emptyDetail":"Select a server on the left to see details.","official":"Official","verified":"Verified","transportStdio":"stdio","transportRemote":"Remote","transportSse":"SSE","installTitle":"Install config","configHint":"Replace <YOUR_...> placeholders after copying. Credentials stay local.","copy":"Copy","copied":"Copied","copyFailed":"Copy failed","requiredTitle":"Required variables","noRequired":"This server has no required environment variables or headers.","apply":"Get credential","docs":"Docs","homepage":"Homepage","repository":"Repository","online":"Online detail","onlineMarket":"Open web market","about":"Details","transport":"Transport","license":"License","lastChecked":"Last checked","tools":"tools","toolsFound":"Found","toolList":"Tools","noTools":"The tool list has not been synced yet.","sideEffect":"May have side effects","sourceOfficial":"Official","sourceCommunity":"Community","broken":"Remote checks have failed repeatedly. Verify the service before use.","snapshot":"Bundled data snapshot","generated":"Built","noInstall":"No install config yet.","countSuffix":"","marketTab":"Catalog","closeDetail":"Close details","installedTab":"Installed","installedEmpty":"No MCP connections installed yet.","connectorUnavailable":"MCP engine not ready","connectorHint":"The MCP engine is built into this plugin. Refresh; if it stays empty, check that dsh-mcp-center is enabled.","backendMissing":"MCP engine not ready. Restart DSH or check that dsh-mcp-center is enabled.","openConnector":"Retry","refresh":"Refresh","updateCatalog":"Refresh catalog","remoteCatalog":"Online catalog","catalogLoading":"Loading catalog","catalogOffline":"Catalog offline","catalogUnavailable":"Catalog unavailable","catalogUnavailableHint":"Check your network, then refresh the catalog.","catalogGenerated":"Catalog generated","updateAll":"Refresh and check","updating":"Updating…","checkAll":"Check all","check":"Check","reconnect":"Reconnect","edit":"Edit","rename":"Rename","renameTitle":"Rename connection","renameHint":"Changes only the display name, not serverName, tool prefixes or connection identity.","renaming":"Renaming…","uninstall":"Uninstall","alwaysMode":"Always inject","sessionMode":"Session only","injectionChanged":"Injection mode updated","viewTools":"View tools","hideTools":"Hide tools","backupTitle":"Config backup","backupNote":"Exports redacted JSON; tokens, headers, environment, paths and OAuth grants are not exported.","createSnapshot":"Create snapshot","restoreSnapshot":"Restore","restoring":"Restoring…","backupCreated":"Snapshot created","backupCopied":"Redacted config copied","backupCopyFailed":"Copy failed","noSnapshots":"No local snapshots yet.","restoreConfirm":"Restore this snapshot? A failed connection rolls the whole restore back.","snapshotReason":"Reason","restorable":"Restorable","notRestorable":"OAuth reauthorization required","download":"Download","close":"Close","enable":"Enable","disable":"Disable","enabled":"Enabled","disabled":"Disabled","connected":"Connected","notConnected":"Not connected","degraded":"Partly degraded","configured":"Configured","stateUnknown":"Status unknown","stateHint":"Click Check to get the live status","recovering":"Retrying","reauthorize":"Reauthorization needed","connectionError":"Connection error","loading":"Loading…","installToConnector":"Install locally","installNow":"Install","reinstall":"Reinstall","installing":"Installing…","installNativeHint":"Enter credentials to create and validate a local MCP connection.","installHint":"This DSH config was generated by the market. Replace <YOUR_...>, then import it.","fillRequired":"Fill in the required fields","installInvalid":"The install details are incomplete","optional":"optional","argsLabel":"Launch arguments (one per line)","argsHint":"Replace any /path/to/... argument with a real path.","cwdLabel":"Working directory (optional)","uninstalling":"Removing…","import":"Import and install","importing":"Importing…","cancel":"Cancel","save":"Save & reconnect","saving":"Saving…","editTitle":"Edit connection","editHint":"Edit the normalized JSON and save. Sensitive values can stay as <KEEP_EXISTING>.","confirmUninstall":"Uninstall this connection?","done":"Done","actionFailed":"Action failed","installJsonInvalid":"Invalid JSON","installSuccess":"MCP connection installed","editSuccess":"Connection updated","uninstallSuccess":"Connection removed","checkSuccess":"Connection check completed","reconnectSuccess":"Connection reconnected","enableSuccess":"Connection state updated","refreshSuccess":"Refreshed","editLoadFailed":"Could not read the connection config","checking":"Checking…","connectionKey":"Connection","placeholderRemaining":"Replace every <YOUR_...> placeholder first, or delete optional entries you do not need.","credentialDetails":"View Key/Token details","hideCredentialDetails":"Hide credential details","credentialMasked":"The connector never returns plaintext tokens or keys to the page. This shows where they are stored and a mask; edit the JSON below to replace them.","credentialNone":"No recognizable credential fields.","credentialUrlHidden":"URL contains a secret, hidden","authMode":"Auth mode","headerLabel":"Header","envLabel":"Environment","bearerLabel":"Bearer Token","apiKeyLabel":"API Key","credentialCopyNote":"This copy is stored by the market plugin on this machine only.","credentialCopyMissing":"This connection has no market copy yet (it may predate this feature). Enter it once below.","credentialCopyFormHint":"This only saves the plugin's copy; it does not change the live connection.","saveCredentialCopy":"Save credential copy","showPlaintext":"Show plaintext","hidePlaintext":"Hide plaintext","credentialCopySaved":"Credential copy saved","credentialCopyEmpty":"Enter at least one credential first","credentialCopyFailed":"Could not save the credential copy"}};
     const ALL = "__all__";
 
     const CSS = `
@@ -18,8 +18,8 @@ window.__ModuleLoader__.load({
         margin: 0 auto;
         padding: 20px 24px 48px;
         color: var(--dsw-alias-label-primary);
-        font-size: 14px;
-        line-height: 1.6;
+        font-size: 15px;
+        line-height: 1.65;
         text-align: left;
       }
       .mc-root *, .mc-root *::before, .mc-root *::after { box-sizing: border-box; }
@@ -44,7 +44,7 @@ window.__ModuleLoader__.load({
       }
       .mc-title {
         margin: 0;
-        font-size: 24px;
+        font-size: 26px;
         line-height: 1.2;
         letter-spacing: -.03em;
       }
@@ -155,22 +155,25 @@ window.__ModuleLoader__.load({
       .mc-cat-count { color: var(--dsw-alias-label-tertiary); font-family: ui-monospace, monospace; font-size: 9px; }
       .mc-body {
         display: grid;
-        grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
-        gap: 14px;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
         align-items: start;
       }
       .mc-list {
         display: grid;
-        gap: 7px;
-        max-height: 660px;
-        overflow: auto;
-        padding-right: 3px;
-        scrollbar-width: thin;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        align-content: start;
+        max-height: none;
+        overflow: visible;
+        padding-right: 0;
       }
       .mc-card {
-        display: block;
+        display: flex;
+        flex-direction: column;
         width: 100%;
-        padding: 12px;
+        min-height: 174px;
+        padding: 14px;
         border: 1px solid var(--dsw-alias-border-l1);
         border-radius: var(--mc-radius);
         background: var(--dsw-alias-bg-layer-1);
@@ -201,19 +204,19 @@ window.__ModuleLoader__.load({
       .mc-card-title {
         display: block;
         overflow: hidden;
-        font-size: 13px;
+        font-size: 14.5px;
         font-weight: 650;
-        line-height: 1.35;
+        line-height: 1.4;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
       .mc-card-desc {
         display: -webkit-box;
         overflow: hidden;
-        margin: 2px 0 0;
+        margin: 3px 0 0;
         color: var(--dsw-alias-label-secondary);
-        font-size: 11px;
-        line-height: 1.5;
+        font-size: 12.5px;
+        line-height: 1.55;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
       }
@@ -222,22 +225,23 @@ window.__ModuleLoader__.load({
         align-items: center;
         gap: 5px;
         overflow: hidden;
-        margin-top: 7px;
+        margin-top: 8px;
         color: var(--dsw-alias-label-tertiary);
         font-family: ui-monospace, monospace;
-        font-size: 9px;
+        font-size: 10.5px;
         white-space: nowrap;
       }
       .mc-card-meta span { overflow: hidden; text-overflow: ellipsis; }
-      .mc-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 3px; }
+      .mc-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+      .mc-card > .mc-badges { margin-top: auto; padding-top: 9px; }
       .mc-badge {
         display: inline-flex;
         align-items: center;
-        min-height: 18px;
-        padding: 0 5px;
+        min-height: 20px;
+        padding: 0 6px;
         border: 1px solid transparent;
         border-radius: 5px;
-        font-size: 9.5px;
+        font-size: 10.5px;
         font-weight: 600;
         line-height: 1.3;
         white-space: nowrap;
@@ -255,18 +259,40 @@ window.__ModuleLoader__.load({
       .mc-badge-transport { border-color: var(--dsw-alias-border-l1); color: var(--dsw-alias-label-tertiary); font-family: ui-monospace, monospace; font-weight: 500; }
       .mc-badge-broken { border-color: color-mix(in srgb, var(--dsw-alias-state-error-primary) 40%, transparent); background: color-mix(in srgb, var(--dsw-alias-state-error-primary) 10%, transparent); color: var(--dsw-alias-state-error-primary); }
       .mc-detail {
+        position: relative;
+        width: 100%;
         min-width: 0;
-        padding: 18px;
+        padding: 22px;
+        padding-right: 58px;
         border: 1px solid var(--dsw-alias-border-l1);
         border-radius: var(--mc-radius);
         background: var(--dsw-alias-bg-layer-1);
       }
-      .mc-detail-head { display: flex; align-items: flex-start; gap: 12px; }
-      .mc-detail-head .mc-icon { width: 46px; height: 46px; border-radius: 10px; font-size: 19px; }
-      .mc-detail-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
-      .mc-detail-title { margin: 0; font-size: 20px; line-height: 1.25; letter-spacing: -.02em; }
-      .mc-detail-desc { max-width: 720px; margin: 7px 0 0; color: var(--dsw-alias-label-secondary); font-size: 12.5px; line-height: 1.65; }
-      .mc-links { display: flex; flex-wrap: wrap; gap: 10px; margin: 9px 0 0; font-size: 11px; }
+      .mc-detail-close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: 1px solid var(--dsw-alias-border-l1);
+        border-radius: 8px;
+        background: var(--dsw-alias-bg-base);
+        color: var(--dsw-alias-label-secondary);
+        font-size: 22px;
+        line-height: 1;
+        cursor: pointer;
+      }
+      .mc-detail-close:hover { color: var(--dsw-alias-label-primary); border-color: var(--dsw-alias-border-l2); background: var(--dsw-alias-interactive-bg-hover); }
+      .mc-detail-head { display: flex; align-items: flex-start; gap: 13px; }
+      .mc-detail-head .mc-icon { width: 50px; height: 50px; border-radius: 10px; font-size: 20px; }
+      .mc-detail-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; }
+      .mc-detail-title-row .mc-badges { margin-top: 0; padding-top: 0; }
+      .mc-detail-title { margin: 0; font-size: 22px; line-height: 1.3; letter-spacing: -.02em; }
+      .mc-detail-desc { max-width: 820px; margin: 8px 0 0; color: var(--dsw-alias-label-secondary); font-size: 14px; line-height: 1.7; }
+      .mc-links { display: flex; flex-wrap: wrap; gap: 11px; margin: 10px 0 0; font-size: 12.5px; }
       .mc-broken {
         margin: 0 0 12px;
         padding: 9px 10px;
@@ -278,17 +304,17 @@ window.__ModuleLoader__.load({
       }
       .mc-section { margin-top: 18px; }
       .mc-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 7px; }
-      .mc-section-title { margin: 0; font-size: 12px; font-weight: 650; }
-      .mc-section-note { color: var(--dsw-alias-label-tertiary); font-size: 10px; }
+      .mc-section-title { margin: 0; font-size: 13.5px; font-weight: 650; }
+      .mc-section-note { color: var(--dsw-alias-label-tertiary); font-size: 11.5px; }
       .mc-tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
       .mc-tab {
-        min-height: 28px;
-        padding: 0 8px;
+        min-height: 30px;
+        padding: 0 9px;
         border: 1px solid var(--dsw-alias-border-l1);
         border-radius: 6px;
         background: transparent;
         color: var(--dsw-alias-label-secondary);
-        font-size: 10.5px;
+        font-size: 11.5px;
         cursor: pointer;
       }
       .mc-tab:hover { color: var(--dsw-alias-label-primary); }
@@ -328,7 +354,7 @@ window.__ModuleLoader__.load({
         overflow: auto;
         color: var(--dsw-alias-label-primary);
         font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-        font-size: 10.5px;
+        font-size: 12px;
         line-height: 1.7;
         tab-size: 2;
       }
@@ -339,7 +365,7 @@ window.__ModuleLoader__.load({
         background: color-mix(in srgb, var(--dsw-alias-brand-primary) 18%, transparent);
         color: var(--dsw-alias-brand-primary);
       }
-      .mc-hint { margin: 6px 0 0; color: var(--dsw-alias-label-tertiary); font-size: 10px; }
+      .mc-hint { margin: 6px 0 0; color: var(--dsw-alias-label-tertiary); font-size: 11.5px; }
       .mc-callout {
         margin-top: 9px;
         padding: 10px;
@@ -370,8 +396,8 @@ window.__ModuleLoader__.load({
       .mc-tool-warn { color: var(--dsw-static-amber-500); cursor: help; }
       .mc-tool-desc { margin: 2px 0 0; color: var(--dsw-alias-label-secondary); font-size: 10.5px; }
       .mc-empty { padding: 32px 16px; color: var(--dsw-alias-label-tertiary); text-align: center; }
-      .mc-empty strong { display: block; color: var(--dsw-alias-label-primary); font-size: 14px; }
-      .mc-empty p { margin: 4px 0 0; font-size: 11.5px; }
+      .mc-empty strong { display: block; color: var(--dsw-alias-label-primary); font-size: 16px; }
+      .mc-empty p { margin: 4px 0 0; font-size: 13px; }
       .mc-foot { margin-top: 12px; color: var(--dsw-alias-label-tertiary); font-size: 9.5px; }
       .mc-foot code { font-family: ui-monospace, monospace; }
       .mc-view-tabs {
@@ -392,7 +418,7 @@ window.__ModuleLoader__.load({
         border-radius: 6px;
         background: transparent;
         color: var(--dsw-alias-label-secondary);
-        font-size: 11.5px;
+        font-size: 12.5px;
         cursor: pointer;
       }
       .mc-view-tab:hover { color: var(--dsw-alias-label-primary); background: var(--dsw-alias-interactive-bg-hover); }
@@ -426,7 +452,7 @@ window.__ModuleLoader__.load({
         background: var(--dsw-alias-brand-primary);
         color: #fff;
         color: var(--dsw-static-neutral-00);
-        font-size: 11px;
+        font-size: 12.5px;
         font-weight: 650;
         cursor: pointer;
       }
@@ -447,7 +473,7 @@ window.__ModuleLoader__.load({
         border-radius: 6px;
         background: transparent;
         color: var(--dsw-alias-label-secondary);
-        font-size: 10px;
+        font-size: 11.5px;
         cursor: pointer;
       }
       .mc-secondary:hover { border-color: var(--dsw-alias-border-l2); color: var(--dsw-alias-label-primary); }
@@ -774,6 +800,11 @@ window.__ModuleLoader__.load({
         .mc-body { grid-template-columns: 1fr; }
         .mc-list { max-height: none; grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .mc-info { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      }
+      @media (max-width: 640px) {
+        .mc-list { grid-template-columns: 1fr; }
+        .mc-detail { padding: 16px; padding-top: 48px; }
+        .mc-detail-head { flex-wrap: wrap; }
       }
       @media (max-width: 700px) {
         .mc-installed-row { align-items: flex-start; }
@@ -1303,7 +1334,7 @@ window.__ModuleLoader__.load({
         error: "",
         fetchedAt: "",
       });
-      const [selectedName, setSelectedName] = useState(DATA.entries[0]?.name ?? "");
+      const [selectedName, setSelectedName] = useState("");
       const [installId, setInstallId] = useState("");
       const [copied, copy] = useCopyState();
       const [toast, notify] = useToast();
@@ -1356,14 +1387,15 @@ window.__ModuleLoader__.load({
         });
       }, [category, query, catalog]);
 
-      const selected =
-        filtered.find((entry) => entry.name === selectedName) ??
-        filtered[0] ??
-        null;
+      const selected = selectedName
+        ? filtered.find((entry) => entry.name === selectedName) ?? null
+        : null;
 
       useEffect(() => {
-        if (selected) setSelectedName(selected.name);
-      }, [selected?.name]);
+        if (selectedName && !filtered.some((entry) => entry.name === selectedName)) {
+          setSelectedName("");
+        }
+      }, [filtered, selectedName]);
 
       const install =
         selected?.install.find((item) => item.id === installId) ??
@@ -1407,9 +1439,9 @@ window.__ModuleLoader__.load({
             fetchedAt: result.fetchedAt ?? next.generated_at,
           });
           setSelectedName((current) =>
-            next.entries.some((entry) => entry.name === current)
+            current && next.entries.some((entry) => entry.name === current)
               ? current
-              : next.entries[0]?.name ?? "",
+              : "",
           );
         } catch (error) {
           setCatalogState({
@@ -1813,6 +1845,7 @@ window.__ModuleLoader__.load({
               fields,
             )).ok;
           setModal(null);
+          setSelectedName("");
           setView("installed");
           notify(
             `${result.message || t("installSuccess")}${
@@ -2005,6 +2038,11 @@ window.__ModuleLoader__.load({
         await refreshConnections();
       }
 
+      const closeDetail = () => {
+        setInstallId("");
+        setSelectedName("");
+      };
+
       const renderDetail = () => {
         if (!selected) {
           if (catalog.entries.length > 0) {
@@ -2037,6 +2075,17 @@ window.__ModuleLoader__.load({
         return h(
           "section",
           { className: "mc-detail", "aria-label": selected.display_name },
+          h(
+            "button",
+            {
+              type: "button",
+              className: "mc-detail-close",
+              onClick: closeDetail,
+              "aria-label": t("closeDetail"),
+              title: t("closeDetail"),
+            },
+            "×",
+          ),
           selected.possibly_broken &&
             h("p", { className: "mc-broken" }, t("broken")),
           h(
@@ -3202,11 +3251,13 @@ window.__ModuleLoader__.load({
         ),
         h(
           "div",
-          { className: "mc-body" },
-          h(
-            "div",
-            { className: "mc-list" },
-            filtered.length === 0
+          { className: selected ? "mc-body mc-body-detail" : "mc-body" },
+          selected
+            ? renderDetail()
+            : h(
+                "div",
+                { className: "mc-list" },
+                filtered.length === 0
               ? catalog.entries.length === 0
                 ? h(
                     "div",
@@ -3262,7 +3313,7 @@ window.__ModuleLoader__.load({
                     ),
                     h(
                       "div",
-                      { className: "mc-badges", style: { marginTop: 7 } },
+                      { className: "mc-badges" },
                       entry.official && h(Badge, { tone: "official" }, t("official")),
                       entry.verified && h(Badge, { tone: "verified" }, t("verified")),
                       h(Badge, { tone: "transport" }, transportLabel(t, entry.transport?.type)),
@@ -3271,10 +3322,9 @@ window.__ModuleLoader__.load({
                     ),
                   ),
                 ),
-          ),
-              renderDetail(),
-            ),
-          ),
+              ),
+        ),
+        ),
         view === "installed" && renderInstalled(),
         renderModal(),
         toast &&
