@@ -1007,6 +1007,29 @@ window.__ModuleLoader__.load({
       }
     }
 
+    function normalizeEndpoint(value) {
+      try {
+        const url = new URL(String(value));
+        return `${url.origin}${url.pathname}`.replace(/\/$/, "");
+      } catch {
+        return "";
+      }
+    }
+
+    function findMarketEntryForConnection(item) {
+      return (
+        DATA.entries.find((entry) => slugServerName(entry.name) === item.serverName) ||
+        DATA.entries.find((entry) => entry.display_name === item.name) ||
+        DATA.entries.find(
+          (entry) =>
+            entry.transport?.url &&
+            item.url &&
+            normalizeEndpoint(entry.transport.url) === normalizeEndpoint(item.url),
+        ) ||
+        null
+      );
+    }
+
     function buildInstallPayload(entry, form) {
       const values = form.values ?? {};
       const get = (credential) => String(values[credentialFieldKey(credential)] ?? "").trim();
@@ -2198,6 +2221,7 @@ window.__ModuleLoader__.load({
                     items.map((item, index) => {
                       const enabled = item.enabled !== false;
                       const displayName = item.name || item.key || `#${index + 1}`;
+                      const referenceEntry = findMarketEntryForConnection(item);
                       const feedback = actionResults[item.key];
                       const feedbackMessage = feedback?.pending
                         ? t("checking")
@@ -2224,7 +2248,13 @@ window.__ModuleLoader__.load({
                           h(
                             "div",
                             { className: "mc-installed-name" },
-                            h(EntryIcon, { entry: { name: displayName, display_name: displayName } }),
+                            h(EntryIcon, {
+                              entry:
+                                referenceEntry ?? {
+                                  name: displayName,
+                                  display_name: displayName,
+                                },
+                            }),
                             h("span", null, displayName),
                           ),
                           h("div", { className: "mc-installed-key" }, item.key || ""),
