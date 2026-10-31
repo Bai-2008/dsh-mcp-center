@@ -2,7 +2,7 @@
 
 一个原生 DSH 插件：在 **设置 → 插件** 中增加「MCP 市场」Tab，浏览 [dsh-mcp-center](https://bai-2008.github.io/dsh-mcp-center/) 的 MCP Server 目录。
 
-它不嵌入网站，也不使用 iframe。页面由 React 原生组件渲染，并从同一份 registry 数据生成快照。
+它不嵌入网站，也不使用 iframe。页面由 React 原生组件渲染，目录和安装配置在运行时从线上 MCP 市场加载。
 
 ## 功能
 
@@ -52,16 +52,15 @@ https://bai-2008.github.io/dsh-mcp-center/index.json
 
 - 目录和安装配置由网站构建产物提供，**新增 MCP 不需要重新发布插件**
 - 多源回退：GitHub Pages → GitHub raw → gh-proxy → ghproxy.net → ghfast.top → moeyy → llkk
-- 每个源 8 秒超时，首个成功返回的目录生效；全部失败才使用缓存/内置快照
+- 每个源 8 秒超时，首个成功返回的目录生效；全部失败才使用本机缓存
 - 本机缓存 5 分钟，页面上的「刷新目录」可强制拉取
-- 远端不可用时使用本地缓存，再回退到插件内置快照
+- 远端全部失败且没有缓存时，页面提示「目录暂时不可用」；插件不再内置目录快照
 - 缓存位置：`$DSH_PROFILE_DIR/dsh-mcp-center/catalog-cache.json`
-- `catalog/index.json` 是给 raw/gh-proxy 使用的仓库内快照
+- `catalog/index.json` 是给 raw/gh-proxy 使用的仓库内快照，不打包进插件
 
-插件包内的 `client.js` 仍包含一份内置快照，仅作为离线兜底。只有修改插件代码或需要更新兜底快照时才需要：
+插件包内的 `client.js` 只包含界面代码和文案，不包含 MCP 目录。修改插件代码或文案后需要：
 
 ```bash
-npm run build:web
 npm run build:plugin
 ```
 

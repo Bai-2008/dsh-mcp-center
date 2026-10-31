@@ -1,6 +1,6 @@
 {
   "name": "dsh-mcp-center",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": true,
   "description": "在 DSH 内直接安装、检查、管理、更新、编辑和卸载 MCP 连接。",
   "type": "module",
@@ -19,7 +19,6 @@
     "cordis.patch.yml",
     "locale/*.json",
     "icon.svg",
-    "catalog.json",
     "README.md"
   ],
   "dsh": {

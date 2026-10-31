@@ -1298,10 +1298,10 @@ window.__ModuleLoader__.load({
       const [catalog, setCatalog] = useState(DATA);
       const [catalogState, setCatalogState] = useState({
         loading: true,
-        source: "snapshot",
+        source: "loading",
         sourceName: "",
         error: "",
-        fetchedAt: DATA.generated_at,
+        fetchedAt: "",
       });
       const [selectedName, setSelectedName] = useState(DATA.entries[0]?.name ?? "");
       const [installId, setInstallId] = useState("");
@@ -1414,12 +1414,12 @@ window.__ModuleLoader__.load({
         } catch (error) {
           setCatalogState({
             loading: false,
-            source: "snapshot",
+            source: "offline",
             sourceName: "",
             error: controller.signal.aborted
               ? "目录请求超时"
               : `在线目录不可用：${error?.message || error}`,
-            fetchedAt: DATA.generated_at,
+            fetchedAt: "",
           });
         } finally {
           clearTimeout(timer);
@@ -2007,11 +2007,27 @@ window.__ModuleLoader__.load({
 
       const renderDetail = () => {
         if (!selected) {
+          if (catalog.entries.length > 0) {
+            return h(
+              "div",
+              { className: "mc-empty" },
+              h("strong", null, t("empty")),
+              h("p", null, t("emptyHint")),
+            );
+          }
           return h(
             "div",
             { className: "mc-empty" },
-            h("strong", null, t("empty")),
-            h("p", null, t("emptyHint")),
+            h(
+              "strong",
+              null,
+              catalogState.loading ? t("catalogLoading") : t("catalogUnavailable"),
+            ),
+            h(
+              "p",
+              null,
+              catalogState.error || t("catalogUnavailableHint"),
+            ),
           );
         }
 
@@ -2214,7 +2230,8 @@ window.__ModuleLoader__.load({
                 ),
               ),
             ),
-          h("p", { className: "mc-foot" }, `${t("snapshot")} · ${catalog.generated_at}`),
+        catalog.generated_at &&
+          h("p", { className: "mc-foot" }, `${t("catalogGenerated")} · ${catalog.generated_at}`),
         );
       };
 
@@ -3087,7 +3104,9 @@ window.__ModuleLoader__.load({
                 ? `${t("remoteCatalog")}${
                     catalogState.sourceName ? ` · ${catalogState.sourceName}` : ""
                   }`
-                : t("snapshot"),
+                : catalogState.source === "loading"
+                  ? t("catalogLoading")
+                  : t("catalogOffline"),
             ),
             h("span", { className: "mc-count" }, `${catalog.entries.length} ${t("entries")}`),
             h(
@@ -3188,12 +3207,29 @@ window.__ModuleLoader__.load({
             "div",
             { className: "mc-list" },
             filtered.length === 0
-              ? h(
-                  "div",
-                  { className: "mc-empty" },
-                  h("strong", null, t("empty")),
-                  h("p", null, t("emptyHint")),
-                )
+              ? catalog.entries.length === 0
+                ? h(
+                    "div",
+                    { className: "mc-empty" },
+                    h(
+                      "strong",
+                      null,
+                      catalogState.loading
+                        ? t("catalogLoading")
+                        : t("catalogUnavailable"),
+                    ),
+                    h(
+                      "p",
+                      null,
+                      catalogState.error || t("catalogUnavailableHint"),
+                    ),
+                  )
+                : h(
+                    "div",
+                    { className: "mc-empty" },
+                    h("strong", null, t("empty")),
+                    h("p", null, t("emptyHint")),
+                  )
               : filtered.map((entry) =>
                   h(
                     "button",
