@@ -12,9 +12,22 @@ import { homedir } from "node:os";
 
 const ROUTE = "/dsh-mcp-center/api/credentials";
 const CATALOG_ROUTE = "/dsh-mcp-center/api/catalog";
-const CATALOG_URL =
-  process.env.DSH_MCP_CENTER_CATALOG_URL ||
-  "https://bai-2008.github.io/dsh-mcp-center/index.json";
+const CATALOG_RAW =
+  "https://raw.githubusercontent.com/Bai-2008/dsh-mcp-center/main/catalog/index.json";
+const CATALOG_SOURCES = process.env.DSH_MCP_CENTER_CATALOG_URL
+  ? [{ name: "自定义", url: process.env.DSH_MCP_CENTER_CATALOG_URL }]
+  : [
+      {
+        name: "GitHub Pages",
+        url: "https://bai-2008.github.io/dsh-mcp-center/index.json",
+      },
+      { name: "GitHub raw", url: CATALOG_RAW },
+      { name: "gh-proxy", url: `https://gh-proxy.com/${CATALOG_RAW}` },
+      { name: "ghproxy.net", url: `https://ghproxy.net/${CATALOG_RAW}` },
+      { name: "ghfast.top", url: `https://ghfast.top/${CATALOG_RAW}` },
+      { name: "moeyy", url: `https://github.moeyy.xyz/${CATALOG_RAW}` },
+      { name: "llkk", url: `https://gh.llkk.cc/${CATALOG_RAW}` },
+    ];
 const CATALOG_TTL = 5 * 60 * 1000;
 const SERVER_NAME = /^[a-z0-9_-]{1,63}$/;
 const RESERVED_NAMES = new Set(["__proto__", "constructor", "prototype"]);
@@ -276,6 +289,26 @@ function validCatalog(data) {
   );
 }
 
+async function fetchCatalogSource(source) {
+  const response = await fetch(source.url, {
+    headers: {
+      accept: "application/json",
+      "user-agent": "dsh-mcp-center/0.7.0",
+    },
+    signal: AbortSignal.timeout(8_000),
+  });
+  if (!response.ok) throw new Error(`${source.name}: HTTP ${response.status}`);
+  const text = await response.text();
+  if (text.length > 8 * 1024 * 1024) {
+    throw new Error(`${source.name}: 目录数据超过 8 MiB`);
+  }
+  const data = JSON.parse(text);
+  if (!validCatalog(data)) {
+    throw new Error(`${source.name}: 目录数据缺少 entries/site`);
+  }
+  return { data, sourceName: source.name, sourceUrl: source.url };
+}
+
 async function fetchCatalog(force = false) {
   const cache = await loadCatalogCache();
   const now = Date.now();
@@ -285,40 +318,36 @@ async function fetchCatalog(force = false) {
     typeof cache.fetchedAt === "number" &&
     now - cache.fetchedAt < CATALOG_TTL
   ) {
-    return { data: cache.data, fetchedAt: cache.fetchedAt, cached: true, stale: false };
+    return {
+      data: cache.data,
+      fetchedAt: cache.fetchedAt,
+      cached: true,
+      stale: false,
+      sourceName: cache.sourceName || "本地缓存",
+      sourceUrl: cache.sourceUrl,
+    };
   }
 
-  const headers = {
-    accept: "application/json",
-    "user-agent": "dsh-mcp-center/0.6.0",
-  };
-  if (cache?.etag) headers["if-none-match"] = cache.etag;
-  if (cache?.lastModified) headers["if-modified-since"] = cache.lastModified;
-
   try {
-    const response = await fetch(CATALOG_URL, {
-      headers,
-      signal: AbortSignal.timeout(20_000),
-    });
-    if (response.status === 304 && cache) {
-      const refreshed = { ...cache, fetchedAt: now };
-      await saveCatalogCache(refreshed);
-      return { data: cache.data, fetchedAt: now, cached: true, stale: false };
-    }
-    if (!response.ok) throw new Error(`目录仓库返回 HTTP ${response.status}`);
-    const text = await response.text();
-    if (text.length > 8 * 1024 * 1024) throw new Error("目录数据超过 8 MiB");
-    const data = JSON.parse(text);
-    if (!validCatalog(data)) throw new Error("目录数据缺少 entries/site");
+    const winner = await Promise.any(
+      CATALOG_SOURCES.map((source) => fetchCatalogSource(source)),
+    );
     const saved = {
       version: 1,
       fetchedAt: now,
-      etag: response.headers.get("etag") || undefined,
-      lastModified: response.headers.get("last-modified") || undefined,
-      data,
+      sourceName: winner.sourceName,
+      sourceUrl: winner.sourceUrl,
+      data: winner.data,
     };
     await saveCatalogCache(saved);
-    return { data, fetchedAt: now, cached: false, stale: false };
+    return {
+      data: winner.data,
+      fetchedAt: now,
+      cached: false,
+      stale: false,
+      sourceName: winner.sourceName,
+      sourceUrl: winner.sourceUrl,
+    };
   } catch (error) {
     if (cache) {
       return {
@@ -326,10 +355,15 @@ async function fetchCatalog(force = false) {
         fetchedAt: cache.fetchedAt,
         cached: true,
         stale: true,
-        message: error instanceof Error ? error.message : String(error),
+        sourceName: cache.sourceName || "本地缓存",
+        sourceUrl: cache.sourceUrl,
+        message:
+          error instanceof Error
+            ? error.message
+            : "所有在线目录源均不可用，已使用本地缓存",
       };
     }
-    throw error;
+    throw new Error("所有在线目录源均不可用");
   }
 }
 
@@ -346,11 +380,7 @@ async function handleCatalog(req, res) {
   try {
     const url = new URL(req.url ?? "/", "http://localhost");
     const result = await fetchCatalog(url.searchParams.get("refresh") === "1");
-    writeJson(res, 200, {
-      ok: true,
-      ...result,
-      source: CATALOG_URL,
-    });
+    writeJson(res, 200, { ok: true, ...result });
   } catch (error) {
     writeJson(res, 502, {
       ok: false,

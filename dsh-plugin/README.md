@@ -51,9 +51,12 @@ https://bai-2008.github.io/dsh-mcp-center/index.json
 ```
 
 - 目录和安装配置由网站构建产物提供，**新增 MCP 不需要重新发布插件**
+- 多源回退：GitHub Pages → GitHub raw → gh-proxy → ghproxy.net → ghfast.top → moeyy → llkk
+- 每个源 8 秒超时，首个成功返回的目录生效；全部失败才使用缓存/内置快照
 - 本机缓存 5 分钟，页面上的「刷新目录」可强制拉取
 - 远端不可用时使用本地缓存，再回退到插件内置快照
 - 缓存位置：`$DSH_PROFILE_DIR/dsh-mcp-center/catalog-cache.json`
+- `catalog/index.json` 是给 raw/gh-proxy 使用的仓库内快照
 
 插件包内的 `client.js` 仍包含一份内置快照，仅作为离线兜底。只有修改插件代码或需要更新兜底快照时才需要：
 

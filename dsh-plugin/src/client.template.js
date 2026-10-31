@@ -1299,6 +1299,7 @@ window.__ModuleLoader__.load({
       const [catalogState, setCatalogState] = useState({
         loading: true,
         source: "snapshot",
+        sourceName: "",
         error: "",
         fetchedAt: DATA.generated_at,
       });
@@ -1401,6 +1402,7 @@ window.__ModuleLoader__.load({
           setCatalogState({
             loading: false,
             source: "remote",
+            sourceName: result.sourceName || "",
             error: result.stale ? result.message || "" : "",
             fetchedAt: result.fetchedAt ?? next.generated_at,
           });
@@ -1413,6 +1415,7 @@ window.__ModuleLoader__.load({
           setCatalogState({
             loading: false,
             source: "snapshot",
+            sourceName: "",
             error: controller.signal.aborted
               ? "目录请求超时"
               : `在线目录不可用：${error?.message || error}`,
@@ -3081,7 +3084,9 @@ window.__ModuleLoader__.load({
               "span",
               { className: "mc-catalog-source" },
               catalogState.source === "remote"
-                ? t("remoteCatalog")
+                ? `${t("remoteCatalog")}${
+                    catalogState.sourceName ? ` · ${catalogState.sourceName}` : ""
+                  }`
                 : t("snapshot"),
             ),
             h("span", { className: "mc-count" }, `${catalog.entries.length} ${t("entries")}`),

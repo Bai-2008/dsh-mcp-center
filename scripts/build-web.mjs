@@ -20,6 +20,7 @@ const WEB_DIR = path.join(ROOT, "web");
 const PUBLIC_DIR = path.join(WEB_DIR, "public");
 const DATA_DIR = path.join(WEB_DIR, "src", "data");
 const DIST_DIR = path.join(ROOT, "dist");
+const CATALOG_DIR = path.join(ROOT, "catalog");
 const ICON_MANIFEST = path.join(PUBLIC_DIR, "icons", "icons.json");
 const SYNC_STATE = path.join(ROOT, "sync", "state.json");
 
@@ -173,9 +174,11 @@ const indexText = `${JSON.stringify(index, null, 2)}\n`;
 await mkdir(PUBLIC_DIR, { recursive: true });
 await mkdir(DATA_DIR, { recursive: true });
 await mkdir(DIST_DIR, { recursive: true });
+await mkdir(CATALOG_DIR, { recursive: true });
 await writeFile(path.join(PUBLIC_DIR, "index.json"), indexText, "utf8");
 await writeFile(path.join(DATA_DIR, "index.json"), indexText, "utf8");
 await writeFile(path.join(DIST_DIR, "index.json"), indexText, "utf8");
+await writeFile(path.join(CATALOG_DIR, "index.json"), indexText, "utf8");
 await copyFile(SCHEMA_PATH, path.join(PUBLIC_DIR, "registry.schema.json"));
 await copyFile(SCHEMA_PATH, path.join(DIST_DIR, "registry.schema.json"));
 
