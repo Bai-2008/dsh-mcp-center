@@ -734,6 +734,8 @@
     transition: opacity 0.4s ease, transform 0.4s ease;
   }
   .stage.idle:not(:hover) .controls { opacity: 0; transform: translateY(0.4em); pointer-events: none; }
+  .stage.clean .controls { display: none; }
+  .stage.clean .replay { display: none; }
   .ctrl { width: 1.85em; height: 1.85em; border: 1px solid transparent; border-radius: 0.3em; background: transparent; display: grid; place-items: center; color: var(--muted); cursor: pointer; }
   .ctrl:hover { color: var(--text); background: rgba(20, 32, 52, 0.06); }
   .ctrl svg { width: 0.9em; height: 0.9em; fill: currentColor; }
@@ -1303,6 +1305,7 @@
     }
 
     function showControls() {
+      if (stage.classList.contains("clean")) return;
       stage.classList.remove("idle");
       clearTimeout(idleTimer);
       if (playing) {
@@ -1358,6 +1361,11 @@
       if (event.key === "ArrowRight" && event.shiftKey) { seek(current + 5); }
       if (event.key === "ArrowLeft" && event.shiftKey) { seek(current - 5); }
       if (event.key === "r" || event.key === "R") { seek(0); play(); }
+      if (event.key === "h" || event.key === "H") {
+        stage.classList.toggle("clean");
+        clearTimeout(idleTimer);
+        if (!stage.classList.contains("clean")) showControls();
+      }
       if (event.key === "f" || event.key === "F") {
         if (!document.fullscreenElement) stage.requestFullscreen?.();
         else document.exitFullscreen?.();
@@ -1380,6 +1388,10 @@
     }
     if (params.get("paused") === "1") stage.classList.add("idle");
     if (params.get("static") === "1") document.documentElement.classList.add("static");
+    if (params.get("clean") === "1" || params.get("rec") === "1") {
+      stage.classList.add("clean");
+      stage.classList.remove("idle");
+    }
 
     updatePlayIcon();
     render();
