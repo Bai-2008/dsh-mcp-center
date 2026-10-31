@@ -2042,40 +2042,38 @@ window.__ModuleLoader__.load({
               h("div", null, h("dt", null, t("transport")), h("dd", null, transportLabel(t, selected.transport?.type))),
               h("div", null, h("dt", null, t("license")), h("dd", null, selected.license)),
               h("div", null, h("dt", null, t("lastChecked")), h("dd", null, selected.last_checked)),
-              h("div", null, h("dt", null, t("tools")), h("dd", null, `${selected.tools.length}`)),
               h("div", null, h("dt", null, "ID"), h("dd", null, selected.name)),
               h("div", null, h("dt", null, t("sourceOfficial")), h("dd", null, selected.official ? t("sourceOfficial") : t("sourceCommunity"))),
             ),
           ),
-          h(
-            "div",
-            { className: "mc-tools", style: { marginTop: 14 } },
+          selected.tools.length > 0 &&
             h(
-              "details",
-              null,
-              h("summary", null, `${t("toolList")} (${selected.tools.length})`),
-              selected.tools.length === 0
-                ? h("p", { className: "mc-hint" }, t("noTools"))
-                : h(
-                    "ul",
-                    { className: "mc-tool-list" },
-                    selected.tools.map((tool) =>
+              "div",
+              { className: "mc-tools", style: { marginTop: 14 } },
+              h(
+                "details",
+                null,
+                h("summary", null, `${t("toolList")} (${selected.tools.length})`),
+                h(
+                  "ul",
+                  { className: "mc-tool-list" },
+                  selected.tools.map((tool) =>
+                    h(
+                      "li",
+                      { key: tool.name },
                       h(
-                        "li",
-                        { key: tool.name },
-                        h(
-                          "div",
-                          { className: "mc-tool-name" },
-                          h("code", null, tool.name),
-                          tool.side_effect &&
-                            h("span", { className: "mc-tool-warn", title: t("sideEffect") }, "⚠"),
-                        ),
-                        h("p", { className: "mc-tool-desc" }, tool.description),
+                        "div",
+                        { className: "mc-tool-name" },
+                        h("code", null, tool.name),
+                        tool.side_effect &&
+                          h("span", { className: "mc-tool-warn", title: t("sideEffect") }, "⚠"),
                       ),
+                      h("p", { className: "mc-tool-desc" }, tool.description),
                     ),
                   ),
+                ),
+              ),
             ),
-          ),
           h("p", { className: "mc-foot" }, `${t("snapshot")} · ${DATA.generated_at}`),
         );
       };
@@ -3050,8 +3048,6 @@ window.__ModuleLoader__.load({
                           "div",
                           { className: "mc-card-meta" },
                           h("span", null, entry.categories.join(" · ")),
-                          h("span", null, "·"),
-                          h("span", null, `${entry.tools.length} ${t("tools")}`),
                           h("span", null, "·"),
                           h("span", null, entry.last_checked),
                         ),
