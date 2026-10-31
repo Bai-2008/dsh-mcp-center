@@ -13,6 +13,7 @@ window.__ModuleLoader__.load({
       .mc-root {
         --mc-radius: 10px;
         box-sizing: border-box;
+        width: 100%;
         max-width: 1120px;
         margin: 0 auto;
         padding: 20px 24px 48px;
@@ -417,6 +418,10 @@ window.__ModuleLoader__.load({
         cursor: pointer;
       }
       .mc-primary:hover { filter: brightness(1.06); }
+      .mc-root button.mc-primary {
+        color: #fff;
+        color: var(--dsw-static-neutral-00);
+      }
       .mc-primary:disabled { opacity: .55; cursor: wait; }
       .mc-secondary {
         display: inline-flex;
