@@ -179,13 +179,12 @@ tools:
       PPAs and energy pricing, tax incentives and permitting, water and climate
       risk, data-center M&A and deals, power generation, gas and energy
       infrastructure. Recommended entry for a question that spans more than one
-      of those. Pass the user's question as `intent`. One call plans AND
-      answers: deterministic no-LLM routing (the same planner plan_query
-      exposes), then it runs the recommended sequence wave-by-wave (parallel
-      where the graph allows), resolves <angle-bracket> hand-offs between steps
-      (metro_slug / candidate_id / ISO minting), fans out per-finalist reads
-      (capped), and returns every step's result in ONE envelope:
-      _entity=plan_execution {inte"
+      of those: it picks and chains the right tools and returns one dated, cited
+      answer. Pass the user's question as `intent`. One call plans AND answers:
+      deterministic no-LLM routing (the same planner plan_query exposes), then
+      it runs the recommended sequence wave-by-wave (parallel where the graph
+      allows), resolves <angle-bracket> hand-offs between steps (metro_slug /
+      candidate_id / ISO minting), fans out per-finalist reads (capped), and "
   - name: export_dataset
     description: 'Use this when the user wants to export their saved data center
       sites for offline analysis, a spreadsheet, or ingestion into another tool
@@ -741,21 +740,21 @@ tools:
       projects. Answers "how much new generation is planned in Virginia and when
       does it land
   - name: get_refined_queue
-    description: 'Use this when you need interconnection queue projects filtered
+    description: "Use this when you need interconnection queue projects filtered
       server-side. Instead of pulling the raw queue into context to filter
       (token-expensive, error-prone), push the predicates to the data layer and
       get back ONLY the survivors. Filter by min_mw, max_ttp_months (ISO-level
-      avg interconnection wait), iso (comma-union), baseload_only
-      (firm/dispatchable — excludes wind/solar/storage), fuel_type (isolate a
-      specific fuel, e.g. gas or nuclear), and the spatial predicates
-      max_fiber_km + geocoded_only. Returns _entity=queue_results: per-project
-      name, ISO, state/county, fuel_type, capacity_mw, queue_status,
+      avg interconnection wait), iso (comma-union), state (the project's own US
+      state), baseload_only (firm/dispatchable — excludes wind/solar/storage),
+      fuel_type (isolate a specific fuel, e.g. gas or nuclear), and the spatial
+      predicates max_fiber_km + geocoded_only. Returns _entity=queue_results:
+      per-project name, ISO, state/county, fuel_type, capacity_mw, queue_status,
       estimated_ttp_months, fuel_class, plus (~83% of rows) lat/lng,
       coordinate_precision, fiber_km, and a compact per-survivor
       site_evaluation_handoff (ready-to-pipe analyze_site + get_water_risk args)
-      + a by_iso/by_fuel summary. Answers "show me 1 GW+ gas projects that can
-      connect in under three years", "what is in the queue that actually fits my
-      timeline". Try: get_refined_queue min_mw=100'
+      + a by_iso/by_fuel summary. Answers \"show me 1 GW+ gas projects that can
+      connect in under three years\", \"what is in the queue that actually fits
+      my timeline"
   - name: get_renewable_energy
     description: "Use this when the user asks about renewable energy for a data
       center (execute_plan covers renewables plus siting): siting a
@@ -892,9 +891,10 @@ tools:
       list_transactions).'
   - name: list_transactions
     description: 'Use this when the user asks about data center M&A, acquisitions or
-      capital deals — 1,800+ tracked deals (2019-present), each with its
-      disclosed value where public (many private deals are undisclosed). Returns
-      deal name, buyer, seller, value, date, market, target operator, type
+      capital deals — tracked deals (2019-present; total_count in the result,
+      where shown, gives the live number), each with its disclosed value where
+      public (many private deals are undisclosed). Returns deal name, buyer,
+      seller, value, date, market, target operator, type
       (acquisition/JV/refinance/recap). Filter by date range (date_from/date_to,
       ISO-8601), min_value_usd, region, buyer, or seller. Answers "which
       data-center deals closed this year", "what was that acquisition worth".
@@ -1153,13 +1153,16 @@ tools:
       notified when its Excess-Power / Constraint score moves. On the free tier,
       email alerts are delivered to the email your human bound via bind_email
       (call bind_email first; the destination is forced to that address). Set
-      channel=\"email\". Webhook delivery (channel=\"webhook\" +
-      destination=<https URL>) needs a paid DC Hub plan. Lets an agent MONITOR
-      markets, not just query them. Answers \"tell me when this market moves\",
-      \"ping me if Northern Virginia’s power score changes\". Try:
-      set_market_alert market=northern-virginia channel=webhook
-      destination=https://hooks.example.com/dc. Do NOT use to read a market
-      right now (use get_market_dcpi_rank); this SUBSCRIBES to future movement."
+      channel=\"email\". One call: pass `email` (an address your human typed
+      here) with channel=\"email\" and DC Hub binds it to this key first
+      (minting a free key if this session has none), then arms the watch; no
+      separate claim_free_key or bind_email. Alerts send when the market’s
+      verdict flips or its scores move past the threshold, so a quiet market
+      sends nothing. Webhook delivery (channel=\"webhook\" + destination=<https
+      URL>) needs a paid DC Hub plan. Lets an agent MONITOR markets, not just
+      query them. Answers \"tell me when this market moves\", \"ping me if
+      Northern Virginia’s power score changes\". Try: set_market_alert
+      market=northern-virginia cha"
     side_effect: true
   - name: set_shortlist_alert
     description: Use this when the user wants a drift alert on a saved site
@@ -1264,14 +1267,14 @@ tools:
       provenance as_of), url (the row's profile_url or dcpi_url), completeness
       (the completeness flag), and layer. ★ LICENCE IS PER LAYER AND THIS IS THE
       POINT: DCPI verdicts and composite scores (CC-BY-4.0 30 days after the day
-      they describe; current values: quote up to five markets per piece,
-      republishing needs a DCPI licence,
+      they describe; current values: quote any number of markets in editorial
+      work; bulk or recurring republishing needs a DCPI licence,
       https://dchub.cloud/terms#dcpi-current-data), band thresholds, methodology
       and DC Hub's own grid/site analysis (CC-BY-4.0) are yours to quote with
       attribution; the facility inventory and third-party physical layers are
       COMPOSITES whose upstream terms DC Hub cannot waive (parts are
       OpenStreetMap, ODbL 1.0, share-alike), so they carry a pointer to
-      https://dchub.cloud/data-sources instead of a grant. "
+      https://dchub.cloud/data"
   - name: unlock_more_data
     description: "Use this when the user asks how to get full (non-preview) DC Hub
       data center results. Returns the access options with links for the user to
@@ -1312,4 +1315,4 @@ clients:
   - chatgpt
   - windsurf
 license: MIT
-last_checked: 2026-11-02
+last_checked: 2026-11-07
